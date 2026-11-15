@@ -298,6 +298,13 @@ command; stations match emitted outcomes; missing integrations do not break
 navigation; traversing the map causes no domain effects. No dashboard or
 Contract 3.0 implementation has been built by recording this direction.
 
+Nathan subsequently requested a specification derived from executable
+declarations, using existing discovery routes, with navigation, dispatch and
+no-domain-effect tests and unresolved schema choices kept explicit. The
+[navigation proposal](navigation-proposal.md) supplies that wording and its
+unrun acceptance checks for the next candidate. This is a requested draft,
+not acceptance of its exact text or an input-schema extension.
+
 ## Requested repair guidance and diagnosis
 
 Nathan also requested repair hints so an agent can identify the next step,
