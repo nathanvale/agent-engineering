@@ -1,0 +1,62 @@
+{
+  "bindingVersion": 1,
+  "id": "version-newer.negative",
+  "rule": "version-newer",
+  "group": "V",
+  "kind": "negative",
+  "oracle": [
+    "rules/version-newer/negative",
+    "formatCases/newer-minor/values/0"
+  ],
+  "verification": ["V-16"],
+  "reader": "test-minor-3.1.0",
+  "provisional": ["d3-reader"],
+  "admission": "admission.json",
+  "targetExecutions": ["version-newer.negative/subject:run"],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_UNSUPPORTED_CONTRACT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": ["version-newer.negative/subject", "3.2.0", "3.1.0"]
+  },
+  "rows": [
+    {
+      "caseId": "version-newer.negative/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "version-major",
+        "machine-stderr"
+      ],
+      "failed": {
+        "version-newer": "VERSION_UNSUPPORTED_MINOR"
+      },
+      "notRun": {
+        "strict-keys": "blocked: version refusal; no other key of a refused version is interpreted (VER-10)",
+        "presence": "blocked: version refusal; no other key of a refused version is interpreted (VER-10)",
+        "exit-envelope": "blocked: version refusal; no other key of a refused version is interpreted (VER-10)"
+      },
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 4,
+    "failed": 1,
+    "not_run": 3,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 8
+  },
+  "excluded": {},
+  "harness": null,
+  "static": null,
+  "notes": null
+}

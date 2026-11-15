@@ -1,0 +1,28 @@
+{
+  "admissionVersion": 1,
+  "cli": "specimen",
+  "cases": [
+    {
+      "caseId": "format.malformed.whitespace/subject",
+      "rules": [
+        "json-framing",
+        "version-malformed",
+        "machine-stderr",
+        "strict-keys",
+        "presence",
+        "exit-envelope"
+      ],
+      "role": "command",
+      "mode": "machine",
+      "target": {
+        "kind": "run",
+        "program": "bun-runtime",
+        "args": ["../../../specimens/target.mjs", "list", "--json"],
+        "cwd": ".",
+        "env": {
+          "SPECIMEN_TABLE": "subject.table.json"
+        }
+      }
+    }
+  ]
+}

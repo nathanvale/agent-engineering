@@ -1,0 +1,64 @@
+{
+  "bindingVersion": 1,
+  "id": "version-malformed.negative",
+  "rule": "version-malformed",
+  "group": "V",
+  "kind": "negative",
+  "oracle": [
+    "rules/version-malformed/negative",
+    "formatCases/malformed/values/3"
+  ],
+  "verification": ["V-16", "V-17"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": ["version-malformed.negative/subject:run"],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": [
+      "version-malformed.negative/subject",
+      "contractVersion",
+      "\"3.0.1\""
+    ]
+  },
+  "rows": [
+    {
+      "caseId": "version-malformed.negative/subject",
+      "passed": ["json-framing", "machine-stderr"],
+      "failed": {
+        "version-malformed": "VERSION_MALFORMED"
+      },
+      "notRun": {
+        "strict-keys": "blocked: version refusal; no other key of a refused version is interpreted (VER-10)",
+        "presence": "blocked: version refusal; no other key of a refused version is interpreted (VER-10)",
+        "exit-envelope": "blocked: version refusal; no other key of a refused version is interpreted (VER-10)"
+      },
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 2,
+    "failed": 1,
+    "not_run": 3,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 6
+  },
+  "excluded": {
+    "version-major": "classification stops at the first refused class (VER-10 order); a later class is not admitted",
+    "version-newer": "classification stops at the first refused class (VER-10 order); a later class is not admitted"
+  },
+  "harness": null,
+  "static": null,
+  "notes": null
+}
