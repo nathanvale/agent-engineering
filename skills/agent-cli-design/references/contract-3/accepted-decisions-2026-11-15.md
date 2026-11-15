@@ -567,6 +567,40 @@ exception still work. Exact malformed-version reporting remains to reconcile
 in the draft with inherited cause and guidance rules. No current release or
 runtime was changed by recording this decision.
 
+## A19. Preserve approval when lock acquisition is refused
+
+Status: accepted direction. Resolves the approval-consumption ordering in
+Q6 and CMD-15 for changing commands requiring a single-use grant.
+
+Nathan: "Yes, preserve approval on a lock refusal. Consume it only after
+exclusive lock acquisition and before the approved effect. Make that durable."
+
+- A lock refusal leaves the approval grant unconsumed.
+- Consume the grant only after exclusive lock acquisition and before the
+  approved effect. Successful consumption remains atomic and single-use.
+- Validate the grant for the exact operation, including current validity,
+  before consuming it. A later attempt cannot treat a previously checked
+  grant as still valid without the required checks.
+- Preserve recovery and no-replay rules. A crash after consumption does not
+  authorise reusing the grant, restoring it automatically or repeating an
+  effect whose outcome is uncertain.
+
+Reason and trade-off: contention does not spend an approval when the command
+cannot start the approved work. The ordering requires concurrency and crash
+proof; it does not guarantee that a grant is consumed only when the effect
+eventually succeeds. The approval add-on and state add-on must coordinate
+through the accepted base architecture, without changing their ownership.
+This decision does not introduce locks for otherwise lock-free inspection
+commands or settle their separate approval mechanics by implication.
+
+Required proof, not yet run: a held-lock refusal leaves the grant usable
+subject to its validity conditions; a stale, mismatched or consumed grant
+still refuses; concurrent attempts cannot consume one grant twice; no
+approved effect starts before successful validation and consumption; and
+crashes around consumption preserve truthful recovery state without grant
+restoration or automatic replay. Use isolated state, real concurrent
+processes and independent resource observations.
+
 ## Requested repair guidance and diagnosis
 
 Nathan also requested repair hints so an agent can identify the next step,
@@ -584,12 +618,15 @@ the recovery decision; repair hints do not bypass authority or replay rules.
 
 ## Remaining work and next question
 
-Next walkthrough question: for a changing command requiring a single-use
-approval, should a held-lock refusal preserve the grant, with consumption
-allowed only after exclusive lock acquisition and before the approved effect?
-Q6 and CMD-15 propose this ordering; it is not yet accepted here. Keep grant
-validation and atomic single-use enforcement mandatory. This question does
-not grant permission to reuse a consumed approval after a crash or uncertainty.
+The approval-ordering choice is settled by A19. Before asking another isolated
+question, consolidate the accepted directions into a revised candidate and
+reconcile its remaining Q-tagged clauses against inherited requirements.
+Unanswered wording is not accepted by implication. Present any remaining
+material product choice with concrete options and consequences; leave exact
+schema formats and routine engineering choices with the drafter where Nathan
+has already delegated them. The next contract-wide decision is acceptance of
+the exact revised, independently reviewed text, not approval of the current
+frozen candidate. No such acceptance is requested or recorded here.
 
 The TypeScript review separates remaining schema/type/lint engineering and
 missing implementation evidence from product choices. Do not turn a skill
