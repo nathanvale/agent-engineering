@@ -1,8 +1,9 @@
 # Revised candidate review record
 
-Status: A20 resolves the final immediate policy choice. The revised candidate
-requires exact-text acceptance. Its focused readback is recorded in the private
-receipt identified below. Not implemented. This file records review provenance; it cannot grant approval.
+Status: A20 resolves the final immediate policy choice. The candidate includes
+the subsequent TypeScript review corrections and requires exact-text acceptance.
+Review receipts for each candidate are identified below. Not implemented. This
+file records review provenance; it cannot grant approval.
 
 ## Identity and scope
 
@@ -125,3 +126,33 @@ REC-9 and V-49. REC-7b now explicitly qualifies exclusivity for both routes.
 No closure grant is consumed by takeover and no domain replay is permitted.
 The final focused receipt is `a20-final-readback.txt` in the private review
 folder, with its exact candidate identity in `a20-final-receipt.json`.
+
+## TypeScript review corrections
+
+After the A20 candidate at commit `de164f1`, Nathan requested a three-agent
+TypeScript review and then authorised correction of its three findings, fresh
+review of the changed text and presentation for acceptance. This does not
+accept the text or authorise implementation.
+
+- K3 now describes capability acquisition. CMD-14 requires invocation-time
+  active-effect validation, coordinated with effect closure. V-21 owns the
+  expired-handle, wrong-run/effect and closure-race process controls. A native
+  TypeScript 7.0.2 probe accepted a closure retaining a valid handle; the
+  forged-token control failed. This is compiler evidence about a prototype
+  signature, not a demonstrated production escape or a passing runtime repair.
+- V-5 and V-6 name compiler, lint, independent review and runtime owners
+  separately. A missing exhaustiveness sink and a partial lookup passed the
+  selected compiler/lint probe; an incomplete chain retaining assertNever
+  failed. No prohibition was removed.
+- The changing-command example now records an effect, reads it back and
+  includes the distinct unresolved-case refusal. Its remaining omissions are
+  explicit. It remains illustrative, not a compiled or complete production API.
+
+The original probe receipts and the fresh changed-text review belong in
+private execution evidence set `agent-engineering-contract3-20261115`,
+`typescript-corrections/`.
+The coordinator records the final manifest and review verdict there, outside
+the candidate, to avoid a self-referential hash. Earlier review verdicts do not
+cover these changes. All runtime controls added here remain unrun until the
+separately authorised build. Accepted decisions and deferred choices are
+unchanged.

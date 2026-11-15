@@ -128,7 +128,7 @@ This is source inspection, not a 3.0 compilation result.
 | ---- | --------------------------------------------------------------------------------------------------------- | --------------------------------- |
 | K1   | A handler using a capability its command did not declare                                                  | Scratch prototype                 |
 | K2   | A changing command with no `ifNoResult`                                                                   | Scratch prototype                 |
-| K3   | A domain program run outside a recorded effect                                                            | Scratch prototype                 |
+| K3   | Acquiring a domain-program handle without the required effect capability                                  | Scratch prototype                 |
 | K4   | An effect identifier the command did not declare                                                          | Scratch prototype                 |
 | K5   | The value naming an `ifNoResult` command written as a literal                                             | Scratch prototype                 |
 | K6   | An `inspect` command opening a transaction                                                                | Scratch prototype                 |
@@ -145,6 +145,13 @@ This is source inspection, not a 3.0 compilation result.
 not production proof. Every lock is proved again in the build. S2 to S4 follow A11's single executable declaration owner. S5 and S6 have never been compiled, so
 the runtime validator is their only proof until the build
 ([V-39](verification.md#checks)).
+
+K3 checks capability acquisition, not the lifetime of a captured value. A valid
+handle can escape its effect callback through a closure without any cast.
+TypeScript does not revoke that handle when the callback ends. CMD-14 therefore
+requires an active-effect check at every program start; V-21 proves rejection
+of an escaped or expired handle before any program is started. The effect
+boundary remains mandatory even where the compiler cannot enforce it.
 
 **GATE-8 `[C0]` `[P]`** How a lock is tested:
 

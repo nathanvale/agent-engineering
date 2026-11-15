@@ -196,8 +196,17 @@ programs add-on:
 - Owned programs receive bounded shutdown attempts under
   [LIFE-11](lifecycle.md#started-programs). Sending a signal is not proof of
   termination; escaped descendants and remote work are not guaranteed stopped.
-- A domain program has a handle only inside a recorded effect, so its run is
-  journaled like any other effect (CMD-11).
+- Acquiring a domain-program handle requires a recorded-effect capability
+  (GATE-7 K3). A captured handle can outlive its callback, so acquisition alone
+  does not authorise a later start. Immediately before every program start,
+  the programs add-on verifies that the capability belongs to the current run
+  and the still-active recorded effect. The state add-on owns that lifetime;
+  the kernel's public capability interface connects the two without add-on
+  imports. Coordinate start admission with effect closure so there is no
+  unchecked gap between the lifetime check and starting the program. Reject
+  expired or wrong-run/effect capabilities before creating a process. Every
+  admitted run remains journaled under CMD-11. V-21 owns the process proof;
+  validating an eventual output envelope is too late to enforce this rule.
 - A command that runs a caller-supplied program says so in its `summary`.
   No new key carries the disclosure.
 - Outside the add-on's own folder the generated lint configuration bans
@@ -277,8 +286,11 @@ shows the shape and the behaviour, not the 3.0 wire.
 
 ## Illustrative declaration
 
-Illustrative only. Not compiled, not an API. It shows where each rule above
-lands in a host file.
+Illustrative only. Not compiled, not an API. This fragment shows effect recording,
+read-back and the two distinct coordination refusals. Input declarations,
+preview/approval setup, cause-table entries and helper implementations are
+omitted; it is not an admissible complete command by itself. The state add-on
+supplies the inherited transaction and lifecycle machinery.
 
 ```ts
 // src/commands/apply.ts, host-owned
@@ -286,6 +298,23 @@ export const pending = state.pendingCommand({
   identity: "notes.pending",
   route: ["pending"],
   summary: "Report unfinished applies.",
+});
+
+export const caseHistory = command({
+  identity: "notes.case-history",
+  route: ["case", "history"],
+  summary: "Read one operation's retained evidence and recovery guidance.",
+  input: {
+    arguments: [
+      textArgument("operationId", {
+        required: true,
+        minLength: 1,
+        maxLength: 80,
+      }),
+    ],
+    options: [],
+  },
+  run: (input) => readCaseHistory(input.operationId),
 });
 
 export const apply = changing({
@@ -315,9 +344,38 @@ export const apply = changing({
         ],
       },
     }),
+    unresolvedCase: station.refused("DOMAIN_NOTES_UNRESOLVED", {
+      trigger: "An unfinished operation conflicts with this note change.",
+      repair:
+        "Inspect the blocking case and its retained history, then follow its authorised recovery route. Never replay the interrupted operation.",
+      handoff: {
+        owner: "operator",
+        reason: "A conflicting earlier operation remains unresolved.",
+        inspect: [
+          {
+            kind: "command",
+            command: "notes.case-history",
+            args: ["{binding.operationId}"],
+          },
+        ],
+      },
+    }),
   },
-  // a state transaction that ends by selecting the declared station
   run: (input, ctx) =>
-    state.transaction(ctx, (tx) => tx.complete(ctx.stations.applied)),
+    state.transaction(ctx, async (tx) => {
+      await tx.effect(
+        "note.write",
+        (token) => tx.writeFile(token, target(input), bytes(input)),
+        () => readBack(input),
+      );
+      return tx.complete(ctx.stations.applied, { path: target(input) });
+    }),
 });
 ```
+
+The host registers all three commands through its existing command table.
+`readCaseHistory` is read-only and reports retained evidence and the separately
+authorised recovery route. The unresolved-case result supplies the validated
+blocking `operationId` as its binding under STEP-10; the handler cannot replace
+the station's fixed repair words. The input declaration shown belongs to the
+history command; the apply command's input and preview checks remain omitted.
