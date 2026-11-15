@@ -1,0 +1,33 @@
+{
+  "stoppedVersion": 1,
+  "cases": [
+    {
+      "id": "fallback-version.negative",
+      "rule": "fallback-version",
+      "oracle": ["rules/fallback-version/negative"],
+      "reason": "Contract and oracle disagree (G14). VER-8 stamps the CLI minor on every envelope except the fallback; an INTERNAL_PREPARATION or INTERNAL_RESULT_* result produced outside the fallback is legal at 3.1.0 (DISC-11b, LIFE-9, LIFE-10, VER-9). The wire does not mark a fallback, so a 3.1.0 internal result cannot be judged a fallback violation without choosing product behaviour.",
+      "clauses": ["VER-8", "VER-9", "LIFE-9", "LIFE-10", "DISC-11b"]
+    },
+    {
+      "id": "minor-meaning.negative",
+      "rule": "minor-meaning",
+      "oracle": ["rules/minor-meaning/negative"],
+      "reason": "Review only. Treating an absent key as new authority is a reader's meaning, which no output byte shows; the checker reports not_run and an independent reviewer owns the finding.",
+      "clauses": ["VER-6", "VER-15"]
+    },
+    {
+      "id": "diagnostics-absent.valid",
+      "rule": "diagnostics-absent",
+      "oracle": ["rules/diagnostics-absent/validTwin"],
+      "reason": "Interface gap G13: nothing in the wire, discovery or admission tells the checker the target lacks the diagnostics add-on, so neither twin nor negative can be judged. Needs an admitted independent fact such as expect.diagnostics.",
+      "clauses": ["DIAG-1", "DIAG-17"]
+    },
+    {
+      "id": "diagnostics-absent.negative",
+      "rule": "diagnostics-absent",
+      "oracle": ["rules/diagnostics-absent/negative"],
+      "reason": "As diagnostics-absent.valid (G13).",
+      "clauses": ["DIAG-1", "DIAG-17"]
+    }
+  ]
+}

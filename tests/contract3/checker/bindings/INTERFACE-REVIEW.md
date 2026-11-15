@@ -20,12 +20,12 @@ interpretations. Binding proceeds against the interface as written plus the
 interpretations below. Each interpretation is a proposal to the implementer; a
 disagreement changes the named cases, not the method.
 
-| Result                                 | Rules                                                                                                                                                                                   |
-| -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Bound as written                       | 66 rules                                                                                                                                                                                 |
+| Result                                 | Rules                                                                                                                                                                                |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Bound as written                       | 66 rules                                                                                                                                                                             |
 | Bound with a stated interpretation     | `template-token`, `binding-keys`, `binding-placement`, `token-argv`, the 11 `input-*` process rules (one rule per argv case), `station-required`, `open-cause`, `unreachable-review` |
-| Bound, conditional on D3 and the table | `version-newer` (3.1 reader part), `declared-minor-shape`, `fallback-version` (valid twin), the four static `minor-*` rules                                                              |
-| Negative stopped                       | `fallback-version` (contract and oracle disagree, G14), `diagnostics-absent` (G13), `minor-meaning` (review only, no detectable negative)                                               |
+| Bound, conditional on D3 and the table | `version-newer` (3.1 reader part), `declared-minor-shape`, `fallback-version` (valid twin), the four static `minor-*` rules                                                          |
+| Negative stopped                       | `fallback-version` (contract and oracle disagree, G14), `diagnostics-absent` (G13), `minor-meaning` (review only, no detectable negative)                                            |
 
 Counted by rule: `fallback-version` sits in two rows, so the rows sum to 94. The exact case totals
 live in `MANIFEST.json` once binding completes.
@@ -234,14 +234,14 @@ stderr, and message substrings. These assertions are deliberately not bound,
 because they differ between option (a), a 2.0.0 envelope, and option (b), a
 3.0.0 envelope:
 
-| Assertion                                   | Option (a), 2.0.0                       | Option (b), 3.0.0                  |
-| ------------------------------------------- | --------------------------------------- | ---------------------------------- |
-| `contractVersion` value                     | `2.0.0`                                 | `3.0.0`                            |
-| `envelopeVersion` key                       | present (the 2.0 integer)               | absent (WIRE-6)                    |
-| Guidance key and shape                      | `nextAction` string                     | `next` union or `handoff` (WIRE-8) |
-| Success guidance words                      | 2.0 sentence "No further action..."     | `next` per the declared station    |
-| Strict key set of envelope and result       | the 2.0 tables                          | WIRE-5 and WIRE-7                  |
-| Self-check by a 2.0 or 3.0 checker          | the kept 2.0 checker judges it          | the 3.0 checker judges it          |
+| Assertion                             | Option (a), 2.0.0                   | Option (b), 3.0.0                  |
+| ------------------------------------- | ----------------------------------- | ---------------------------------- |
+| `contractVersion` value               | `2.0.0`                             | `3.0.0`                            |
+| `envelopeVersion` key                 | present (the 2.0 integer)           | absent (WIRE-6)                    |
+| Guidance key and shape                | `nextAction` string                 | `next` union or `handoff` (WIRE-8) |
+| Success guidance words                | 2.0 sentence "No further action..." | `next` per the declared station    |
+| Strict key set of envelope and result | the 2.0 tables                      | WIRE-5 and WIRE-7                  |
+| Self-check by a 2.0 or 3.0 checker    | the kept 2.0 checker judges it      | the 3.0 checker judges it          |
 
 The harness must pick these assertions from D1's outcome; no binding hardcodes
 either.
@@ -267,3 +267,37 @@ Section 10 leaves thirteen numbers open. They are bound with reasons in
 (`TARGET_JSON_MAX_DEPTH` 64, LIFE-7 step 2, counted per B2) and one from the
 frozen 500 ms stopping bound (`TARGET_KILL_GRACE_MS`, LIFE-3 and LIFE-11); the
 others are stated engineering numbers.
+
+## Addendum: found while binding
+
+Added after the review commit; the review above is otherwise unchanged except
+for table formatting required by `bun run format:check`.
+
+**G22. No rule owns a budget refusal.** Section 4 rule 7 and section 10 refuse
+an over-budget stream or admission with `SCHEMA_INVALID_INPUT`, but no rule id
+carries the component row. The four `budget.*` bindings bind the process
+result only and mark `rowsUnbound`.
+
+**G23. Pattern size budgets.** Whether an oversize pattern or subject is
+caught while reading the declaration or while matching is unstated. Binder
+action: the `pattern-budget` row on the input case that uses the pattern
+fails; the subject-size case widens the declared `maxLength` so a length
+refusal cannot pre-empt the budget.
+
+**G24. Execution count is not observable in general.** Only a counter shows
+how many times a target ran. Binder action: the no-replay bindings carry a
+counter; every other binding lists its expected executions in
+`targetExecutions` as an unobserved expectation.
+
+**G17, refined.** `expect.commandIdentity` is carried on every run case, but
+observed and expected identities differ only in negatives whose target rule
+owns the difference (`dispatch`, `input-dash` and `input-deadline`; eight
+negatives in all).
+
+**Binder readings with a choice behind them.** These are bound and flagged in
+their cases' notes; a different reading changes only those cases.
+
+- An invalid caller value destined to become a binding is an argv value fault:
+  `USAGE_INVALID_INVOCATION` (INPUT-2; CMD-9 step 3 allows usage or schema).
+- An invalid generated binding found at creation, before any dependent effect,
+  is `INTERNAL_RESULT_UNCHANGED`.
