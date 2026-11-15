@@ -380,6 +380,53 @@ all writers have stopped. Use real concurrent processes, isolated resources
 and failing controls against the supported environment. The shared recovery
 design and independent review remain prerequisites to implementation.
 
+## A14. Bound shutdown of programs owned by the CLI
+
+Status: accepted direction. Resolves Q10's shutdown policy for the next
+Contract 3.0 draft. Exact lifecycle wording and process evidence remain to
+complete before implementation.
+
+Nathan: "Yes, require bounded shutdown of programs the CLI owns, with forced
+termination attempts on repeated cancellation or a catchable crash. Keep the
+cleanup limits explicit. Make that durable."
+
+- Require bounded shutdown of programs the CLI owns. On the first
+  cancellation, request a graceful stop and attempt forced termination if
+  necessary within the existing shutdown limit. Stop starting domain work.
+- On repeated cancellation or a catchable crash, attempt forced termination
+  of owned programs before exiting. Do not turn immediate termination into
+  an unbounded wait for confirmation.
+- Distinguish sending a termination request from observing that a program
+  stopped. State the supported process-ownership and descendant boundaries;
+  do not claim that every possible descendant is contained.
+- Retain explicit limits for an uncatchable kill of the CLI, abort, hook
+  failure and power loss. These cannot promise cleanup. Stopping a local
+  program neither undoes completed effects nor proves a remote operation
+  stopped. Preserve uncertainty and inspection guidance; never replay effects
+  automatically during cleanup.
+
+This supplies the accepted direction for LIFE-3 and LIFE-11's successor to
+the inherited lifecycle rows and decision 20's program ownership. It does
+not accept the draft's absolute statement that a started program never
+outlives the CLI as a guarantee beyond observable, supported cleanup paths.
+Retain the existing envelope, diagnostic-flush and journal limits. Reconcile
+the precise order and timing in the next reviewed text.
+
+Reason and trade-off: cancellation should stop owned local work where the
+CLI can still act. Bounded cleanup adds process-management obligations but
+does not delay shutdown indefinitely or promise recovery from forced death.
+The programs add-on and base lifecycle must share one ownership and shutdown
+design; host commands do not each invent cleanup semantics.
+
+Required proof, not yet run: real owned child processes that cooperate and
+that ignore graceful termination; repeated cancellation and catchable crash;
+termination attempts and elapsed bounds; descendant/ownership limits;
+preservation of unrelated processes; no new domain work or effect replay;
+and accurate reporting of interrupted effects. Include forced-death cases
+that demonstrate the documented lack of cleanup guarantee. Reconcile with
+A13: a stopped parent or a sent kill request alone does not prove all writers
+stopped or that reclaim is safe.
+
 ## Requested repair guidance and diagnosis
 
 Nathan also requested repair hints so an agent can identify the next step,
@@ -397,17 +444,17 @@ the recovery decision; repair hints do not bypass authority or replay rules.
 
 ## Remaining work and next question
 
-Next walkthrough question: should controlled shutdown also stop programs the
-CLI launched, including a bounded graceful stop on the first signal and a
-forced termination attempt on a repeated signal or a catchable crash? Q10
-and LIFE-11 propose changing inherited lifecycle rows to carry decision 20's
-program-ownership direction. Exact shutdown wording remains unaccepted.
-Separate attempting termination from observing it: forced termination of the
-CLI itself, abort and power loss cannot promise cleanup. Stopping a program
-does not undo its effects or prove an external operation stopped.
+Next walkthrough question: should an additional lint error prohibit
+`Object.assign` in code that constructs and handles contract values, closing
+the demonstrated mutation route past the assertion rule? Q8 and GATE-9a
+leave this additional restriction unselected. Exact scope and enforcement
+need drafting and fixtures; a targeted restriction is not a ban on mutation
+throughout every repository. Runtime result validation remains mandatory,
+and no single lint rule proves general immutability. The separate generic
+array-conversion bypass is not accepted by answering this question.
 
 Other unresolved matters include the recovery and lock design, the detailed
-version policy, lifecycle departures, remaining schema/lint questions and the
+version policy, detailed lifecycle wording, remaining schema/lint questions and the
 post-vault record owner. Do not reopen accepted toolchain, single-CLI or
 base-plus-add-ons decisions. Check inherited requirements before promoting a
 review finding to a new product question.
