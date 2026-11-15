@@ -185,6 +185,30 @@ version; reader-first rollout is checked; newer readers accept valid older
 fallback's version was expressly left separate in the question Nathan answered.
 This does not accept the rest of the version grammar or Q5 policy by implication.
 
+## A8. Keep the emergency fallback at Contract 3.0.0
+
+Status: accepted. Resolves Q5's fallback-version choice, VER-9 and LIFE-10.
+
+Nathan: "Yes, keep the emergency fallback at 3.0.0 as the exception.
+Make that durable."
+
+- Declare `contractVersion: "3.0.0"` on the emergency fallback, as the
+  explicit exception to A7's normal-response stamping rule.
+- Keep that fallback within the original 3.0.0 format so every conforming
+  3.x reader can interpret it. Do not relabel newer fields as 3.0.0.
+- Preserve the inherited one-attempt fallback boundary and honest reporting
+  of trusted effects or uncertainty. Fallback grants no authority to replay.
+
+Reason and trade-off: an older 3.x reader can understand an emergency response
+during an incomplete upgrade. Maintaining a frozen fallback format is the
+cost; using the producer's newer version everywhere would be more uniform
+but could make the emergency response unreadable to that older reader.
+
+Required proof, not yet run: a producer at a test-only newer minor emits a
+3.0.0-valid fallback, with no newer fields or union members; 3.0.0 and newer
+readers accept it; its effect report remains honest; no fallback path retries
+the domain operation. No future minor is released by this decision.
+
 ## Requested repair guidance and diagnosis
 
 Nathan also requested repair hints so an agent can identify the next step,
@@ -202,11 +226,11 @@ the recovery decision; repair hints do not bypass authority or replay rules.
 
 ## Remaining work and next question
 
-Next walkthrough question: the emergency fallback's version (Q5, VER-9).
-Should this exceptional response remain in the original 3.0.0 format so every
-3.x reader can understand it, or follow the CLI's implemented version like
-normal responses? No choice has been made. The remaining version grammar and
-evolution rules also remain proposed.
+Next walkthrough question: the minor-version evolution policy (Q5, VER-5
+and VER-6). May later 3.x minors add optional fields and new contract-owned
+union members while preserving every existing meaning, with readers upgraded
+first, or should those additions require a new major? No choice has been made.
+The remaining version grammar and common-cause rules also remain proposed.
 
 Other unresolved matters include the recovery and lock design, the detailed
 version policy, lifecycle departures, remaining schema/lint questions and the
