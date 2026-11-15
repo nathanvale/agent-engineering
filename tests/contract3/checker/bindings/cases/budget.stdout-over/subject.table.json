@@ -1,0 +1,13 @@
+{
+  "argv": ["list", "--json"],
+  "responses": [
+    {
+      "stdout": {
+        "repeat": 1048577,
+        "byte": "x"
+      },
+      "stderr": null,
+      "exit": 0
+    }
+  ]
+}

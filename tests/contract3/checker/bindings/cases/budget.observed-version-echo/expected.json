@@ -1,0 +1,63 @@
+{
+  "bindingVersion": 1,
+  "id": "budget.observed-version-echo",
+  "rule": "version-malformed",
+  "group": "V",
+  "kind": "budget",
+  "oracle": ["formatCases/malformed/messageRequires"],
+  "verification": ["V-16"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": ["budget.observed-version-echo/subject:run"],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": [
+      "budget.observed-version-echo/subject",
+      "contractVersion"
+    ],
+    "messageExcludes": [
+      "3.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0"
+    ]
+  },
+  "rows": [
+    {
+      "caseId": "budget.observed-version-echo/subject",
+      "passed": ["json-framing", "machine-stderr"],
+      "failed": {
+        "version-malformed": "VERSION_MALFORMED"
+      },
+      "notRun": {
+        "strict-keys": "blocked: version refusal; no other key of a refused version is interpreted (VER-10)",
+        "presence": "blocked: version refusal; no other key of a refused version is interpreted (VER-10)",
+        "exit-envelope": "blocked: version refusal; no other key of a refused version is interpreted (VER-10)"
+      },
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 2,
+    "failed": 1,
+    "not_run": 3,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 6
+  },
+  "excluded": {
+    "version-major": "classification stops at the first refused class",
+    "version-newer": "classification stops at the first refused class"
+  },
+  "harness": null,
+  "static": null,
+  "notes": "A 201-character malformed version: the echo is bounded by OBSERVED_VALUE_ECHO_MAX_CHARS (64), so the full value never appears."
+}
