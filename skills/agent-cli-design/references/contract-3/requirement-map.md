@@ -14,81 +14,81 @@ Plan identity when read: SHA-256
 
 ## B1. Every accepted 2.0 rule has a fate
 
-| Rule group (C0 revision 2)                                                      | Fate in 3.0                                                                                                         | Carried or changed by            |
-| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
-| General wire rules: strict objects, presence, strings, `JsonValue`              | Kept                                                                                                                | WIRE-1 to WIRE-4                 |
-| Outcomes and the result truth table                                             | Kept                                                                                                                | WIRE-15, WIRE-16                 |
-| Effects and the effect-state table                                              | Kept                                                                                                                | WIRE-10 to WIRE-13               |
-| Result keys                                                                     | Kept, except `nextAction`                                                                                           | WIRE-7, WIRE-8                   |
-| Next action                                                                     | Changed by decision 2                                                                                               | STEP-1 to STEP-15, WIRE-17       |
-| Handoff                                                                         | Kept. Inspection entries stay read-only and become structured (A4; exact shape proposed).                           | WIRE-9, STEP-12, STEP-13         |
-| Retry and delay policy                                                          | Kept                                                                                                                | WIRE-7, WIRE-16, DISC-8, STEP-4  |
-| Exits and causes                                                                | Kept. No common cause is added.                                                                                     | WIRE-14, WIRE-18, WIRE-19        |
-| Discovery, help and `PublicStation`                                             | Kept. The version keys change with decisions 1 and 8.                                                               | DISC-1 to DISC-8                 |
-| Built-in commands in discovery                                                  | Stated: they are declared                                                                                           | DISC-5, DISC-11                  |
-| Station identity and reachability                                               | Kept                                                                                                                | DISC-12                          |
-| A command with no station table                                                 | Kept, and moved from the simple profile to each qualifying `inspect` command by decision 18                         | DISC-10                          |
-| Guidance templates and their five substitutions                                 | Kept for strings. Extended to structured arguments (proposed). A6 accepts run bindings; exact shape is proposed.    | STEP-9, STEP-9a, STEP-10         |
-| The five format cases and version handling                                      | Changed by decisions 1 and 8                                                                                        | VER-1 to VER-12                  |
-| "No dual-version support"                                                       | Changed by decision 8 for minors of one major. Still true across majors.                                            | VER-3, VER-12                    |
-| Envelope keys                                                                   | `contractVersion` changes with decision 1. `message` and `availablePaths` kept. `envelopeVersion` removal proposed. | WIRE-5, WIRE-6, WIRE-6a          |
-| Diagnostics schema and finalisation order                                       | Kept                                                                                                                | DIAG-1 to DIAG-16                |
-| Signals, deadlines, broken pipes and crashes                                    | Kept. Five rows gain a started-programs addition (departure 17).                                                    | LIFE-3 to LIFE-6a, LIFE-11       |
-| Writer guards and the bounded fallback                                          | Kept. The fallback declares 3.0.0.                                                                                  | LIFE-7, LIFE-9, LIFE-10          |
-| The one-way typed-to-wire boundary and the locks                                | Kept                                                                                                                | GATE-5, GATE-6                   |
-| Checker sensitivity (CDS-CE-3)                                                  | Kept                                                                                                                | ROLL-8, V-34                     |
-| Criteria CDS-CE-1 to CDS-CE-3 and their exclusions                              | Successors proposed                                                                                                 | ROLL-8                           |
-| Simple means every command is `inspect`; other complex triggers retained        | Changed by decision 18: the rule applies per command                                                                | CMD-2 to CMD-4                   |
-| Journal, lock and concurrency (lifecycle specification, CDS-LO-1)               | Kept. A13 qualifies reclaim; A1 and A2 add scoped closure.                                                          | CMD-11 to CMD-13, REC-1 to REC-9 |
-| Diagnostics custody (CDS-LO-2)                                                  | Kept                                                                                                                | DIAG-6 to DIAG-12                |
-| A sensitive process row per lifecycle claim (CDS-LO-3)                          | Kept                                                                                                                | V-26                             |
-| One application CLI through its existing registration (template revision 4)     | Kept                                                                                                                | CMD-1                            |
-| An unavailable integration never blocks help or discovery (template revision 4) | Kept                                                                                                                | DISC-2a, V-40                    |
-| The output-owner scope and console-method allowance (template revision 4)       | Kept. The kernel's writer is the output owner.                                                                      | GATE-12                          |
-| The accepted 2.0 contract stays binding for 2.0.0 CLIs                          | Stated                                                                                                              | ROLL-1                           |
-| "Additive only when older consumers ignore it" (September research)             | Replaced: an older reader refuses a newer version                                                                   | VER-3, VER-5                     |
+| Rule group (C0 revision 2)                                                      | Fate in 3.0                                                                                                         | Carried or changed by             |
+| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| General wire rules: strict objects, presence, strings, `JsonValue`              | Kept                                                                                                                | WIRE-1 to WIRE-4                  |
+| Outcomes and the result truth table                                             | Kept                                                                                                                | WIRE-15, WIRE-16                  |
+| Effects and the effect-state table                                              | Kept                                                                                                                | WIRE-10 to WIRE-13                |
+| Result keys                                                                     | Kept, except `nextAction`                                                                                           | WIRE-7, WIRE-8                    |
+| Next action                                                                     | Changed by decision 2                                                                                               | STEP-1 to STEP-15, WIRE-17        |
+| Handoff                                                                         | Kept. Inspection entries stay read-only and become structured (A4; exact shape proposed).                           | WIRE-9, STEP-12, STEP-13          |
+| Retry and delay policy                                                          | Kept                                                                                                                | WIRE-7, WIRE-16, DISC-8, STEP-4   |
+| Exits and causes                                                                | Kept. No common cause is added.                                                                                     | WIRE-14, WIRE-18, WIRE-19         |
+| Discovery, help and `PublicStation`                                             | Kept. The version keys change with decisions 1 and 8.                                                               | DISC-1 to DISC-8                  |
+| Built-in commands in discovery                                                  | Stated: they are declared                                                                                           | DISC-5, DISC-11                   |
+| Station identity and reachability                                               | Kept                                                                                                                | DISC-12                           |
+| A command with no station table                                                 | Kept, and moved from the simple profile to each qualifying `inspect` command by decision 18                         | DISC-10                           |
+| Guidance templates and their five substitutions                                 | Kept for strings. Extended to structured arguments (proposed). A6 accepts run bindings; exact shape is proposed.    | STEP-9, STEP-9a, STEP-10          |
+| The five format cases and version handling                                      | Changed by decisions 1 and 8                                                                                        | VER-1 to VER-12                   |
+| "No dual-version support"                                                       | Changed by decision 8 for minors of one major. Still true across majors.                                            | VER-3, VER-12                     |
+| Envelope keys                                                                   | `contractVersion` changes with decision 1. `message` and `availablePaths` kept. `envelopeVersion` removal proposed. | WIRE-5, WIRE-6, WIRE-6a           |
+| Diagnostics schema and finalisation order                                       | Kept                                                                                                                | DIAG-1 to DIAG-16                 |
+| Signals, deadlines, broken pipes and crashes                                    | Kept. Five rows gain a started-programs addition (departure 17).                                                    | LIFE-3 to LIFE-6a, LIFE-11        |
+| Writer guards and the bounded fallback                                          | Kept. The fallback declares 3.0.0.                                                                                  | LIFE-7, LIFE-9, LIFE-10           |
+| The one-way typed-to-wire boundary and the locks                                | Kept                                                                                                                | GATE-5, GATE-6                    |
+| Checker sensitivity (CDS-CE-3)                                                  | Kept                                                                                                                | ROLL-8, V-34                      |
+| Criteria CDS-CE-1 to CDS-CE-3 and their exclusions                              | Successors proposed                                                                                                 | ROLL-8                            |
+| Simple means every command is `inspect`; other complex triggers retained        | Changed by decision 18: the rule applies per command                                                                | CMD-2 to CMD-4                    |
+| Journal, lock and concurrency (lifecycle specification, CDS-LO-1)               | Kept. A13 qualifies reclaim; A1 and A2 add scoped closure.                                                          | CMD-11 to CMD-13, REC-1 to REC-10 |
+| Diagnostics custody (CDS-LO-2)                                                  | Kept                                                                                                                | DIAG-6 to DIAG-12                 |
+| A sensitive process row per lifecycle claim (CDS-LO-3)                          | Kept                                                                                                                | V-26                              |
+| One application CLI through its existing registration (template revision 4)     | Kept                                                                                                                | CMD-1                             |
+| An unavailable integration never blocks help or discovery (template revision 4) | Kept                                                                                                                | DISC-2a, V-40                     |
+| The output-owner scope and console-method allowance (template revision 4)       | Kept. The kernel's writer is the output owner.                                                                      | GATE-12                           |
+| The accepted 2.0 contract stays binding for 2.0.0 CLIs                          | Stated                                                                                                              | ROLL-1                            |
+| "Additive only when older consumers ignore it" (September research)             | Replaced: an older reader refuses a newer version                                                                   | VER-3, VER-5                      |
 
 ### Every departure from accepted text
 
 No accepted rule is dropped silently. Each change below needs Nathan's
 acceptance with this text, and each is tagged where it appears.
 
-| #   | Departure                                                                                                                                                                   | Basis                                                       | Clause                             |
-| --- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- | ---------------------------------- |
-| 1   | `contractVersion` is `3.0.0`. A18 fixes later minors as `3.<minor>.0`.                                                                                                      | Decision 1 and A18                                          | WIRE-5, VER-1                      |
-| 2   | A structured next step replaces `nextAction`. The key name `next` is proposed.                                                                                              | Decision 2; name proposed                                   | WIRE-7, WIRE-8                     |
-| 3   | The sentence `No further action required.` becomes the step `done`                                                                                                          | Decision 2 and A4                                           | STEP-5                             |
-| 4   | A reader accepts older minors of its major                                                                                                                                  | Decision 8                                                  | VER-3                              |
-| 5   | A malformed version, including any triple with a nonzero patch, is `SCHEMA_INVALID_INPUT`, not `SCHEMA_UNSUPPORTED_CONTRACT`                                                | Proposed                                                    | VER-1, VER-10                      |
-| 6   | `envelopeVersion` removed                                                                                                                                                   | Proposed                                                    | WIRE-6                             |
-| 7   | `profile` removed from discovery                                                                                                                                            | Decision 18, proposed                                       | DISC-6                             |
-| 8   | `generationConventionVersion` removed from discovery                                                                                                                        | Proposed                                                    | DISC-6                             |
-| 9   | A root operation requires an option or operand, so a no-argument invocation stays with dispatch                                                                             | Proposed                                                    | DISC-4                             |
-| 10  | `availablePaths` given one stated meaning                                                                                                                                   | Proposed                                                    | WIRE-6a                            |
-| 11  | `ifNoResult` added to command discovery                                                                                                                                     | Decision 11, shape proposed                                 | DISC-7, DISC-13 to DISC-15         |
-| 12  | Withdrawn in round 3. Earlier candidates added three common causes. This one adds none.                                                                                     | None                                                        | None                               |
-| 13  | `bindings` key and the `{binding.<name>}` token, limited to whole arguments and resource identifiers                                                                        | Proposed                                                    | WIRE-7, STEP-10                    |
-| 14  | Handoff inspection entries structured                                                                                                                                       | Proposed                                                    | STEP-12                            |
-| 15  | The five substitutions apply inside structured arguments, under the binding value rule                                                                                      | Proposed                                                    | STEP-9a                            |
-| 16  | Automatic reclaim only with stopped-owner proof and guaranteed exclusive takeover; uncertain ownership hands off                                                            | A13 supersedes the blanket no-reclaim wording               | CMD-12, REC-7, STEP-15             |
-| 17  | Bounded shutdown attempts, including forced termination on repeated cancellation and catchable crash; no universal cleanup guarantee                                        | A14                                                         | LIFE-11                            |
-| 18  | The two profiles replaced by per-command rules and add-ons                                                                                                                  | Decisions 18 and 20                                         | CMD-2 to CMD-19                    |
-| 19  | The template stops shipping Zod; one built-in validator checks every result                                                                                                 | Decision 19                                                 | CMD-18, LIFE-8                     |
-| 20  | Results the base produces appear as stations in each command's discovery. The base supplies default words, which a command may replace, except for the fallback's stations. | Proposed                                                    | DISC-11, DISC-11b                  |
-| 21  | The allowance to omit a station table follows each qualifying `inspect` command, not a simple-profile CLI                                                                   | Decision 18, proposed                                       | DISC-10                            |
-| 22  | Built-in commands are required in `DiscoveryData.commands`. `HelpData.commands` lists host commands only.                                                                   | Proposed                                                    | DISC-5                             |
-| 23  | Scoped blocking and durable closure, including authorised outcome-unknown closure, without replay                                                                           | A1 and A2; proposed design replaces withdrawn unsafe drafts | REC-1 to REC-9, DISC-14 to DISC-15 |
-| 24  | The guidance of `SCHEMA_UNSUPPORTED_CONTRACT` no longer names one version                                                                                                   | Decision 8, proposed                                        | WIRE-18                            |
-| 25  | `availablePaths` sorting is by code unit                                                                                                                                    | Proposed                                                    | WIRE-6a                            |
-| 26  | The observed version is carried in `message`, not in repair guidance                                                                                                        | Proposed                                                    | VER-11                             |
-| 27  | Preserve a grant on lock refusal; atomically consume after exclusive acquisition and before effect                                                                          | A19                                                         | CMD-9, CMD-15                      |
-| 28  | A caller-supplied program is disclosed in the command's `summary`                                                                                                           | Proposed                                                    | CMD-14                             |
-| 29  | The no-station-table command's derived station is stated: `SUCCESS_UNCHANGED` with `done`                                                                                   | Proposed                                                    | DISC-10                            |
-| 30  | The CDS-CE-3 successor compares the real exit with each row's expected exit. All three successor criteria are proposed wording.                                             | Decision 20, proposed                                       | ROLL-8, V-9                        |
-| 31  | A value rendered into a step's arguments never equals a declared route token                                                                                                | Proposed                                                    | STEP-10                            |
-| 32  | A minor never adds a common cause                                                                                                                                           | Proposed                                                    | VER-6a                             |
-| 33  | The `ifNoResult` step's arguments are literal and bounded                                                                                                                   | Proposed                                                    | DISC-13                            |
-| 34  | A command identity is at most 128 UTF-8 bytes                                                                                                                               | Proposed                                                    | DISC-11b                           |
+| #   | Departure                                                                                                                                                                   | Basis                                                       | Clause                              |
+| --- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- | ----------------------------------- |
+| 1   | `contractVersion` is `3.0.0`. A18 fixes later minors as `3.<minor>.0`.                                                                                                      | Decision 1 and A18                                          | WIRE-5, VER-1                       |
+| 2   | A structured next step replaces `nextAction`. The key name `next` is proposed.                                                                                              | Decision 2; name proposed                                   | WIRE-7, WIRE-8                      |
+| 3   | The sentence `No further action required.` becomes the step `done`                                                                                                          | Decision 2 and A4                                           | STEP-5                              |
+| 4   | A reader accepts older minors of its major                                                                                                                                  | Decision 8                                                  | VER-3                               |
+| 5   | A malformed version, including any triple with a nonzero patch, is `SCHEMA_INVALID_INPUT`, not `SCHEMA_UNSUPPORTED_CONTRACT`                                                | Proposed                                                    | VER-1, VER-10                       |
+| 6   | `envelopeVersion` removed                                                                                                                                                   | Proposed                                                    | WIRE-6                              |
+| 7   | `profile` removed from discovery                                                                                                                                            | Decision 18, proposed                                       | DISC-6                              |
+| 8   | `generationConventionVersion` removed from discovery                                                                                                                        | Proposed                                                    | DISC-6                              |
+| 9   | A root operation requires an option or operand, so a no-argument invocation stays with dispatch                                                                             | Proposed                                                    | DISC-4                              |
+| 10  | `availablePaths` given one stated meaning                                                                                                                                   | Proposed                                                    | WIRE-6a                             |
+| 11  | `ifNoResult` added to command discovery                                                                                                                                     | Decision 11, shape proposed                                 | DISC-7, DISC-13 to DISC-15          |
+| 12  | Withdrawn in round 3. Earlier candidates added three common causes. This one adds none.                                                                                     | None                                                        | None                                |
+| 13  | `bindings` key and the `{binding.<name>}` token, limited to whole arguments and resource identifiers                                                                        | Proposed                                                    | WIRE-7, STEP-10                     |
+| 14  | Handoff inspection entries structured                                                                                                                                       | Proposed                                                    | STEP-12                             |
+| 15  | The five substitutions apply inside structured arguments, under the binding value rule                                                                                      | Proposed                                                    | STEP-9a                             |
+| 16  | Automatic reclaim only with stopped-owner proof and guaranteed exclusive takeover; uncertain ownership hands off                                                            | A13 supersedes the blanket no-reclaim wording               | CMD-12, REC-7, STEP-15              |
+| 17  | Bounded shutdown attempts, including forced termination on repeated cancellation and catchable crash; no universal cleanup guarantee                                        | A14                                                         | LIFE-11                             |
+| 18  | The two profiles replaced by per-command rules and add-ons                                                                                                                  | Decisions 18 and 20                                         | CMD-2 to CMD-19                     |
+| 19  | The template stops shipping Zod; one built-in validator checks every result                                                                                                 | Decision 19                                                 | CMD-18, LIFE-8                      |
+| 20  | Results the base produces appear as stations in each command's discovery. The base supplies default words, which a command may replace, except for the fallback's stations. | Proposed                                                    | DISC-11, DISC-11b                   |
+| 21  | The allowance to omit a station table follows each qualifying `inspect` command, not a simple-profile CLI                                                                   | Decision 18, proposed                                       | DISC-10                             |
+| 22  | Built-in commands are required in `DiscoveryData.commands`. `HelpData.commands` lists host commands only.                                                                   | Proposed                                                    | DISC-5                              |
+| 23  | Scoped blocking and durable closure, including authorised outcome-unknown closure, without replay                                                                           | A1 and A2; proposed design replaces withdrawn unsafe drafts | REC-1 to REC-10, DISC-14 to DISC-15 |
+| 24  | The guidance of `SCHEMA_UNSUPPORTED_CONTRACT` no longer names one version                                                                                                   | Decision 8, proposed                                        | WIRE-18                             |
+| 25  | `availablePaths` sorting is by code unit                                                                                                                                    | Proposed                                                    | WIRE-6a                             |
+| 26  | The observed version is carried in `message`, not in repair guidance                                                                                                        | Proposed                                                    | VER-11                              |
+| 27  | Preserve a grant on lock refusal; atomically consume after exclusive acquisition and before effect                                                                          | A19                                                         | CMD-9, CMD-15                       |
+| 28  | A caller-supplied program is disclosed in the command's `summary`                                                                                                           | Proposed                                                    | CMD-14                              |
+| 29  | The no-station-table command's derived station is stated: `SUCCESS_UNCHANGED` with `done`                                                                                   | Proposed                                                    | DISC-10                             |
+| 30  | The CDS-CE-3 successor compares the real exit with each row's expected exit. All three successor criteria are proposed wording.                                             | Decision 20, proposed                                       | ROLL-8, V-9                         |
+| 31  | A value rendered into a step's arguments never equals a declared route token                                                                                                | Proposed                                                    | STEP-10                             |
+| 32  | A minor never adds a common cause                                                                                                                                           | Proposed                                                    | VER-6a                              |
+| 33  | The `ifNoResult` step's arguments are literal and bounded                                                                                                                   | Proposed                                                    | DISC-13                             |
+| 34  | A command identity is at most 128 UTF-8 bytes                                                                                                                               | Proposed                                                    | DISC-11b                            |
 
 ## B2. The version rule
 
@@ -173,7 +173,7 @@ All nine steps, with their state: ROLL-9. Successor criteria: ROLL-8.
 | 3.0.0 takes in the lost-response route; three items parked (decisions 10 to 14) | [index.md](index.md), DISC-15                                          |
 | Which CLIs retire (decision 16, partly answered)                                | ROLL-2a                                                                |
 | An agent cannot tell a stale lock from a live one                               | A13 requires stopped-owner and exclusive-takeover proof: CMD-12, REC-7 |
-| The starter's recover step does not close an intent                             | A1 and A2 require durable scoped closure: CMD-13a, REC-1 to REC-9      |
+| The starter's recover step does not close an intent                             | A1 and A2 require durable scoped closure: CMD-13a, REC-1 to REC-10     |
 
 ## B10. The route for a lost response
 
@@ -215,30 +215,31 @@ All nine steps, with their state: ROLL-9. Successor criteria: ROLL-8.
 
 ## Subsequent accepted decisions
 
-Authority for A1 to A19: [accepted-decisions-2026-11-15.md](accepted-decisions-2026-11-15.md),
+Authority for A1 to A20: [accepted-decisions-2026-11-15.md](accepted-decisions-2026-11-15.md),
 which preserves Nathan's direct words. Exact wording below remains candidate text.
 
-| Decision                                                                     | Clause owner                        | Falsifiable check |
-| ---------------------------------------------------------------------------- | ----------------------------------- | ----------------- |
-| A1: authorised outcome-unknown closure, never replay                         | REC-1, REC-3 to REC-6               | V-42              |
-| A2: block only affected operations/resources with proven independence        | REC-2, DISC-15                      | V-42              |
-| A3: checker, composer, exemplar beside skill behind one CLI                  | CMD-6, ROLL-7                       | V-32, V-46        |
-| A4: command, retry, instruction, done                                        | STEP-3 to STEP-8                    | V-39              |
-| A5: src or packages implementations, one CLI                                 | CMD-1, CMD-6                        | V-32              |
-| A6: validated run values, fixed commands/guidance                            | STEP-9 to STEP-16, INPUT-4          | V-14, V-39, V-44  |
-| A7: implemented version, readers first                                       | VER-3, VER-8                        | V-16              |
-| A8: emergency fallback stays 3.0.0                                           | LIFE-10, VER-9                      | V-18              |
-| A9: additive minors; new major for breaking changes                          | VER-5 to VER-7                      | V-16              |
-| A10: no command usage exit 2, help exit 0                                    | DISC-1, DISC-4                      | V-43              |
-| A11: dynamic navigation from executable declarations                         | DISC-7 to DISC-12, INPUT-1, INPUT-5 | V-13, V-43        |
-| A12: argument/option schemas from input declarations                         | INPUT-1 to INPUT-5                  | V-44              |
-| A13: proven-stopped owner and exclusive takeover                             | CMD-12, REC-7                       | V-22, V-42        |
-| A14: bounded owned-program shutdown with explicit limits                     | LIFE-11, CMD-14                     | V-21, V-26        |
-| A15: scoped Object.assign lint error                                         | GATE-14                             | V-45              |
-| A16: scoped unnecessary type-parameter lint error; genuine generics retained | GATE-3, GATE-14                     | V-45              |
-| A17: exact-text acceptance beside contract; planning stays                   | ROLL-9                              | V-46              |
-| A18: contract patch zero; implementation fixes use CLI release               | VER-1, VER-2                        | V-16, V-46        |
-| A19: approval survives lock refusal; consume under lock before effect        | CMD-9, CMD-15, REC-5                | V-20, V-42        |
+| Decision                                                                            | Clause owner                        | Falsifiable check |
+| ----------------------------------------------------------------------------------- | ----------------------------------- | ----------------- |
+| A1: authorised outcome-unknown closure, never replay                                | REC-1, REC-3 to REC-6               | V-42              |
+| A2: block only affected operations/resources with proven independence               | REC-2, DISC-15                      | V-42              |
+| A3: checker, composer, exemplar beside skill behind one CLI                         | CMD-6, ROLL-7                       | V-32, V-46        |
+| A4: command, retry, instruction, done                                               | STEP-3 to STEP-8                    | V-39              |
+| A5: src or packages implementations, one CLI                                        | CMD-1, CMD-6                        | V-32              |
+| A6: validated run values, fixed commands/guidance                                   | STEP-9 to STEP-16, INPUT-4          | V-14, V-39, V-44  |
+| A7: implemented version, readers first                                              | VER-3, VER-8                        | V-16              |
+| A8: emergency fallback stays 3.0.0                                                  | LIFE-10, VER-9                      | V-18              |
+| A9: additive minors; new major for breaking changes                                 | VER-5 to VER-7                      | V-16              |
+| A10: no command usage exit 2, help exit 0                                           | DISC-1, DISC-4                      | V-43              |
+| A11: dynamic navigation from executable declarations                                | DISC-7 to DISC-12, INPUT-1, INPUT-5 | V-13, V-43        |
+| A12: argument/option schemas from input declarations                                | INPUT-1 to INPUT-5                  | V-44              |
+| A13: proven-stopped owner and exclusive takeover                                    | CMD-12, REC-7                       | V-22, V-42        |
+| A14: bounded owned-program shutdown with explicit limits                            | LIFE-11, CMD-14                     | V-21, V-26        |
+| A15: scoped Object.assign lint error                                                | GATE-14                             | V-45              |
+| A16: scoped unnecessary type-parameter lint error; genuine generics retained        | GATE-3, GATE-14                     | V-45              |
+| A17: exact-text acceptance beside contract; planning stays                          | ROLL-9                              | V-46              |
+| A18: contract patch zero; implementation fixes use CLI release                      | VER-1, VER-2                        | V-16, V-46        |
+| A19: approval survives lock refusal; consume under lock before effect               | CMD-9, CMD-15, REC-5                | V-20, V-42        |
+| A20: trusted human confirmation of stopped ownership; exclusivity remains mandatory | REC-7a, REC-10                      | V-49              |
 
 ## Source locations and evidence limits
 
@@ -264,6 +265,6 @@ The prototype demonstrated architecture and exposed bugs with 2.0 envelopes.
 It did not prove this 3.0 wire, safe reclaim, authority verification, closure,
 or cast-free production types. Historical unrun evidence stays unrun.
 
-Manual stop attestation remains an explicit policy cell in REC-7a and
-[decisions.md](decisions.md). It must be resolved before exact-text acceptance.
-All automatic reclaim requirements in A13 remain settled.
+A20 resolves manual stop confirmation in REC-7a. Its accepted direction is
+recorded beside the contract; exact-text acceptance and implementation proof
+remain outstanding. Automatic reclaim requirements in A13 stay settled.

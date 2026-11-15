@@ -25,13 +25,13 @@ and `complex` do not exist in 3.0.
 
 **CMD-3 `[D 18]` `[C0]` `[P]`**
 
-| The command                                       | Rules that apply                                                                                                                                                             |
-| ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Has effect class `inspect`                        | The base rules. Always `unchanged`, complete inventory, three empty collections ([WIRE-13](wire.md#effect-state-table)).                                                     |
-| Has effect class `repository-local` or `external` | The base rules, plus: declared effects, declared stations, a journal (CMD-11), a lock (CMD-12) and an `ifNoResult` command (CMD-10). A recovery path follows REC-1 to REC-9. |
-| Runs another program                              | The programs add-on (CMD-14), whatever its effect class                                                                                                                      |
-| Checks an approval or an identity                 | The approval add-on (CMD-15), whatever its effect class                                                                                                                      |
-| Needs durable diagnostics                         | The diagnostics add-on (CMD-16)                                                                                                                                              |
+| The command                                       | Rules that apply                                                                                                                                                              |
+| ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Has effect class `inspect`                        | The base rules. Always `unchanged`, complete inventory, three empty collections ([WIRE-13](wire.md#effect-state-table)).                                                      |
+| Has effect class `repository-local` or `external` | The base rules, plus: declared effects, declared stations, a journal (CMD-11), a lock (CMD-12) and an `ifNoResult` command (CMD-10). A recovery path follows REC-1 to REC-10. |
+| Runs another program                              | The programs add-on (CMD-14), whatever its effect class                                                                                                                       |
+| Checks an approval or an identity                 | The approval add-on (CMD-15), whatever its effect class                                                                                                                       |
+| Needs durable diagnostics                         | The diagnostics add-on (CMD-16)                                                                                                                                               |
 
 **CMD-4 `[TS4]` `[D 18]`** An `inspect` command performs no domain mutation,
 including a single deterministic local-file write. Persisting a preview or
@@ -168,7 +168,7 @@ the grant (CMD-15). Do not suggest manually unlinking a lock as safe takeover.
 
 **CMD-13 `[D 11]` `[A 1]` `[A 2]` `[P]`** Unfinished changes are reported by
 the read-only `ifNoResult` route (DISC-14). The state add-on also provides
-separate changing recovery operations governed by REC-1 to REC-9. Observation,
+separate changing recovery operations governed by REC-1 to REC-10. Observation,
 closure and a new domain operation are distinct. Recovery never replays an effect.
 
 **CMD-13a `[A 1]` `[A 2]` `[A 13]` `[P]`** The recovery design is now included
@@ -225,7 +225,7 @@ declares the approval add-on:
   invalid later.
 - Consumption is atomic across contenders and durable before the effect. A
   crash after consumption neither refunds it nor authorises replay. Recovery
-  reports the observed state under REC-1 to REC-9. This rule does not introduce
+  reports the observed state under REC-1 to REC-10. This rule does not introduce
   changing-operation locks on read-only identity or approval inspection.
 
 ## Diagnostics add-on
@@ -270,7 +270,7 @@ text can claim: the lint rules on foundation code; static admission; the
 add-on composer; per-dependency-set lockfiles; lock release when a signal
 arrives mid-change; boundary zones per workspace package; whether the
 boundary tool notices an installed add-on nothing uses, which it can only do
-if admission checks imports. The proposed recovery and lock rules (REC-1 to REC-9) still need platform
+if admission checks imports. The proposed recovery and lock rules (REC-1 to REC-10) still need platform
 qualification and independent process evidence. The prototype
 behind decision 20 printed 2.0.0 envelopes with string next steps, so it
 shows the shape and the behaviour, not the 3.0 wire.

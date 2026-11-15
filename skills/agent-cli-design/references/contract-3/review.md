@@ -1,7 +1,8 @@
 # Revised candidate review record
 
-Status: independently reviewed candidate for Nathan to read, with REC-7a open, not accepted and
-not implemented. This file records review provenance; it cannot grant approval.
+Status: A20 resolves the final immediate policy choice. The revised candidate
+requires exact-text acceptance. Its focused readback is recorded in the private
+receipt identified below. Not implemented. This file records review provenance; it cannot grant approval.
 
 ## Identity and scope
 
@@ -44,7 +45,7 @@ proof. Report findings with exact files/clauses and the smallest repair.
 ## Evidence boundaries
 
 No Contract 3.0 runtime was built or tested. TypeScript snippets are illustrative
-unless explicitly linked to an exact compiler probe. V-1 to V-48 are future
+unless explicitly linked to an exact compiler probe. V-1 to V-49 are future
 acceptance checks, not passing results. The original bootstrap's recorded
 hashes are compared for preservation. The merged fourth revision's unresolved
 composer CI is retained as unresolved; a passing Connectors retry does not erase
@@ -96,5 +97,31 @@ That evidence must be inspected before claiming the final review is complete.
 
 The independent reviewer is from the same model family as earlier Claude
 reviewers. No compiler or production process test was run in review; no finding
-required a new compiler probe. Exact-text acceptance remains Nathan's, after
-REC-7a is resolved. No acceptance is recorded here.
+required a new compiler probe. Exact-text acceptance remains Nathan's. A20 below resolves REC-7a's policy,
+not acceptance of the full text. No full-text acceptance is recorded here.
+
+## A20 follow-up
+
+Nathan replied "Agree" to the recommendation and explicit question permitting
+an authorised person to confirm the stopped owner and delegated writers when
+the CLI cannot verify that fact. A20 records the exact response and its question.
+REC-7a now carries the chosen policy. REC-3 and REC-5 route to it; REC-10 and
+V-49 add qualification controls. The immediate policy question is settled;
+retained-stream, installer, post-vault ownership and migration choices remain
+at their existing later boundaries.
+
+The prior reviewed candidate is commit `0602d8b`, manifest
+`a6a2d70e80b815865371261dbbf84b26b0d4c97b3553d4815f569ca5901725bb`.
+The focused Claude readback must check A20, no waiver of exclusivity, no
+known-live override, nonforgeable authority, preserved grant ordering and no
+replay. Its final receipt belongs in the existing private consolidation-review
+folder and identifies the revised manifest. This record is not runtime proof.
+
+The first A20 review confirmed the selected policy and requested two repairs:
+make grant consumption precede owner replacement under exclusive takeover
+coordination, and distinguish automatic stopped-owner proof from permitted
+human confirmation in the live-writer control. Both are corrected in REC-7a,
+REC-9 and V-49. REC-7b now explicitly qualifies exclusivity for both routes.
+No closure grant is consumed by takeover and no domain replay is permitted.
+The final focused receipt is `a20-final-readback.txt` in the private review
+folder, with its exact candidate identity in `a20-final-receipt.json`.

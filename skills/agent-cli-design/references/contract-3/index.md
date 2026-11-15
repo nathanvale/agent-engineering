@@ -90,7 +90,7 @@ compile-time locks. They are not clause identifiers.
 In: the accepted 2.0 contract; a new wire (decision 1); structured next steps
 (decision 2); the version rule (decision 8); the route for a lost response
 (decisions 10 and 11); one base plus add-ons (decisions 18 and 20); one
-built-in validator (decision 19); the selected lint rules (decisions 4 and 5, A15 and A16); and A1 to A19
+built-in validator (decision 19); the selected lint rules (decisions 4 and 5, A15 and A16); and A1 to A20
 as mapped in [requirement-map.md](requirement-map.md#subsequent-accepted-decisions).
 
 Parked by Nathan, not in 3.0.0: a caller-chosen key on every changing command

@@ -7,14 +7,15 @@ they are not ten unanswered questions now.
 ## Settled directions
 
 [The acceptance record](accepted-decisions-2026-11-15.md) preserves Nathan's
-words for A1 to A19. [The requirement map](requirement-map.md#subsequent-accepted-decisions)
+words for A1 to A20. [The requirement map](requirement-map.md#subsequent-accepted-decisions)
 links each to revised clauses and falsifiable checks. These choices stay settled:
 
 - One CLI with separate implementation files, and base plus add-ons.
 - ESLint with TypeScript 6 for linting, native TypeScript 7 for compilation,
   and Biome for formatting. No extra dependency selected by this draft.
 - Authorised human closure with outcome unknown; scoped blocking; no automatic
-  replay; reclaim only with stopped-owner proof and exclusive takeover.
+  replay; automatic reclaim needs runtime stopped-owner proof, while A20 permits
+  trusted human confirmation. Both require guaranteed exclusive takeover.
 - Four next-step kinds, validated run arguments, generated navigation and
   input schemas from executable declarations.
 - Implemented-version stamping, readers first, additive minors, patch zero,
@@ -39,23 +40,18 @@ separate questions unless Nathan wants a different behaviour:
 - The detailed version grammar and refusal causes; no new common causes in
   a minor because names may already belong to a CLI (VER-1 to VER-11).
 - Recovery records, scope declarations, read-only reporting and monotonic
-  closure in REC-1 to REC-9. These are proposed design requirements, not
+  closure in REC-1 to REC-10. These are proposed design requirements, not
   demonstrated safety of a production implementation.
 - The successor acceptance criteria in ROLL-8. Historical evidence cannot
   stand in for these new checks.
 
-## One safety choice before exact-text acceptance
+## Manual stop confirmation is settled
 
-**Manual evidence that a lock owner stopped (REC-7a).** Automatic reclaim is
-settled by A13. The unresolved case is a person who has checked outside the
-CLI while its runtime proof remains unavailable. May that person attest the
-owner and delegated writers stopped, through the trusted approval boundary,
-while exclusive takeover stays mechanically enforced? Or must the affected
-scope stay blocked until runtime proof is available? Option 1 adds a human
-error risk; option 2 can leave the scope unavailable indefinitely. Neither is
-selected. All unrelated work still needs proven independence, and neither
-option permits replay. This is the only newly identified product choice needed
-before accepting this candidate's exact recovery wording.
+A20 accepts trusted human confirmation that the owner and delegated writers
+stopped when the CLI cannot verify this. REC-7a carries it, preserving exclusive
+takeover, current-owner checks and no replay. No immediate recovery-policy
+choice remains from this review. Nathan still needs to accept the exact revised
+contract text after its focused re-check; this decision is not that acceptance.
 
 ## Product and ownership choices still open
 

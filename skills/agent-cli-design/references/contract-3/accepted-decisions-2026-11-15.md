@@ -13,7 +13,7 @@ migrations, installation, activation, release and merge remain outside scope.
 The original reviewed candidate is preserved at commit `9d1ecf1`. Its manifest
 had SHA-256 `751cca38f0edc5012e8dad2170e1d46a0e90447dac1ce8a7ec4effe9f02dcd8a`.
 This record was outside that original manifest. The current revised candidate
-incorporates A1 to A19 and includes this record in its new manifest. Its review
+incorporates A1 to A20 and includes this record in its new manifest. Its review
 status is owned by [review.md](review.md); earlier review does not qualify new
 wording. Accepted directions are not acceptance of the whole contract.
 
@@ -598,6 +598,41 @@ crashes around consumption preserve truthful recovery state without grant
 restoration or automatic replay. Use isolated state, real concurrent
 processes and independent resource observations.
 
+## A20. Allow trusted human confirmation that an owner stopped
+
+Status: accepted direction. Resolves REC-7a's manual-stop evidence choice.
+Authority: Nathan replied "Agree" to the foreground question:
+
+"May an authorised person confirm that the old worker and its delegated writers
+have stopped when the CLI cannot verify that itself?"
+
+The recommendation presented with that question was trusted human confirmation
+through the approval mechanism, with recorded evidence. Exclusive takeover must
+still be guaranteed. The stated trade-off was that a mistaken confirmation
+risks overlapping work; the alternative could leave affected work blocked
+indefinitely.
+
+- Permit an authorised person's confirmation of the specific owner's and
+  delegated writers' stopped state through the trusted approval boundary.
+- Retain reason and evidence, bound to the exact owner and affected scope.
+- Use that confirmation only for the stopped-owner condition. It cannot waive
+  guaranteed exclusive takeover, override known live ownership, or authorise
+  blind lock-file deletion.
+- Preserve scoped blocking, the separate closure protocol and no automatic
+  replay. Automatic reclaim continues to require its runtime proofs under A13.
+- Keep the source unforgeable by the calling process under its own credentials;
+  a caller boolean, actor name or same-user writable attestation is insufficient.
+
+Required proof, not yet run: reject forged, stale, mismatched and consumed
+attestations; preserve protection when exclusive takeover cannot be guaranteed;
+revalidate exact ownership against replacement races; record valid human
+confirmation; show competing claimants cannot both acquire ownership; and prove
+no original effect is replayed. Human evidence is a trust decision, not a
+TypeScript or machine-liveness guarantee.
+
+This acceptance selects the manual-stop policy only. It does not accept the
+whole contract, qualify a real authority integration, or authorise implementation.
+
 ## Requested repair guidance and diagnosis
 
 Nathan also requested repair hints so an agent can identify the next step,
@@ -615,9 +650,9 @@ the recovery decision; repair hints do not bypass authority or replay rules.
 
 ## Remaining work and next question
 
-The approval-ordering choice is settled by A19. Before asking another isolated
-question, consolidate the accepted directions into a revised candidate and
-reconcile its remaining Q-tagged clauses against inherited requirements.
+The approval-ordering choice is settled by A19 and manual stop confirmation
+by A20. Re-check the affected wording and present the exact revised candidate
+for contract-wide acceptance.
 Unanswered wording is not accepted by implication. Present any remaining
 material product choice with concrete options and consequences; leave exact
 schema formats and routine engineering choices with the drafter where Nathan

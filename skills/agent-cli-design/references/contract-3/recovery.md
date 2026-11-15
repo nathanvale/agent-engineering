@@ -1,6 +1,6 @@
 # Recovery, scoped blocking and closure
 
-Candidate wording for A1, A2, A13 and A19. Not implementation proof. Read
+Candidate wording for A1, A2, A13, A19 and A20. Not implementation proof. Read
 [index.md](index.md) for status. Earlier failed designs are evidence for the
 controls below, not authority to weaken the inherited no-replay contract.
 
@@ -53,8 +53,8 @@ maintenance. Exact route words belong to the host, not this contract.
 A recovery command takes exclusive coordination over the original case and
 its scopes. Every recovery command requires the stopped-owner condition for
 all owners able to continue that case. REC-7 defines the runtime proof;
-REC-7a leaves open whether an authorised person's attestation can establish
-that condition when runtime proof is unavailable. This applies equally to a
+REC-7a permits verified human confirmation of that condition when runtime
+proof is unavailable. This applies equally to a
 command invoked by a person. Re-read journal and resource evidence under
 exclusive coordination.
 It may record newly confirmed facts and close a case; it never performs the
@@ -116,7 +116,7 @@ file is not proof of human approval. Validation of a request's shape is not
 authorisation. Preserve the grant on lock refusal, revalidate it under the
 lock and atomically consume it before recording closure (CMD-15). If authority is unavailable, keep the case unresolved and hand off. If
 automated stopped-owner proof is unavailable, keep protection and invoke the
-handoff in REC-7a; no manual override policy is selected by this draft.
+human-confirmation route in REC-7a. This does not waive exclusive takeover.
 
 The foundation supplies the hardened verifier and a negative-test fixture; a
 host owns its trusted authority source and qualification of that integration. A source qualifies only when the
@@ -165,40 +165,59 @@ atomic takeover and crash transitions before changing storage. Unsupported or
 ambiguous filesystem/process environments hand off without taking ownership.
 
 Reclaim grants coordination only. It does not close an unresolved operation,
-consume an approval, report completion or permit replay. After reclaim, inspect
+report domain completion or permit replay. Automatic reclaim consumes no
+approval; human-assisted takeover consumes its specific attestation under
+REC-7a, never an approval for a later domain effect or closure. After reclaim, inspect
 the journal and resources under REC-3. A new affected domain operation remains
 blocked until a valid closure and its own authority checks. Unrelated work
 uses REC-2. A person is not advised to bypass this protocol by deleting files.
 
-### Manual stop attestation is an open choice
+### Trusted human confirmation that an owner stopped
 
-**REC-7a `[A 13]` `[P]`** Automatic reclaim still requires both proofs in
-REC-7. Nathan has not yet chosen the manual path when runtime stopped-owner
-proof is unavailable. Two viable policies remain; neither is selected:
+**REC-7a `[A 13]` `[A 20]` `[P]`** When runtime stopped-owner proof is
+unavailable, an authorised person may attest that the specific owner and its
+delegated writers have stopped. Verify the attestation through REC-5's trusted
+approval boundary and retain its reason and evidence. Bind it to the operation,
+owner incarnation, delegated writers and affected scope; reject a stale or
+mismatched attestation and revalidate against replacement-owner races.
 
-1. An authorised person may attest that the specific owner and its delegated
-   writers have stopped, with reason and evidence, through the REC-5 authority
-   boundary. The state add-on may use that attestation for the stopped-owner
-   condition only. Exclusive takeover is still mechanically guaranteed; no
-   blind unlink, live-owner override or replay is authorised. An incorrect
-   human attestation risks concurrent writers, which must be disclosed.
-2. Keep the affected scope blocked until runtime stopped-owner proof becomes
-   available. The person can diagnose or stop writers and repair observability,
-   but cannot replace the proof with an attestation. This can leave an affected
-   scope unavailable indefinitely; proven-independent work still continues.
+The state add-on may use verified human confirmation for the stopped-owner
+condition only. Exclusive takeover remains mechanically guaranteed under
+REC-7. An attestation cannot override known live ownership, waive exclusivity,
+authorise blind unlinking or replay an effect. If authority verification or
+exclusive takeover fails, retain protection and hand off with diagnosis and
+repair guidance. Proven-independent work can continue under REC-2.
 
-This is a choice about the source of stop evidence, not whether uncertain
-effects may be closed under A1. The handoff names inspection and repair steps;
-it must not pretend either unresolved policy has already been selected.
-Resolve REC-7a before exact-text acceptance. No implementation may enable a
-manual override merely because this draft describes option 1.
+Human confirmation is not machine proof of liveness. Disclose that an incorrect
+confirmation risks overlapping work. Automatic reclaim still requires A13's
+runtime proofs. Human-assisted takeover does not itself settle the operation or
+prove its effects; closure remains a separate REC-3 to REC-5 decision with its
+own authority. Apply A19 with owner replacement as the approved effect:
+
+1. Preflight the attestation without consuming it.
+2. Enter REC-7's exclusive takeover coordination. This serialises the takeover
+   decision; it is not yet replacement of the held owner. Refusal to obtain
+   this coordination preserves the attestation, subject to its validity.
+3. Re-read the current owner under coordination and revalidate the attestation
+   against that exact incarnation, delegated writers and affected scope.
+4. Durably and atomically consume the attestation before owner replacement.
+5. Replace the owner using the qualified exclusive takeover protocol.
+
+A crash after consumption does not refund the attestation, authorise replay or
+claim replacement succeeded. Inspect durable state and follow recovery under
+current authority. Closing an unresolved case is a separate later approved
+effect; its grant is not consumed by this takeover.
+
+A20 settles this policy. Its exact wording and implementation evidence remain
+subject to the contract's acceptance and qualification gates.
 
 **REC-7b `[A 13]` `[P]`** State add-on engineering owns a reviewed environment
 qualification table before reclaim is enabled. The proposed support boundary
 is local filesystems with trustworthy process/boot identity in the same host
 and namespace and a qualified exclusive locking primitive. Network/shared
 filesystems, hidden process views, cross-container identity and ambiguous
-ownership are unsupported for automatic reclaim. No named OS/filesystem pair
+ownership are unsupported for automatic reclaim. The exclusivity qualification also gates human-assisted takeover: human
+confirmation cannot replace that evidence. No named OS/filesystem pair
 is yet qualified. Record exact OS, filesystem, primitive and process-identity
 mechanism, its failure cases and evidence in that table; independent process
 review must pass V-22 and V-42 for each supported row. Until then automatic
@@ -235,4 +254,15 @@ resource observations, stdout, stderr, exit and before/after state:
 | Remove diagnostic files; rename an alias to the same resource               | Same recovery truth; same conflict scope.                                                                                                               |
 | Incomplete or unknown scope                                                 | Refuse any operation whose independence cannot be established; missing scope is never treated as disjoint.                                              |
 | Crash during takeover                                                       | Preserve exclusivity across old, replacement and concurrent owners; retain evidence and allow only safe refusal or qualified recovery.                  |
-| Dead parent and surviving writer                                            | Reclaim and closure remain blocked until stopped-writer proof.                                                                                          |
+| Dead parent and surviving writer                                            | Automatic reclaim stays blocked. Reject any human attestation contradicted by an observed live writer.                                                  |
+
+**REC-10 `[A 20]` `[P]`** Qualification of manual stop confirmation requires
+both positive and negative controls. A valid exact-owner attestation from the
+qualified authority source can satisfy the stopped-owner condition while
+exclusive coordination remains enforced. Reject caller-forged, stale, consumed
+or wrong-owner/wrong-scope attestations and any attestation contradicted by
+known live ownership. Refuse when takeover exclusivity is unavailable even
+with a valid attestation. Race a replacement owner and two claimants, and
+verify at most one takes ownership. Record the attestation evidence without
+secrets; closure and domain-effect counts must show no automatic replay.
+V-49 owns these process checks. This text does not claim they have passed.
