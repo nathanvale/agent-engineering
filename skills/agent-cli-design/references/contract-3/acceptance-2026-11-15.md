@@ -28,6 +28,13 @@ installation, activation or release.
 - All 20 file hashes and the manifest hash were verified before recording
   this acceptance. The reviewed text has not been rewritten to change status
   labels. This later acceptance record is outside the frozen manifest.
+- Redaction note, 16 November 2026: machine-specific absolute paths were later
+  removed from two of the 20 files, from this record and from Git history on
+  Nathan's instruction. The manifest file and the hash above are unchanged and
+  still identify the accepted bytes, which are now held in private recovery
+  material. The source commit above is their original identity; published
+  history carries the redacted revision. See
+  [redaction-2026-11-16.md](redaction-2026-11-16.md).
 
 This record supersedes the historical "candidate" and "not accepted" notices
 in that snapshot only as to Nathan's acceptance of the exact text. Proposed
