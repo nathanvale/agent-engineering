@@ -10,12 +10,12 @@ newline. Every object is strict: only the listed keys are legal.
 
 **WIRE-2 `[C0]`** Each key has one presence class:
 
-| Class | Rule |
-| --- | --- |
-| Required | Always present |
-| Nullable | Always present. The value is an explicit `null` when the table says so. |
+| Class       | Rule                                                                             |
+| ----------- | -------------------------------------------------------------------------------- |
+| Required    | Always present                                                                   |
+| Nullable    | Always present. The value is an explicit `null` when the table says so.          |
 | Conditional | Present exactly when the stated condition holds. Absent otherwise. Never `null`. |
-| Optional | Absent when unused. Never `null`. |
+| Optional    | Absent when unused. Never `null`.                                                |
 
 `undefined` is rejected at every depth.
 
@@ -31,19 +31,19 @@ an array of `JsonValue`, or a plain string-keyed object of `JsonValue`.
 
 **WIRE-5** Envelope keys:
 
-| Key | Class | Type and rule | Tag |
-| --- | --- | --- | --- |
+| Key               | Class    | Type and rule                                                                                                      | Tag                   |
+| ----------------- | -------- | ------------------------------------------------------------------------------------------------------------------ | --------------------- |
 | `contractVersion` | Required | String `3.<minor>.0`. `3.0.0` at first release. The only version field ([VER-1](versioning.md#the-version-value)). | `[D 1]` `[D 8]` `[P]` |
-| `message` | Required | Safe human summary of this outcome | `[C0]` |
-| `availablePaths` | Required | Array of canonical command identities, unique and lexicographically sorted. May be empty. | `[C0]` |
-| `result` | Required | Result object (WIRE-7) | `[C0]` |
-| `diagnostics` | Optional | Diagnostics object ([diagnostics.md](diagnostics.md)) | `[C0]` |
+| `message`         | Required | Safe human summary of this outcome                                                                                 | `[C0]`                |
+| `availablePaths`  | Required | Array of canonical command identities, unique and lexicographically sorted. May be empty.                          | `[C0]`                |
+| `result`          | Required | Result object (WIRE-7)                                                                                             | `[C0]`                |
+| `diagnostics`     | Optional | Diagnostics object ([diagnostics.md](diagnostics.md))                                                              | `[C0]`                |
 
-**WIRE-6 `[Q 6]`** `envelopeVersion` is not a 3.0 key. The 2.0 integer
+**WIRE-6 `[P]`** `envelopeVersion` is not a 3.0 key. The 2.0 integer
 duplicated the major version, and VER-1 allows one version field. A 3.0
 envelope that carries it is invalid under WIRE-1.
 
-**WIRE-6a `[Q 6]`** Every `availablePaths` entry is an identity listed in this
+**WIRE-6a `[P]`** Every `availablePaths` entry is an identity listed in this
 CLI's discovery ([DISC-6](discovery.md#discovery-data)), built-in commands
 included. A CLI may list every public command or the subset it judges
 relevant after this result. Presence grants no authority to run a command.
@@ -55,28 +55,28 @@ in every runtime.
 
 **WIRE-7** Result keys:
 
-| Key | Class | Type and rule | Tag |
-| --- | --- | --- | --- |
-| `runId` | Required | Unique invocation identity, preserved in recovery references | `[C0]` |
-| `commandIdentity` | Required | Canonical identity, including the built-in dispatch, help and discovery identities. Never raw untrusted argv. | `[C0]` |
-| `outcome` | Required | `success`, `refused` or `failed` | `[C0]` |
-| `effectClass` | Required | `inspect`, `repository-local` or `external`. The command's declared stance, not a claim that an effect occurred. | `[C0]` |
-| `transactionState` | Required | `unchanged`, `completed`, `partially-completed` or `unknown` | `[C0]` |
-| `causeCode` | Required | An entry in this CLI's single cause owner (WIRE-14) | `[C0]` |
-| `failureClass` | Nullable | `null` on success. Otherwise `internal`, `usage`, `domain`, `schema` or `transient`. | `[C0]` |
-| `exitCode` | Required | `0`, `1`, `2`, `3`, `4` or `75`, agreeing with outcome and cause | `[C0]` |
-| `data` | Nullable | A `JsonValue` on success, which may itself be `null`. `null` on refusal or failure. | `[C0]` |
-| `retryable` | Required | Boolean set by the result table. `true` means an automatic same-input retry is safe after the delay, subject to the caller's existing authority. | `[C0]` |
-| `retryDelayMilliseconds` | Conditional | Present exactly when `retryable` is `true`. Integer, at least 1, inside the station's declared bounds. | `[C0]` |
-| `repairAction` | Nullable | `null` on success. Otherwise guidance explaining the repair or the named handoff. | `[C0]` |
-| `effects` | Required | Effects object (WIRE-10) | `[C0]` |
-| `next` | Conditional | A next step ([next-steps.md](next-steps.md)). Exactly one of `next` and `handoff` is present. | `[D 2]` `[P]` |
-| `handoff` | Conditional | A handoff (WIRE-9). Exactly one of `next` and `handoff` is present. | `[C0]` |
-| `bindings` | Conditional | Run values for command arguments and resource identifiers ([STEP-10](next-steps.md#run-values)). Present exactly when the station's templates name a binding. | `[Q 3]` |
-| `idempotencyKey` | Optional | Present only when the command accepted this key. Identity alone is not retry authorisation. | `[C0]` |
-| `attemptedEffect` | Optional | An effect identifier. Only on `failed`. When present it appears in one Effects collection. | `[C0]` |
+| Key                      | Class       | Type and rule                                                                                                                                                 | Tag           |
+| ------------------------ | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `runId`                  | Required    | Unique invocation identity, preserved in recovery references                                                                                                  | `[C0]`        |
+| `commandIdentity`        | Required    | Canonical identity, including the built-in dispatch, help and discovery identities. Never raw untrusted argv.                                                 | `[C0]`        |
+| `outcome`                | Required    | `success`, `refused` or `failed`                                                                                                                              | `[C0]`        |
+| `effectClass`            | Required    | `inspect`, `repository-local` or `external`. The command's declared stance, not a claim that an effect occurred.                                              | `[C0]`        |
+| `transactionState`       | Required    | `unchanged`, `completed`, `partially-completed` or `unknown`                                                                                                  | `[C0]`        |
+| `causeCode`              | Required    | An entry in this CLI's single cause owner (WIRE-14)                                                                                                           | `[C0]`        |
+| `failureClass`           | Nullable    | `null` on success. Otherwise `internal`, `usage`, `domain`, `schema` or `transient`.                                                                          | `[C0]`        |
+| `exitCode`               | Required    | `0`, `1`, `2`, `3`, `4` or `75`, agreeing with outcome and cause                                                                                              | `[C0]`        |
+| `data`                   | Nullable    | A `JsonValue` on success, which may itself be `null`. `null` on refusal or failure.                                                                           | `[C0]`        |
+| `retryable`              | Required    | Boolean set by the result table. `true` means an automatic same-input retry is safe after the delay, subject to the caller's existing authority.              | `[C0]`        |
+| `retryDelayMilliseconds` | Conditional | Present exactly when `retryable` is `true`. Integer, at least 1, inside the station's declared bounds.                                                        | `[C0]`        |
+| `repairAction`           | Nullable    | `null` on success. Otherwise guidance explaining the repair or the named handoff.                                                                             | `[C0]`        |
+| `effects`                | Required    | Effects object (WIRE-10)                                                                                                                                      | `[C0]`        |
+| `next`                   | Conditional | A next step ([next-steps.md](next-steps.md)). Exactly one of `next` and `handoff` is present.                                                                 | `[D 2]` `[P]` |
+| `handoff`                | Conditional | A handoff (WIRE-9). Exactly one of `next` and `handoff` is present.                                                                                           | `[C0]`        |
+| `bindings`               | Conditional | Run values for command arguments and resource identifiers ([STEP-10](next-steps.md#run-values)). Present exactly when the station's templates name a binding. | `[P]`         |
+| `idempotencyKey`         | Optional    | Present only when the command accepted this key. Identity alone is not retry authorisation.                                                                   | `[C0]`        |
+| `attemptedEffect`        | Optional    | An effect identifier. Only on `failed`. When present it appears in one Effects collection.                                                                    | `[C0]`        |
 
-**WIRE-8 `[D 2]` `[Q 2]`** `nextAction` is not a 3.0 key. `next` replaces it.
+**WIRE-8 `[D 2]` `[P]`** `nextAction` is not a 3.0 key. `next` replaces it.
 The key's name is proposed.
 
 The optional `idempotencyKey` above is the 2.0 key, unchanged. The parked
@@ -121,13 +121,13 @@ separately required authority.
 
 **WIRE-12 `[C0]`**
 
-| State | Inventory | Completed | Remaining | Uncertain | Constraint |
-| --- | --- | --- | --- | --- | --- |
-| `unchanged` | `true` | empty | zero or more | empty | Confirmed no domain change. Success requires `remaining` empty. |
-| `completed` | `true` | one or more | empty | empty | The whole intended effect set is confirmed complete |
-| `partially-completed` | `true` | one or more | one or more | empty | Some effects confirmed complete, the others confirmed not applied |
-| `unknown` | `true` | zero or more | zero or more | one or more | At least one known effect cannot be classified |
-| `unknown` | `false` | zero or more | zero or more | zero or more | The inventory itself is incomplete. An empty `uncertain` is not certainty. |
+| State                 | Inventory | Completed    | Remaining    | Uncertain    | Constraint                                                                 |
+| --------------------- | --------- | ------------ | ------------ | ------------ | -------------------------------------------------------------------------- |
+| `unchanged`           | `true`    | empty        | zero or more | empty        | Confirmed no domain change. Success requires `remaining` empty.            |
+| `completed`           | `true`    | one or more  | empty        | empty        | The whole intended effect set is confirmed complete                        |
+| `partially-completed` | `true`    | one or more  | one or more  | empty        | Some effects confirmed complete, the others confirmed not applied          |
+| `unknown`             | `true`    | zero or more | zero or more | one or more  | At least one known effect cannot be classified                             |
+| `unknown`             | `false`   | zero or more | zero or more | zero or more | The inventory itself is incomplete. An empty `uncertain` is not certainty. |
 
 **WIRE-13 `[C0]`**
 
@@ -160,22 +160,22 @@ class.
 operation was attempted. `N` means `next` present and `handoff` absent. `H`
 means `handoff` present and `next` absent.
 
-| Outcome | State | Failure class | Exit | Retryable | Guidance | Meaning |
-| --- | --- | --- | --- | --- | --- | --- |
-| success | unchanged | null | 0 | false | N | Cause `SUCCESS_UNCHANGED`. A read, preview or no-op succeeded. No domain effect remains. |
-| success | completed | null | 0 | false | N | Cause `SUCCESS_COMPLETED`. All intended effects confirmed complete. |
-| refused | unchanged | usage | 2 | false | N or H | Dispatch or input use declined before operation |
-| refused | unchanged | schema | 4 | false | N or H | Input or persisted-state shape rejected before operation |
-| refused | unchanged | domain | 3 | false | N or H | Permanent, authority or precondition refusal. Repair first. |
-| refused | unchanged | internal | 1 | false | N or H | CLI preparation fault before operation. No automatic repetition. |
-| refused | unchanged | transient | 75 | true | N | Temporary refusal. Same-input retry is safe after the delay. |
-| failed | unchanged | internal | 1 | false | N or H | The attempt failed. Unchanged is independently confirmed. |
-| failed | unchanged | domain | 3 | false | N or H | The attempt reached a domain failure. Unchanged confirmed. |
-| failed | unchanged | schema | 4 | false | N or H | The attempt met invalid persisted input. Unchanged confirmed. |
-| failed | unchanged | transient | 75 | true | N | The attempt failed temporarily. Unchanged confirmed. Same-input retry is safe. |
-| failed | completed | internal, domain or schema | 1, 3 or 4 respectively | false | H | Effects completed but the operation failed. Inspect completion. |
-| failed | partially-completed | internal, domain or schema | 1, 3 or 4 respectively | false | H | A known subset completed. Inspect before separately authorised recovery. |
-| failed | unknown | internal, domain or schema | 1, 3 or 4 respectively | false | H | Some effect or the inventory is unconfirmed. Inspect before any retry. |
+| Outcome | State               | Failure class              | Exit                   | Retryable | Guidance | Meaning                                                                                  |
+| ------- | ------------------- | -------------------------- | ---------------------- | --------- | -------- | ---------------------------------------------------------------------------------------- |
+| success | unchanged           | null                       | 0                      | false     | N        | Cause `SUCCESS_UNCHANGED`. A read, preview or no-op succeeded. No domain effect remains. |
+| success | completed           | null                       | 0                      | false     | N        | Cause `SUCCESS_COMPLETED`. All intended effects confirmed complete.                      |
+| refused | unchanged           | usage                      | 2                      | false     | N or H   | Dispatch or input use declined before operation                                          |
+| refused | unchanged           | schema                     | 4                      | false     | N or H   | Input or persisted-state shape rejected before operation                                 |
+| refused | unchanged           | domain                     | 3                      | false     | N or H   | Permanent, authority or precondition refusal. Repair first.                              |
+| refused | unchanged           | internal                   | 1                      | false     | N or H   | CLI preparation fault before operation. No automatic repetition.                         |
+| refused | unchanged           | transient                  | 75                     | true      | N        | Temporary refusal. Same-input retry is safe after the delay.                             |
+| failed  | unchanged           | internal                   | 1                      | false     | N or H   | The attempt failed. Unchanged is independently confirmed.                                |
+| failed  | unchanged           | domain                     | 3                      | false     | N or H   | The attempt reached a domain failure. Unchanged confirmed.                               |
+| failed  | unchanged           | schema                     | 4                      | false     | N or H   | The attempt met invalid persisted input. Unchanged confirmed.                            |
+| failed  | unchanged           | transient                  | 75                     | true      | N        | The attempt failed temporarily. Unchanged confirmed. Same-input retry is safe.           |
+| failed  | completed           | internal, domain or schema | 1, 3 or 4 respectively | false     | H        | Effects completed but the operation failed. Inspect completion.                          |
+| failed  | partially-completed | internal, domain or schema | 1, 3 or 4 respectively | false     | H        | A known subset completed. Inspect before separately authorised recovery.                 |
+| failed  | unknown             | internal, domain or schema | 1, 3 or 4 respectively | false     | H        | Some effect or the inventory is unconfirmed. Inspect before any retry.                   |
 
 **WIRE-16 `[C0]`** Rules that follow from the table:
 
@@ -195,7 +195,7 @@ means `handoff` present and `next` absent.
   arms under one identity. Materially different recovery needs a distinct
   cause or command meaning, not an extra station identifier.
 
-**WIRE-17 `[D 2]` `[Q 2]`** The guidance arm also constrains the step kind:
+**WIRE-17 `[D 2]` `[P]`** The guidance arm also constrains the step kind:
 a result with `retryable: true` carries `next.kind` `retry`, and no other
 result does ([STEP-4](next-steps.md#step-kinds)).
 
@@ -206,28 +206,28 @@ command where it is reachable. An impossible entry needs a reviewed
 unreachable rationale ([DISC-8](discovery.md#command-discovery-data)). The guidance column is `[P]` where it names a
 step kind or is marked.
 
-| Cause | Class | Outcome and state | Guidance |
-| --- | --- | --- | --- |
-| `SUCCESS_UNCHANGED` | null | success, unchanged | N: `done`, or the step that follows a read or no-op |
-| `SUCCESS_COMPLETED` | null | success, completed | N: `done`, or the step that follows a completed operation |
-| `USAGE_INVALID_INVOCATION` | usage | refused, unchanged | N: inspect help and correct the invocation |
-| `USAGE_UNKNOWN_COMMAND` | usage | refused, unchanged | N: select an identity from `availablePaths` |
-| `SCHEMA_INVALID_INPUT` | schema | refused, unchanged | N: correct the named input shape |
-| `SCHEMA_UNSUPPORTED_CONTRACT` | schema | refused, unchanged | N: use a reader that accepts the observed version, or a producer this reader accepts. No adaptation. `[P]`: 2.0 said to select or produce contract 2.0.0. |
-| `DOMAIN_PRECONDITION_UNMET` | domain | refused, unchanged | N: repair the named permanent precondition |
-| `DOMAIN_AUTHORITY_REQUIRED` | domain | refused, unchanged | H: the named authority owner |
-| `TRANSIENT_NOT_STARTED` | transient | refused, unchanged | N: `retry` |
-| `TRANSIENT_ATTEMPT_UNCHANGED` | transient | failed, unchanged | N: `retry` |
-| `DOMAIN_DEADLINE_BEFORE_START` | domain | refused, unchanged | N: inspect the deadline and input, then explicitly decide a new run |
-| `DOMAIN_DEADLINE_UNCHANGED` | domain | failed, unchanged | N: inspect the deadline and input, then explicitly decide a new run |
-| `DOMAIN_DEADLINE_COMPLETED` | domain | failed, completed | H: inspect confirmed completed effects |
-| `DOMAIN_DEADLINE_PARTIAL` | domain | failed, partially-completed | H: inspect known partial effects |
-| `DOMAIN_DEADLINE_UNKNOWN` | domain | failed, unknown | H: inspect uncertain effects |
-| `INTERNAL_PREPARATION` | internal | refused, unchanged | N: repair the CLI or runtime before another run |
-| `INTERNAL_RESULT_UNCHANGED` | internal | failed, unchanged | H: inspect failed result production |
-| `INTERNAL_RESULT_COMPLETED` | internal | failed, completed | H: inspect completed effects and result production |
-| `INTERNAL_RESULT_PARTIAL` | internal | failed, partially-completed | H: inspect partial effects and result production |
-| `INTERNAL_RESULT_UNKNOWN` | internal | failed, unknown | H: independently inspect effect state |
+| Cause                          | Class     | Outcome and state           | Guidance                                                                                                                                                  |
+| ------------------------------ | --------- | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SUCCESS_UNCHANGED`            | null      | success, unchanged          | N: `done`, or the step that follows a read or no-op                                                                                                       |
+| `SUCCESS_COMPLETED`            | null      | success, completed          | N: `done`, or the step that follows a completed operation                                                                                                 |
+| `USAGE_INVALID_INVOCATION`     | usage     | refused, unchanged          | N: inspect help and correct the invocation                                                                                                                |
+| `USAGE_UNKNOWN_COMMAND`        | usage     | refused, unchanged          | N: select an identity from `availablePaths`                                                                                                               |
+| `SCHEMA_INVALID_INPUT`         | schema    | refused, unchanged          | N: correct the named input shape                                                                                                                          |
+| `SCHEMA_UNSUPPORTED_CONTRACT`  | schema    | refused, unchanged          | N: use a reader that accepts the observed version, or a producer this reader accepts. No adaptation. `[P]`: 2.0 said to select or produce contract 2.0.0. |
+| `DOMAIN_PRECONDITION_UNMET`    | domain    | refused, unchanged          | N: repair the named permanent precondition                                                                                                                |
+| `DOMAIN_AUTHORITY_REQUIRED`    | domain    | refused, unchanged          | H: the named authority owner                                                                                                                              |
+| `TRANSIENT_NOT_STARTED`        | transient | refused, unchanged          | N: `retry`                                                                                                                                                |
+| `TRANSIENT_ATTEMPT_UNCHANGED`  | transient | failed, unchanged           | N: `retry`                                                                                                                                                |
+| `DOMAIN_DEADLINE_BEFORE_START` | domain    | refused, unchanged          | N: inspect the deadline and input, then explicitly decide a new run                                                                                       |
+| `DOMAIN_DEADLINE_UNCHANGED`    | domain    | failed, unchanged           | N: inspect the deadline and input, then explicitly decide a new run                                                                                       |
+| `DOMAIN_DEADLINE_COMPLETED`    | domain    | failed, completed           | H: inspect confirmed completed effects                                                                                                                    |
+| `DOMAIN_DEADLINE_PARTIAL`      | domain    | failed, partially-completed | H: inspect known partial effects                                                                                                                          |
+| `DOMAIN_DEADLINE_UNKNOWN`      | domain    | failed, unknown             | H: inspect uncertain effects                                                                                                                              |
+| `INTERNAL_PREPARATION`         | internal  | refused, unchanged          | N: repair the CLI or runtime before another run                                                                                                           |
+| `INTERNAL_RESULT_UNCHANGED`    | internal  | failed, unchanged           | H: inspect failed result production                                                                                                                       |
+| `INTERNAL_RESULT_COMPLETED`    | internal  | failed, completed           | H: inspect completed effects and result production                                                                                                        |
+| `INTERNAL_RESULT_PARTIAL`      | internal  | failed, partially-completed | H: inspect partial effects and result production                                                                                                          |
+| `INTERNAL_RESULT_UNKNOWN`      | internal  | failed, unknown             | H: independently inspect effect state                                                                                                                     |
 
 **WIRE-19 `[C0]`** A domain-specific cause is command-owned. It is admitted
 before implementation with exactly one allowed row and concrete guidance. A

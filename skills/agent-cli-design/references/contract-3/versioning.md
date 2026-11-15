@@ -3,15 +3,14 @@
 Candidate text for Command Contract 3.0. Not accepted, not binding. Read
 [index.md](index.md) first for clause tags and status.
 
-Nathan decided two things. Decision 1: a new public 3.0.0 wire, with no
-requirement to support the existing contract. Decision 8: "Accept older 3.x".
-Every other rule in this file is proposed wording for him to accept or change
-([decisions.md](decisions.md), Q5).
+D1 selects the new major and D8 accepts older 3.x. A7, A8, A9 and A18 settle
+implemented-version stamping, readers first, additive minors, the fixed 3.0.0
+fallback and patch zero. Detailed grammar and refusal wording remain proposed.
 
 ## The version value
 
-**VER-1 `[D 1]` `[Q 5]`** A 3.x version is exactly `3.<minor>.0`. Decision 1
-gives `3.0.0`. The form for later minors is proposed. A reader classifies a
+**VER-1 `[D 1]` `[P]` `[A 18]`** A 3.x version is exactly `3.<minor>.0`. Decision 1
+gives `3.0.0`. A18 fixes the patch at zero. A reader classifies a
 version value in two steps:
 
 1. Well formed means it matches
@@ -23,31 +22,31 @@ version value in two steps:
    know another major's rules. With major `3`, a patch other than `0` is
    malformed.
 
-**VER-2 `[Q 5]`** The patch is always `0` on the wire. A fix that changes no
-wire shape and no meaning changes no version.
+**VER-2 `[P]` `[A 18]`** The patch is always `0` on the wire. A fix that changes no
+wire shape or meaning changes the CLI release version, not the contract version
+(A18). This introduces no new release-version envelope field.
 
-**VER-2a `[Q 5]`** `contractVersion` on the envelope is the one version field.
+**VER-2a `[P]`** `contractVersion` on the envelope is the one version field.
 Any copy, such as `DiscoveryData.contractVersion`, equals it. An envelope
 whose copies disagree is invalid.
 
 ## What a reader accepts
 
-**VER-3 `[D 8]` `[D 1]` `[Q 5]`** A reader built for `3.M.0` accepts `3.m.0`
+**VER-3 `[D 8]` `[D 1]` `[P]`** A reader built for `3.M.0` accepts `3.m.0`
 for every `m` from `0` to `M` `[D 8]`. It refuses every other major, `2.0.0`
 included, and never adapts what it refuses `[D 1]` `[C0]`. It refuses a newer
-minor `[Q 5]`: that rule is the planner's wording of decision 8, not
-Nathan's.
+minor; A7 and A9 require readers to upgrade first.
 
-**VER-4 `[Q 5]`** An accepted envelope is judged against the shape of the
+**VER-4 `[P]`** An accepted envelope is judged against the shape of the
 minor it declares. A key or union member that minor does not list is an
 error, even when the reader's own minor lists it.
 
-**VER-4a `[Q 5]`** A reader keeps the shape of every older minor for as long
+**VER-4a `[P]`** A reader keeps the shape of every older minor for as long
 as 3.x lives.
 
 ## What a minor may change
 
-**VER-5 `[Q 5]`** A minor may add:
+**VER-5 `[P]` `[A 9]`** A minor may add:
 
 - an optional or conditional key;
 - a member of a union the contract owns, such as a new step kind.
@@ -55,23 +54,23 @@ as 3.x lives.
 This is safe because no reader accepts a minor newer than its own. It also
 means the step kinds are not frozen at 3.0.0.
 
-**VER-6 `[Q 5]`** A minor never removes a key, renames one, makes one
+**VER-6 `[P]` `[A 9]`** A minor never removes a key, renames one, makes one
 required, or changes a meaning. A key added in `3.N`, when absent, means what
 `3.(N-1)` meant. A later minor never reinterprets an older envelope: a rule
 such as "read-only unless stated", added later, would let a reader run an
 older CLI's changing step as if it were safe.
 
-**VER-6a `[Q 5]`** A minor never adds a common cause. A CLI may already own
+**VER-6a `[P]`** A minor never adds a common cause. A CLI may already own
 a cause of that name with its own meaning ([WIRE-19](wire.md#common-causes)),
 so adding it would change a meaning. The common causes change only with a
 major.
 
 ## Closed and open vocabularies
 
-**VER-7 `[Q 5]`** Unions the contract owns are closed at each minor: outcome,
+**VER-7 `[P]`** Unions the contract owns are closed at each minor: outcome,
 effect class, transaction state, failure class, exit code, step kind, handoff
 owner, the diagnostics variants and their enumerations, reachability and
-retry delay policy kind. A reader handles them exhaustively
+retry delay policy kind, input value-schema kind and input constraint kind. A reader handles them exhaustively
 ([GATE-11](static-gates.md#exhaustive-handling)).
 
 Cause codes are open to a reader. A reader that meets a cause it does not
@@ -80,32 +79,30 @@ the cause is new, and it never switches exhaustively on another CLI's causes.
 
 ## What a producer stamps
 
-**VER-8 `[Q 5]`** A CLI stamps the minor of the base it carries on every
+**VER-8 `[P]` `[A 7]`** A CLI stamps the minor of the base it carries on every
 envelope except the fallback. Readers upgrade first: a reader moves to a new
-minor before any producer it reads does. The alternative, stamping the lowest
-minor an envelope fits, is smoother for readers and more complex for
-producers. It is not the candidate's default.
+minor before any producer it reads does. This is the settled direction in A7; the fallback exception is A8.
 
 ## The fallback version
 
-**VER-9 `[Q 5]`** The fallback envelope always declares `3.0.0` and uses only
+**VER-9 `[P]` `[A 8]`** The fallback envelope always declares `3.0.0` and uses only
 keys and union members defined at 3.0.0
 ([LIFE-10](lifecycle.md#fallback)). It is the one result that tells a caller
 to inspect effects, so every 3.x reader must be able to read it.
 
 ## Format cases
 
-**VER-10 `[D 1]` `[D 8]` `[Q 5]`** A reader at `3.M.0` classifies what it is
+**VER-10 `[D 1]` `[D 8]` `[P]`** A reader at `3.M.0` classifies what it is
 given in this order. Version classification comes before any other key is
 interpreted.
 
-| Observed | Class | Reader's own result | What `message` reports |
-| --- | --- | --- | --- |
-| Missing or malformed version (VER-1), including `3.0.1` | Malformed | Refused, unchanged, schema, exit 4, `SCHEMA_INVALID_INPUT` | Report the safe observed value, or `null` when absent. Name `contractVersion` as the violated key. |
-| Well-formed, another major (`2.0.0`, `1.0.0`, `4.1.2`) | Other major | Refused, unchanged, schema, exit 4, `SCHEMA_UNSUPPORTED_CONTRACT` | Report the exact observed string. Use a reader built for that major. No adapter. |
-| `3.n.0` with `n` greater than `M` | Newer minor | Refused, unchanged, schema, exit 4, `SCHEMA_UNSUPPORTED_CONTRACT` | Report the exact observed string and the reader's own version. Upgrade the reader. |
-| `3.m.0` with `m` at most `M`, broken | Broken | Refused, unchanged, schema, exit 4, `SCHEMA_INVALID_INPUT` | Report the observed version. Identify the violated key or correlation. |
-| `3.m.0` with `m` at most `M`, valid | Accepted | Success, unchanged, exit 0 | Report the observed version and that it was accepted without adaptation |
+| Observed                                                | Class       | Reader's own result                                               | What `message` reports                                                                             |
+| ------------------------------------------------------- | ----------- | ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Missing or malformed version (VER-1), including `3.0.1` | Malformed   | Refused, unchanged, schema, exit 4, `SCHEMA_INVALID_INPUT`        | Report the safe observed value, or `null` when absent. Name `contractVersion` as the violated key. |
+| Well-formed, another major (`2.0.0`, `1.0.0`, `4.1.2`)  | Other major | Refused, unchanged, schema, exit 4, `SCHEMA_UNSUPPORTED_CONTRACT` | Report the exact observed string. Use a reader built for that major. No adapter.                   |
+| `3.n.0` with `n` greater than `M`                       | Newer minor | Refused, unchanged, schema, exit 4, `SCHEMA_UNSUPPORTED_CONTRACT` | Report the exact observed string and the reader's own version. Upgrade the reader.                 |
+| `3.m.0` with `m` at most `M`, broken                    | Broken      | Refused, unchanged, schema, exit 4, `SCHEMA_INVALID_INPUT`        | Report the observed version. Identify the violated key or correlation.                             |
+| `3.m.0` with `m` at most `M`, valid                     | Accepted    | Success, unchanged, exit 0                                        | Report the observed version and that it was accepted without adaptation                            |
 
 Rows that share a cause share one station and one fixed guidance
 ([DISC-12](discovery.md#identity-and-reachability)). What differs between
@@ -126,7 +123,7 @@ decision 8. The other two are proposed:
 One rule is unchanged: a broken envelope of an accepted version is never
 reported as an unsupported version.
 
-**VER-11 `[C0]` `[Q 5]`**
+**VER-11 `[C0]` `[P]`**
 
 - Validation is read-only. Malformed target output creates no authority over
   the target.

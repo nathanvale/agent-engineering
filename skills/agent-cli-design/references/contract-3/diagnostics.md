@@ -13,16 +13,16 @@ it is a strict discriminated union on `status`.
 
 **DIAG-2 `[C0]`** The available variant is strict:
 
-| Key | Type and rule |
-| --- | --- |
-| `status` | literal `available` |
-| `file` | absolute private per-run path, or `null` when no file was safely opened |
-| `sinkFailure` | `null`, `capacity`, `setup`, `write`, `flush-timeout` or `close`. When several occurred, the first in time. |
-| `droppedRecords` | nonnegative safe integer. A record rejected before it entered the buffer. |
-| `unflushedRecords` | nonnegative safe integer. An admitted record not confirmed written at freeze. Disjoint from dropped. |
-| `truncatedRecords` | nonnegative safe integer. A record whose retained content was visibly truncated. May overlap unflushed. |
-| `countsComplete` | boolean. `true`: every counter is exact at freeze. `false`: counters are lower bounds, and zero means nothing was counted. |
-| `closed` | boolean. `true` only when the sink is confirmed closed. A timed-out sink stays `false`. |
+| Key                | Type and rule                                                                                                              |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------- |
+| `status`           | literal `available`                                                                                                        |
+| `file`             | absolute private per-run path, or `null` when no file was safely opened                                                    |
+| `sinkFailure`      | `null`, `capacity`, `setup`, `write`, `flush-timeout` or `close`. When several occurred, the first in time.                |
+| `droppedRecords`   | nonnegative safe integer. A record rejected before it entered the buffer.                                                  |
+| `unflushedRecords` | nonnegative safe integer. An admitted record not confirmed written at freeze. Disjoint from dropped.                       |
+| `truncatedRecords` | nonnegative safe integer. A record whose retained content was visibly truncated. May overlap unflushed.                    |
+| `countsComplete`   | boolean. `true`: every counter is exact at freeze. `false`: counters are lower bounds, and zero means nothing was counted. |
+| `closed`           | boolean. `true` only when the sink is confirmed closed. A timed-out sink stays `false`.                                    |
 
 Counters measure records, not bytes. After a first sink failure the counters
 keep recording later known loss.
@@ -79,14 +79,14 @@ path does not satisfy this clause.
 
 **DIAG-9 `[C0]`** Finite limits:
 
-| Limit | Value |
-| --- | --- |
-| Aggregate per CLI, including active logs | 10,000,000 bytes |
-| Per run | 1,000,000 bytes |
-| Files | 50 |
-| Buffer | 1,000,000 bytes or 256 records, whichever comes first |
-| Record | 64,000 bytes, with visible truncation |
-| Normal-shutdown flush | 500 milliseconds |
+| Limit                                    | Value                                                 |
+| ---------------------------------------- | ----------------------------------------------------- |
+| Aggregate per CLI, including active logs | 10,000,000 bytes                                      |
+| Per run                                  | 1,000,000 bytes                                       |
+| Files                                    | 50                                                    |
+| Buffer                                   | 1,000,000 bytes or 256 records, whichever comes first |
+| Record                                   | 64,000 bytes, with visible truncation                 |
+| Normal-shutdown flush                    | 500 milliseconds                                      |
 
 The limits account for queue and serialisation overhead. They are not a
 process heap cap.
@@ -119,7 +119,9 @@ space), a throwing sink and a stuck flush each leave the domain effect and
 the exit unchanged.
 
 **DIAG-13 `[C0]`** Journal and diagnostic maintenance are not domain effects.
-They never appear in `effects`. The CLI discloses them in
+They never appear in `effects`. This exclusion covers incidental bookkeeping;
+it does not cover a separately requested closure that changes future admission
+(REC-3), whose recovery-state effect must be declared. The CLI discloses them in
 `effectExclusions` ([DISC-6](discovery.md#discovery-data)).
 
 ## Finalisation order
@@ -150,8 +152,8 @@ domain or recovery field.
 ## Ownership
 
 **DIAG-17 `[D 20]` `[P]`** The diagnostics add-on is the only owner of durable
-diagnostics and the only place a logging dependency is pinned. Its logging
-APIs are verified from the actual pinned packages `[LO]`, and nothing here
+diagnostics and the only place a logging dependency is pinned. It carries the accepted LogTape packages 2.4.2 pin from template revision 4.
+Its logging APIs are verified from the actual pinned packages `[LO]`, and nothing here
 authorises a dependency upgrade
 ([CMD-16](commands-and-addons.md#diagnostics-add-on)). A CLI without the add-on
 emits no `diagnostics` key. The kernel validator still validates the whole

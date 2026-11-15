@@ -1,4 +1,5 @@
 ---
+
 name: agent-cli-design
 description: Command Contract 3.0 for Bun and TypeScript CLIs used by humans and agents. Use to read, review or qualify against the 3.0 envelope, next steps, discovery, versioning, lifecycle, add-ons or static gates.
 ---
@@ -23,15 +24,23 @@ repository, and nothing implements it.
 
 Start at [the candidate index](references/contract-3/index.md). It routes each
 task to one reference file and explains the tag on every clause: carried from
-an accepted specification, following one of Nathan's decisions, proposed, or
-open.
+an accepted specification, following one of Nathan's decisions, or proposed. Open choices have explicit prose and remain unselected.
 
-| To | Read |
-| --- | --- |
-| Review or accept the candidate | [decisions.md](references/contract-3/decisions.md), then [review.md](references/contract-3/review.md) |
-| Check that no accepted rule was lost | [requirement-map.md](references/contract-3/requirement-map.md) |
-| See how each rule would be proved | [verification.md](references/contract-3/verification.md) |
+| To                                   | Read                                                                                                  |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------- |
+| Review or accept the candidate       | [decisions.md](references/contract-3/decisions.md), then [review.md](references/contract-3/review.md) |
+| Check that no accepted rule was lost | [requirement-map.md](references/contract-3/requirement-map.md)                                        |
+| See how each rule would be proved    | [verification.md](references/contract-3/verification.md)                                              |
 
 Completion criterion for any task that cites this contract: every claim names
-its clause identifier, and a clause tagged proposed or open is reported as
+its clause identifier, and a clause tagged proposed or marked as an open choice is reported as
 unaccepted.
+
+## When implementation is separately authorised
+
+This candidate owns contract reference text, not an activated build workflow.
+The later foundation scope must supply the working procedure before V-37:
+inspect the existing front door and registration, declare effects and stations,
+preview the bounded composition, refuse incompatibilities before writes, add
+commands through the existing owner, and qualify discovery plus actual dispatch.
+The released 2.0 skill remains the workflow owner for 2.0 CLIs in the gap.

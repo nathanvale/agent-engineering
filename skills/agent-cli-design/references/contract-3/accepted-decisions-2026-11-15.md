@@ -10,15 +10,12 @@ migrations, installation, activation, release and merge remain outside scope.
 
 ## Relationship to the reviewed candidate
 
-Read this record before revising the [candidate](index.md). The reviewed
-manifest, [candidate.sha256](candidate.sha256), has SHA-256:
-
-`751cca38f0edc5012e8dad2170e1d46a0e90447dac1ce8a7ec4effe9f02dcd8a`
-
-This record is outside that manifest. Its accepted directions qualify
-the corresponding open questions in [decisions.md](decisions.md); the frozen
-candidate has not yet incorporated them. Its existing review does not cover
-the future wording or design needed to implement these decisions.
+The original reviewed candidate is preserved at commit `9d1ecf1`. Its manifest
+had SHA-256 `751cca38f0edc5012e8dad2170e1d46a0e90447dac1ce8a7ec4effe9f02dcd8a`.
+This record was outside that original manifest. The current revised candidate
+incorporates A1 to A19 and includes this record in its new manifest. Its review
+status is owned by [review.md](review.md); earlier review does not qualify new
+wording. Accepted directions are not acceptance of the whole contract.
 
 The source plan remains in the vault's `projects/cli-design-skill` packet.
 This repository-binding record does not relocate that packet or settle the
@@ -635,9 +632,9 @@ Other B6 records and their repository-specific revisions retain their
 existing owners unless explicitly changed; this record does not settle the
 post-vault ownership question for them.
 
-Other unresolved matters include the recovery and lock design, the detailed
-version policy, detailed lifecycle wording, remaining schema/lint questions and the
-post-vault record owner. Do not reopen accepted toolchain, single-CLI or
+Current proposed resolutions and remaining choices are listed in
+[decisions.md](decisions.md). Their implementation proofs remain outstanding;
+the post-vault planning owner is still undecided. Do not reopen accepted toolchain, single-CLI or
 base-plus-add-ons decisions. Check inherited requirements before promoting a
 review finding to a new product question.
 

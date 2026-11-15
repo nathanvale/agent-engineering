@@ -5,19 +5,19 @@ Candidate text for Command Contract 3.0. Not accepted, not binding. Read
 
 ## Invocations
 
-**DISC-1 `[C0]`**
+**DISC-1 `[C0]` `[A 10]`**
 
-| Invocation | Built-in identity | Behaviour |
-| --- | --- | --- |
-| `<cli> --help` | `<cli>.help` | Human help, stdout, exit 0 |
-| `<cli> --help --json` | `<cli>.help` | One success, unchanged, inspect envelope. `data` is `HelpData`. |
-| `<cli> --discover` | `<cli>.discovery` | Human summary of `DiscoveryData`, stdout, exit 0 |
-| `<cli> --discover --json` | `<cli>.discovery` | One success, unchanged, inspect envelope. `data` is `DiscoveryData`. |
-| `<cli> --discover-command <canonical-command-identity>` | `<cli>.command-discovery` | Human rendering for exactly one selected command |
-| The same with `--json` | `<cli>.command-discovery` | One success, unchanged, inspect envelope. `data` is `CommandDiscoveryData`. |
-| Unknown selected identity | `<cli>.command-discovery` | Refused, unchanged, `USAGE_UNKNOWN_COMMAND`, exit 2 |
-| Missing selector, or incompatible built-in options | `<cli>.dispatch` | Refused, unchanged, `USAGE_INVALID_INVOCATION`, exit 2 |
-| No arguments | `<cli>.dispatch` | The same usage refusal. Human mode: one stderr line. Machine mode: one envelope. |
+| Invocation                                              | Built-in identity         | Behaviour                                                                        |
+| ------------------------------------------------------- | ------------------------- | -------------------------------------------------------------------------------- |
+| `<cli> --help`                                          | `<cli>.help`              | Human help, stdout, exit 0                                                       |
+| `<cli> --help --json`                                   | `<cli>.help`              | One success, unchanged, inspect envelope. `data` is `HelpData`.                  |
+| `<cli> --discover`                                      | `<cli>.discovery`         | Human summary of `DiscoveryData`, stdout, exit 0                                 |
+| `<cli> --discover --json`                               | `<cli>.discovery`         | One success, unchanged, inspect envelope. `data` is `DiscoveryData`.             |
+| `<cli> --discover-command <canonical-command-identity>` | `<cli>.command-discovery` | Human rendering for exactly one selected command                                 |
+| The same with `--json`                                  | `<cli>.command-discovery` | One success, unchanged, inspect envelope. `data` is `CommandDiscoveryData`.      |
+| Unknown selected identity                               | `<cli>.command-discovery` | Refused, unchanged, `USAGE_UNKNOWN_COMMAND`, exit 2                              |
+| Missing selector, or incompatible built-in options      | `<cli>.dispatch`          | Refused, unchanged, `USAGE_INVALID_INVOCATION`, exit 2                           |
+| No arguments                                            | `<cli>.dispatch`          | The same usage refusal. Human mode: one stderr line. Machine mode: one envelope. |
 
 **DISC-2 `[C0]`** `--json` is a global switch recognised before `--`, in any
 argv position. Tokens after `--` are operands and never toggle the mode. The
@@ -40,26 +40,26 @@ initialise every provider or perform network work to list commands.
 Every summary derives from the command owner. Command identities are unique.
 `route` is the argv tokens after the executable.
 
-**DISC-4 `[C0]` `[Q 6]`** `route` is empty only for a root operation and for
-`<cli>.dispatch` `[C0]`. At most one host command is a root operation, and it
+**DISC-4 `[C0]` `[A 10]` `[P]`** `route` is empty only for a root operation and for
+`<cli>.dispatch` `[P]`. At most one host command is a root operation, and it
 requires at least one option or operand, so the no-argument invocation stays
-with dispatch (DISC-1) `[Q 6]`. The 2.0 text allowed both without saying how
+with dispatch (DISC-1) `[A 10]`. The 2.0 text allowed both without saying how
 they are told apart, and the 2.0 checker itself declares both with an empty
 route.
 
 ## Built-in commands are declared
 
-**DISC-5 `[Q 6]`** The four built-in identities are declared commands. The 2.0
+**DISC-5 `[P]`** The four built-in identities are declared commands. The 2.0
 text was silent here, and that silence is why the released 2.0 starters fail
 the strict checker: their envelopes name built-in identities that their
 discovery never lists.
 
-| Identity | `route` | `effectClass` |
-| --- | --- | --- |
-| `<cli>.help` | `["--help"]` | `inspect` |
-| `<cli>.discovery` | `["--discover"]` | `inspect` |
-| `<cli>.command-discovery` | `["--discover-command"]` | `inspect` |
-| `<cli>.dispatch` | `[]` | `inspect` |
+| Identity                  | `route`                  | `effectClass` |
+| ------------------------- | ------------------------ | ------------- |
+| `<cli>.help`              | `["--help"]`             | `inspect`     |
+| `<cli>.discovery`         | `["--discover"]`         | `inspect`     |
+| `<cli>.command-discovery` | `["--discover-command"]` | `inspect`     |
+| `<cli>.dispatch`          | `[]`                     | `inspect`     |
 
 - Each appears in `DiscoveryData.commands`.
 - Each answers `--discover-command` with its own stations.
@@ -71,7 +71,7 @@ Removing any of the four from discovery is a contract violation.
 
 ## Discovery data
 
-**DISC-6 `[C0]` `[D 1]` `[Q 6]`**
+**DISC-6 `[C0]` `[D 1]` `[P]`**
 
 ```text
 DiscoveryData = {
@@ -90,18 +90,19 @@ DiscoveryData = {
   not domain effects ([DIAG-13](diagnostics.md#custody-and-limits)).
 - `profile` is not a 3.0 key. Decision 18 replaced the two profiles with
   rules that follow each command, and each `CommandSummary` already carries
-  the command's `effectClass`. `[D 18]` `[Q 6]`
-- `generationConventionVersion` is not a 3.0 key. `[Q 6]`
+  the command's `effectClass`. `[D 18]` `[P]`
+- `generationConventionVersion` is not a 3.0 key. `[P]`
 
 ## Command discovery data
 
-**DISC-7 `[C0]` `[D 11]` `[Q 7]`**
+**DISC-7 `[C0]` `[D 11]` `[P]` `[A 12]`**
 
 ```text
 CommandDiscoveryData = {
   command: CommandSummary,
   semantics: "possible-outcomes",
   ifNoResult: CommandStep | null,     // DISC-13
+  input: InputSchema,               // INPUT-2, generated from executable input declarations
   stations: PublicStation[]
 }
 ```
@@ -138,17 +139,19 @@ PublicStation = {
 
 ## Stations
 
-**DISC-9 `[Q 1]`** A command lists each result it can produce once, as a
+**DISC-9 `[P]` `[A 11]`** A command lists each result it can produce once, as a
 station. Code that produces a result selects a declared station and supplies
 only this run's facts: the run identity, `message`, `data`, effects, the
 attempted effect, the delay, any accepted `idempotencyKey` and any bindings. The station's fixed fields and words come from the declaration and
 cannot be overridden by the run's facts. Discovery is a projection of the
 same declaration, so the words exist in one place.
 
-This is working answer 6. It came from a prototype. Nathan has not accepted
-it, and silence is not acceptance ([decisions.md](decisions.md), Q1).
+A11 accepts generation from executable declarations. Exact station APIs remain
+engineering; declarations describe possible outcomes, not present state or
+authority. A12 requires the input schema from the same executable owner; see
+[input-schema.md](input-schema.md). A10 settles no-command exit 2 and help exit 0.
 
-**DISC-10 `[C0]` `[D 18]` `[Q 6]`** An `inspect` command that declares no
+**DISC-10 `[C0]` `[D 18]` `[P]`** An `inspect` command that declares no
 approval and no cause of its own may omit a station table. Its finite result
 descriptions are then derived from the same command declaration. DISC-9
 never removes this. In 2.0 the allowance belonged to a simple-profile CLI,
@@ -162,28 +165,28 @@ stations the base adds (DISC-11). The 2.0 text never said what is derived.
 
 ### Kernel-supplied stations
 
-**DISC-11 `[Q 6]`** Some results are produced by the base, not by the command's
+**DISC-11 `[P]`** Some results are produced by the base, not by the command's
 handler: usage and input refusals, deadline results, approval denials, state
 refusals and the fallback. Each is a station of the command whose identity it
 carries, and appears in that command's `stations`. Observed is declared then
 holds for every envelope a CLI can print, the fallback included.
 
-| Applies to | Stations the base adds |
-| --- | --- |
-| Every host command | `USAGE_INVALID_INVOCATION`, `SCHEMA_INVALID_INPUT` (where the command takes input), `INTERNAL_PREPARATION` |
-| Every `inspect` command, built-in or host | `INTERNAL_RESULT_UNCHANGED` |
-| Every changing command | `INTERNAL_RESULT_UNCHANGED`, `INTERNAL_RESULT_COMPLETED`, `INTERNAL_RESULT_UNKNOWN`. The command itself declares its held-lock refusal ([CMD-12](commands-and-addons.md#state-add-on)). |
-| A changing command that declares two or more effects | `INTERNAL_RESULT_PARTIAL`. A single effect cannot be partial ([WIRE-12](wire.md#effect-state-table)). |
-| A command that declares deadline support | The five `DOMAIN_DEADLINE_*` causes its effect class can reach |
-| A command that declares approval | `DOMAIN_AUTHORITY_REQUIRED` |
-| `<cli>.dispatch` | `USAGE_INVALID_INVOCATION`, `USAGE_UNKNOWN_COMMAND`, `INTERNAL_PREPARATION` |
-| `<cli>.help`, `<cli>.discovery` | `SUCCESS_UNCHANGED`, `INTERNAL_PREPARATION` |
-| `<cli>.command-discovery` | `SUCCESS_UNCHANGED`, `USAGE_UNKNOWN_COMMAND`, `INTERNAL_PREPARATION` |
+| Applies to                                           | Stations the base adds                                                                                                                                                                                            |
+| ---------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Every host command                                   | `USAGE_INVALID_INVOCATION`, `SCHEMA_INVALID_INPUT` (where the command takes input), `INTERNAL_PREPARATION`                                                                                                        |
+| Every `inspect` command, built-in or host            | `INTERNAL_RESULT_UNCHANGED`                                                                                                                                                                                       |
+| Every changing command                               | `INTERNAL_RESULT_UNCHANGED`, `INTERNAL_RESULT_COMPLETED`, `INTERNAL_RESULT_UNKNOWN`. The command itself declares distinct held-lock and unresolved-case refusals ([CMD-12](commands-and-addons.md#state-add-on)). |
+| A changing command that declares two or more effects | `INTERNAL_RESULT_PARTIAL`. A single effect cannot be partial ([WIRE-12](wire.md#effect-state-table)).                                                                                                             |
+| A command that declares deadline support             | The five `DOMAIN_DEADLINE_*` causes its effect class can reach                                                                                                                                                    |
+| A command that declares approval                     | `DOMAIN_AUTHORITY_REQUIRED`                                                                                                                                                                                       |
+| `<cli>.dispatch`                                     | `USAGE_INVALID_INVOCATION`, `USAGE_UNKNOWN_COMMAND`, `INTERNAL_PREPARATION`                                                                                                                                       |
+| `<cli>.help`, `<cli>.discovery`                      | `SUCCESS_UNCHANGED`, `INTERNAL_PREPARATION`                                                                                                                                                                       |
+| `<cli>.command-discovery`                            | `SUCCESS_UNCHANGED`, `USAGE_UNKNOWN_COMMAND`, `INTERNAL_PREPARATION`                                                                                                                                              |
 
 A built-in option error is refused as `<cli>.dispatch` (DISC-1), so the three
 other built-ins carry no usage station of their own.
 
-**DISC-11b `[C0]` `[Q 6]`** The base supplies default words for each station
+**DISC-11b `[C0]` `[P]`** The base supplies default words for each station
 it adds. The command owner still selects repair and guidance content `[C0]`:
 a command may declare one of these tuples itself, and its declared words then
 apply to every result with that tuple, whether the handler or the base
@@ -197,7 +200,7 @@ and every `INTERNAL_RESULT_*`. A command never declares these tuples, and a
 declaration that does is rejected. Their words are the base's fixed literals,
 with no binding and no `{idempotencyKey}`, using only 3.0.0 members, inside
 the fallback's size and depth limits. A command identity is at most 128
-UTF-8 bytes, checked at declaration, because the fallback copies it `[Q 6]`. The fallback can therefore always be
+UTF-8 bytes, checked at declaration, because the fallback copies it `[P]`. The fallback can therefore always be
 produced ([LIFE-9](lifecycle.md#fallback)). For a changing command, the base
 builds each `INTERNAL_RESULT_*` handoff with an inspection entry naming the
 command's `ifNoResult` command, so a broken result points at the same
@@ -231,7 +234,7 @@ too.
 
 ## If no result
 
-**DISC-13 `[D 11]` `[Q 7]`** Every changing command declares one read-only
+**DISC-13 `[D 11]` `[P]`** Every changing command declares one read-only
 command to run when the caller received no result `[D 11]`. `ifNoResult` in
 that command's `CommandDiscoveryData` is a `command` step
 ([STEP-6](next-steps.md#step-kinds)) naming it. For an `inspect` command
@@ -242,51 +245,48 @@ brace token, and no character of Unicode category Cc, Cf, Zl or Zp. The
 whole step, encoded as JSON, is at most 2,048 UTF-8 bytes. The rule is
 checked when the command is declared, because the base copies the step into
 the fallback ([DISC-11b](#kernel-supplied-stations)). The key's name, place and shape are proposals
-([decisions.md](decisions.md), Q7).
+([decisions.md](decisions.md)).
 
-**DISC-14 `[Q 7]`** Nathan decided that the command is read-only. That it
-reports unfinished work, and how, is the plan's proposal. The named command,
-the report:
+**DISC-14 `[D 11]` `[A 1]` `[A 2]` `[P]`** The named command:
 
-1. is declared by this CLI with effect class `inspect`;
-2. runs with exactly the `args` given and needs no other input;
-3. is read-only `[D 11]`: it reads journal and resource evidence, performs
-   no domain effect, never replays one and records no settlement;
-4. on success returns `data` as an object with an `unfinished` key: an array
-   listing every unfinished change of this CLI
-   ([CMD-13](commands-and-addons.md#state-add-on)), empty when there is
-   none;
-5. writes each entry as strict `{ commandIdentity, runId, effects }`: the
-   changing command, the run that recorded the intent, and the sorted unique
-   effect identifiers that intent declared.
+1. is declared `inspect`, needs exactly its published literal arguments and
+   performs no domain effect, journal repair or settlement;
+2. reads journal and resource evidence and never replays an effect;
+3. returns `data.unfinished`, listing every unresolved intent, including live,
+   partial and unknown runs. A valid completion, a confirmed not-applied record written by its own run,
+   or REC-4 closure ends that
+   listing; it never deletes history;
+4. represents each entry as strict `{ operationId, commandIdentity, runId, effects }`, with
+   sorted unique declared effect identifiers. `operationId` is the durable REC-1 identity used by the recovery/history
+   routes. Effects are effect names, not
+   resource scopes and not proof that an entry belongs to the caller;
+5. refuses honestly if it cannot read a complete trustworthy report. It never
+   presents inaccessible or corrupt state as an empty successful report.
 
-A command that cannot report unfinished work does not qualify. One command
-may serve several changing commands.
+One command may serve several changing commands. Closure history remains
+available through a separately declared read-only route under REC-6. Neither
+an empty list nor a disappeared entry proves the lost invocation did not run.
 
-**DISC-14a `[C0]` `[Q 7]`** The report has one success station, so its
-guidance is one fixed step whatever the list holds
-([DISC-12](#identity-and-reachability)). The CLI chooses that step `[C0]`: a
-`command` step naming a command of its own, or an `instruction`. The report
-declares its station table. It never relies on the derived `done` of
-DISC-10, which would sit beside a nonempty list. The caller reads
-`data.unfinished` to learn whether anything is pending.
+**DISC-14a `[C0]` `[P]`** The report declares its success station explicitly,
+using a fixed instruction or declared command for the next inspection. It
+never derives `done` merely because its own read completed. The caller reads
+`data.unfinished` for pending cases; diagnostics may assist diagnosis but never
+own recovery truth. All guidance follows STEP-1 to STEP-16.
 
-**DISC-15 `[Q 7]`** What a caller does after no result from a changing
-command. These rules are the plan's proposal:
+**DISC-15 `[D 11]` `[A 1]` `[A 2]` `[P]`** After no complete response:
 
-1. Run the `ifNoResult` command before anything else. Never repeat the change
-   first.
-2. When `unfinished` is nonempty, the listed changes are not finished. Never
-   repeat them. Follow the report's `next`. Where the CLI offers no way to
-   finish a listed change, stop and report it to the person responsible. A
-   nonempty list does not say which listed run was the caller's own.
-3. When `unfinished` is empty, no unfinished change is recorded. That does
-   not say whether the lost run completed. A further run is a new decision
-   under the caller's own authority, made after inspecting the resource. It
-   is never automatic. An empty list does not show that no run is working: a
-   run that has not yet recorded an intent is not listed.
+1. Run `ifNoResult` before deciding whether to perform more affected work.
+   Never repeat the lost operation first.
+2. Inspect listed cases and follow their recovery route. A nonempty report
+   is not a global freeze: a new operation proceeds only when the state
+   add-on proves its operations and resources independent (REC-2). The caller
+   cannot establish independence from different command names alone.
+3. An empty report does not prove non-application or identify the lost run.
+   Inspect the resource and retained history. Any further domain operation
+   is an explicit new decision under current authority, never automatic replay.
+4. Preserve unknown outcomes after human closure. Closing releases only the
+   resolved coordination obligation, not uncertainty or permission to repeat.
 
-The limits in steps 2 and 3 are a consequence of parking the caller-chosen
-key that would let a caller look up its own run (decision 12) and the
-safe-to-repeat flag (decision 13). The cost recorded with decision 13 is one
-extra read-only call before a repeat.
+Caller-chosen keys on every changing command and a safe-to-repeat flag remain
+parked (D12, D13). The read-only report cannot promise correlation unavailable
+from those decisions. REC-6 names that limitation explicitly.

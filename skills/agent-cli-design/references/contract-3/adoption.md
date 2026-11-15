@@ -37,11 +37,12 @@ starter and moves onto the 3.0 base later.
 
 ## The kept 2.0 checker
 
-**ROLL-4 `[D 9]` `[P]`** The released 2.0 checker is kept beside the 3.0
-checker `[D 9]`, under a second name `[P]`, where the existing test suites
-reach it. A copy in git
-history does not serve them: existing CLIs call the checker in their own
-tests on every run.
+**ROLL-4 `[D 9]` `[A 3]` `[P]`** Keep the released 2.0 checker and its
+validator source at their current owner and reachable by existing consumers.
+The new 3.0 checker is an agent-engineering command. This replaces the older
+plan's physical "beside it under a second name" arrangement while preserving
+its purpose: both majors remain explicitly selectable, and existing 2.0 suites
+continue to run their pinned checker. A Git history copy alone cannot serve them.
 
 **ROLL-5 `[D 9]` `[P]`**
 
@@ -60,26 +61,41 @@ tests on every run.
 
 ## What the foundation step breaks
 
-**ROLL-6 `[P]`** When the checker starts printing 3.0, these consumers break
-and must be moved or pointed at the kept checker in the same step. The plan's
-drafting brief B5 lists each by path.
+**ROLL-6 `[A 3]` `[P]`** The following consumers break only if their checker,
+validator import or generated contract target is changed to 3.0. Inventory them
+at the actual release revisions. Preserve 2.0 routes/imports; move foundation
+consumers to the new 3.0 command deliberately in the coordinated foundation
+scope. A3 does not replace the old checker in place. B5 lists source paths.
 
-| Consumer | Why it breaks |
-| --- | --- |
-| Test suites of existing 2.0.0 CLIs that call the checker | They read its message, outcome and row counts |
-| One suite that imports the checker's 2.0 validator source | The source moves |
-| The exemplar's tests | They read rows, stub a 2.0.0 checker envelope and import checker source |
-| The composer's and the template's tests | They assert the starter's `contractVersion` |
-| The 2.0 skill text and its qualification reference | They name the `skippedRows` field |
-| The repository check workflow that runs all of the above | It runs them |
+| Consumer                                                  | Why it breaks                                                           |
+| --------------------------------------------------------- | ----------------------------------------------------------------------- |
+| Test suites of existing 2.0.0 CLIs that call the checker  | They read its message, outcome and row counts                           |
+| One suite that imports the checker's 2.0 validator source | The source moves                                                        |
+| The exemplar's tests                                      | They read rows, stub a 2.0.0 checker envelope and import checker source |
+| The composer's and the template's tests                   | They assert the starter's `contractVersion`                             |
+| The 2.0 skill text and its qualification reference        | They name the `skippedRows` field                                       |
+| The repository check workflow that runs all of the above  | It runs them                                                            |
+
+The B5 inventory includes plugin build and test scripts, `bin` wrappers and
+built `runtime` artefacts as well as the named test suites. Freeze their actual
+paths and revisions during implementation; a green source test does not prove
+the wrapper or built runtime selects the correct checker.
+
+The kept 2.0 checker's closed cause list is part of its immutable pin. A 2.0
+consumer cannot introduce a new cause that pin rejects and still claim that
+check passes. Any coordinated re-pin is separate, explicitly scoped 2.0 work;
+this 3.0 text authorises none. Preserve the old validator imports too.
 
 ## Rollback
 
-**ROLL-7 `[P]`** The foundation step changes two repositories, two pins and
-the skill text. The two pins land together.
+**ROLL-7 `[A 3]` `[P]`** The foundation owns new tools in agent-engineering
+and starter sources in the separate template. Existing consumers and kept
+2.0 tooling retain their current owners. The build records every changed
+repository revision, tool pin, consumer route and skill revision as one
+coordinated release set; do not assume the older plan's count of two pins.
 
-- The step has a written rollback that returns both repositories to their
-  earlier pins and restores the earlier skill text.
+- The step has a written rollback that returns every changed owner to its
+  recorded earlier revision and pins and restores the earlier skill text.
 - The rollback is rehearsed before the step merges
   ([V-25](verification.md#checks)).
 - A rollback leaves every `2.0.0` CLI and the kept checker untouched.
@@ -89,34 +105,40 @@ does not exist.
 
 ## Successor criteria
 
-**ROLL-8 `[Q 6]`** The accepted criteria CDS-CE-1 to CDS-CE-3 name `2.0.0`.
+**ROLL-8 `[P]`** The accepted criteria CDS-CE-1 to CDS-CE-3 name `2.0.0`.
 The contract specification revision that adopts this text needs successors.
 Proposed wording:
 
-| Successor of | Statement |
-| --- | --- |
-| CDS-CE-1 | The exact 3.0 contract is accepted as bytes bound to a SHA-256: every key and its presence class, the outcome, state and cause vocabulary, every exit meaning, the step kinds, the version rule, the help and discovery shapes, and the lifecycle and fallback tables. An independent review finds no unresolved policy cell. |
-| CDS-CE-2 | One typed owner implements only the accepted tables. External data enters as `unknown`. One writer guards JSON and validates the whole envelope immediately before serialisation. All locks in [GATE-6 and GATE-7](static-gates.md#compile-time-locks) compile-fail with a recorded code and a sensitivity control. Typed-to-wire holds one way. Each marker is stripped independently and its diagnostic code and location asserted. A withdrawn probe is preserved with its decision reason. Parser-owned brands. Runtime specimens cover every admitted correlation and every ingress and egress route. No raw exception reaches machine stderr. A compiler pass alone qualifies neither serialisation nor authority. |
-| CDS-CE-3 | The 3.0 checker judges every admitted rule independently: expected rows and codes frozen before implementation; one otherwise-valid mutation per rule with unrelated rows green; bare human discovery; optional retained raw streams, kept only at private explicit destinations with stated custody; envelope-bearing exits 1, 4 and 75 process-proved with declared commands; real exit codes compared with each row's expected exit; the format cases of [VER-10](versioning.md#format-cases) proved; every observation exclusion and skipped row disclosed. Independent verification runs every negative, conformant, broken and wrong candidate. The 2.0 manifest, oracle and fixtures stay immutable as historical evidence. Lifecycle behaviour is proved by its own process rows, never inferred. |
+| Successor of | Statement                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| CDS-CE-1     | The exact 3.0 contract is accepted as bytes bound to a SHA-256: every key and its presence class, the outcome, state and cause vocabulary, every exit meaning, the step kinds, the version rule, the help and discovery shapes, and the lifecycle and fallback tables. An independent review finds no unresolved policy cell.                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| CDS-CE-2     | One typed owner implements only the accepted tables. External data enters as `unknown`. One writer guards JSON and validates the whole envelope immediately before serialisation. All locks in [GATE-6 and GATE-7](static-gates.md#compile-time-locks) compile-fail with a recorded code and a sensitivity control. Typed-to-wire holds one way. Each marker is stripped independently and its diagnostic code and location asserted. A withdrawn probe is preserved with its decision reason. Parser-owned brands. Runtime specimens cover every admitted correlation and every ingress and egress route. No raw exception reaches machine stderr. A compiler pass alone qualifies neither serialisation nor authority.                                                                                  |
+| CDS-CE-3     | The 3.0 checker judges every admitted rule independently: expected rows and codes frozen before implementation; one otherwise-valid mutation per rule with unrelated rows green; bare human discovery; optional retained raw streams, kept only at private explicit destinations with stated custody; envelope-bearing exits 1, 4 and 75 process-proved with declared commands; real exit codes compared with each row's expected exit; the format cases of [VER-10](versioning.md#format-cases) proved; every observation exclusion and skipped row disclosed. Independent verification runs every negative, conformant, broken and wrong candidate. The 2.0 manifest, oracle and fixtures stay immutable as historical evidence. Lifecycle behaviour is proved by its own process rows, never inferred. |
 
 ## What makes this text binding
 
 **ROLL-9 `[D 7]` `[D 15]` `[D 17]` `[P]`** In this order:
 
-| Step | State on 15 November 2026 |
-| --- | --- |
-| 1. An accepted scope and a ticket for the text, after the template's fourth revision lands | The fourth revision has merged. Scope and ticket accepted: coordinator-verified conversation evidence, quoted in [review.md](review.md). Not a vault record. Not published to a tracker. Accepting the scope accepts none of this text. |
-| 2. The 3.0 contract text drafted as skill reference files | This candidate |
-| 3. An independent review with no unresolved policy cell. The writer gives no verdict. | [review.md](review.md) |
-| 4. Nathan accepts exact bytes, bound to a SHA-256 | Not done. Open decisions remain ([decisions.md](decisions.md)). |
-| 5. A new accepted revision of the contract specification that points at those bytes, keeps the 2.0 packet binding for 2.0.0 CLIs and replaces CDS-CE-1 to CDS-CE-3 | Not done |
-| 6. A template specification revision: the criterion "no duplicate contract", the two lint rules, the 3.0.0 target, the lines citing the 2.0 contract, the dependency row that names a schema library, and the two profiles replaced by a base plus add-ons | Not done |
-| 7. The source packet's owner line changed: this skill owns the rules for good, the stamped shared file owns the code, and a toolkit, if one is ever built, uses the contract and cannot redefine it | Not done |
-| 8. The decisions of 15 November 2026 entered in the decision log | Not done |
-| 9. Merge, then installation, as separate states | Not done |
+| Step                                                                                                                                                                                                                                                            | State on 15 November 2026                                                                                                                                                                                                                                                                                   |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1. An accepted scope and a ticket for the text, after the template's fourth revision lands                                                                                                                                                                      | The fourth revision has merged. Scope and ticket accepted: coordinator-verified conversation evidence, quoted in the original review.md at commit `9d1ecf1`, with scope preserved in [review.md](review.md). Not a vault record. Not published to a tracker. Accepting the scope accepts none of this text. |
+| 2. The 3.0 contract text drafted as skill reference files                                                                                                                                                                                                       | This candidate                                                                                                                                                                                                                                                                                              |
+| 3. An independent review with no unresolved policy cell. The writer gives no verdict.                                                                                                                                                                           | [review.md](review.md)                                                                                                                                                                                                                                                                                      |
+| 4. Nathan accepts exact bytes, bound to a SHA-256                                                                                                                                                                                                               | Not done. Open decisions remain ([decisions.md](decisions.md)).                                                                                                                                                                                                                                             |
+| 5. A new accepted revision of the contract specification that points at those bytes, keeps the 2.0 packet binding for 2.0.0 CLIs and replaces CDS-CE-1 to CDS-CE-3                                                                                              | Not done                                                                                                                                                                                                                                                                                                    |
+| 6. A template specification revision: the criterion "no duplicate contract", the selected lint rules, the 3.0.0 target, the lines citing the 2.0 contract, the dependency row that names a schema library, and the two profiles replaced by a base plus add-ons | Not done                                                                                                                                                                                                                                                                                                    |
+| 7. The source packet's owner line changed: this skill owns the rules for good, the stamped shared file owns the code, and a toolkit, if one is ever built, uses the contract and cannot redefine it                                                             | Not done                                                                                                                                                                                                                                                                                                    |
+| 8. The decisions of 15 November 2026 entered in the decision log                                                                                                                                                                                                | Not done                                                                                                                                                                                                                                                                                                    |
+| 9. Merge, then installation, as separate states                                                                                                                                                                                                                 | Not done                                                                                                                                                                                                                                                                                                    |
 
-Where steps 5 to 8 are recorded once the vault is deprecated is open
-([decisions.md](decisions.md), Q9).
+A17 places the exact-text acceptance record beside this contract in
+agent-engineering. After actual acceptance, record the manifest hash, Nathan's
+explicit approval evidence and scope; never fabricate acceptance from this
+drafting instruction. Existing B6 records and their repository revisions keep
+their owners. Post-vault planning ownership remains open; moving those records
+is not required or authorised by this draft. The fourth revision merged with
+unresolved failing/pending composer CI. Its merge is not evidence that every
+check passed; preserve those findings in later foundation prerequisite review.
 
 **ROLL-10 `[D 15]` `[P]`** This skill is the contract's owner for good
 `[D 15]`. The rest of this clause is proposed. The tables here are
