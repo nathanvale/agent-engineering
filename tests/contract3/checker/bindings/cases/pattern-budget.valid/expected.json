@@ -1,0 +1,93 @@
+{
+  "bindingVersion": 1,
+  "id": "pattern-budget.valid",
+  "rule": "pattern-budget",
+  "group": "P",
+  "kind": "valid-twin",
+  "oracle": ["rules/pattern-budget/validTwin"],
+  "verification": ["V-44"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [
+    "pattern-budget.valid/cd-find:run",
+    "pattern-budget.valid/subject:run"
+  ],
+  "checker": {
+    "exitCode": 0,
+    "outcome": "success",
+    "causeCode": "SUCCESS_UNCHANGED",
+    "failureClass": null,
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": "report",
+    "stderr": "",
+    "messageIncludes": []
+  },
+  "rows": [
+    {
+      "caseId": "pattern-budget.valid/discovery",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "pattern-budget.valid/cd-find",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "exit-expected",
+        "cause-expected",
+        "pattern-syntax"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "pattern-budget.valid/subject",
+      "passed": [
+        "pattern-budget",
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "exit-expected",
+        "cause-expected",
+        "station-observed"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 25,
+    "failed": 0,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 25
+  },
+  "excluded": {},
+  "harness": null,
+  "static": null,
+  "notes": null
+}

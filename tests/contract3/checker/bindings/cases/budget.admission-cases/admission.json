@@ -1,0 +1,3604 @@
+{
+  "admissionVersion": 1,
+  "cli": "specimen",
+  "cases": [
+    {
+      "caseId": "budget.admission-cases/c000",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c001",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c002",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c003",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c004",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c005",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c006",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c007",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c008",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c009",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c010",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c011",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c012",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c013",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c014",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c015",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c016",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c017",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c018",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c019",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c020",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c021",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c022",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c023",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c024",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c025",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c026",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c027",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c028",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c029",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c030",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c031",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c032",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c033",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c034",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c035",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c036",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c037",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c038",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c039",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c040",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c041",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c042",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c043",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c044",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c045",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c046",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c047",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c048",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c049",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c050",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c051",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c052",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c053",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c054",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c055",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c056",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c057",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c058",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c059",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c060",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c061",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c062",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c063",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c064",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c065",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c066",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c067",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c068",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c069",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c070",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c071",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c072",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c073",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c074",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c075",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c076",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c077",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c078",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c079",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c080",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c081",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c082",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c083",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c084",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c085",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c086",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c087",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c088",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c089",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c090",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c091",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c092",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c093",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c094",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c095",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c096",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c097",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c098",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c099",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c100",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c101",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c102",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c103",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c104",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c105",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c106",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c107",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c108",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c109",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c110",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c111",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c112",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c113",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c114",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c115",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c116",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c117",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c118",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c119",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c120",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c121",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c122",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c123",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c124",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c125",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c126",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c127",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c128",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c129",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c130",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c131",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c132",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c133",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c134",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c135",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c136",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c137",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c138",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c139",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c140",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c141",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c142",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c143",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c144",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c145",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c146",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c147",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c148",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c149",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c150",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c151",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c152",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c153",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c154",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c155",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c156",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c157",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c158",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c159",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c160",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c161",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c162",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c163",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c164",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c165",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c166",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c167",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c168",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c169",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c170",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c171",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c172",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c173",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c174",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c175",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c176",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c177",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c178",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c179",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c180",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c181",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c182",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c183",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c184",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c185",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c186",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c187",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c188",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c189",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c190",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c191",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c192",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c193",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c194",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c195",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c196",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c197",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c198",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c199",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c200",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c201",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c202",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c203",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c204",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c205",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c206",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c207",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c208",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c209",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c210",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c211",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c212",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c213",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c214",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c215",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c216",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c217",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c218",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c219",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c220",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c221",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c222",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c223",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c224",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c225",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c226",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c227",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c228",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c229",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c230",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c231",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c232",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c233",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c234",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c235",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c236",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c237",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c238",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c239",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c240",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c241",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c242",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c243",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c244",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c245",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c246",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c247",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c248",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c249",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c250",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c251",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c252",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c253",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c254",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c255",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "budget.admission-cases/c256",
+      "rules": ["json-framing"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    }
+  ]
+}

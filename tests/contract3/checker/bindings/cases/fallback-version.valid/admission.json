@@ -1,0 +1,28 @@
+{
+  "admissionVersion": 1,
+  "cli": "specimen",
+  "cases": [
+    {
+      "caseId": "fallback-version.valid/subject",
+      "rules": [
+        "fallback-version",
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "presence",
+        "result-correlation",
+        "guidance-arm"
+      ],
+      "role": "command",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "subject.stdout",
+        "stderr": "subject.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    }
+  ]
+}

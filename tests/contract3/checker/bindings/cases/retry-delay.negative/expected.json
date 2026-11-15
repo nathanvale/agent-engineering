@@ -1,0 +1,107 @@
+{
+  "bindingVersion": 1,
+  "id": "retry-delay.negative",
+  "rule": "retry-delay",
+  "group": "X",
+  "kind": "negative",
+  "oracle": [
+    "rules/retry-delay/negative",
+    "rules/retry-delay/requiredVariations/3"
+  ],
+  "verification": ["V-34"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": [
+      "retry-delay.negative/subject",
+      "3.0.0",
+      "retryDelayMilliseconds"
+    ]
+  },
+  "rows": [
+    {
+      "caseId": "retry-delay.negative/discovery",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "retry-delay.negative/cd-apply",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "station-duplicate",
+        "retry-policy",
+        "input-schema"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "retry-delay.negative/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "version-major",
+        "version-newer",
+        "strict-keys",
+        "presence",
+        "guidance-arm",
+        "retry-kind",
+        "json-values",
+        "effects-sets",
+        "effects-state",
+        "failure-data",
+        "closed-union",
+        "available-order",
+        "guidance-template",
+        "available-target",
+        "station-fixed",
+        "binding-keys"
+      ],
+      "failed": {
+        "retry-delay": "RETRY_DELAY_INVALID"
+      },
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 30,
+    "failed": 1,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 31
+  },
+  "excluded": {
+    "result-correlation": "reads delay, which this mutation changes",
+    "metadata-values": "reads integers, which this mutation changes"
+  },
+  "harness": null,
+  "static": null,
+  "notes": null
+}

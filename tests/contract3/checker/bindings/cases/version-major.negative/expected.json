@@ -1,0 +1,65 @@
+{
+  "bindingVersion": 1,
+  "id": "version-major.negative",
+  "rule": "version-major",
+  "group": "V",
+  "kind": "negative",
+  "oracle": [
+    "rules/version-major/negative",
+    "additionalControls/kept-tool-route",
+    "formatCases/other-major/values/0"
+  ],
+  "verification": ["V-16", "V-17"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": ["version-major.negative/subject:run"],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_UNSUPPORTED_CONTRACT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": [
+      "version-major.negative/subject",
+      "2.0.0",
+      "config/agents/plugins/my-second-brain-playground/bin/cli-design-check",
+      "29bf4bb0f307f96d396aa087472a4dbed849c920"
+    ]
+  },
+  "rows": [
+    {
+      "caseId": "version-major.negative/subject",
+      "passed": ["json-framing", "version-malformed", "machine-stderr"],
+      "failed": {
+        "version-major": "VERSION_UNSUPPORTED_MAJOR"
+      },
+      "notRun": {
+        "strict-keys": "blocked: version refusal; no other key of a refused version is interpreted (VER-10)",
+        "presence": "blocked: version refusal; no other key of a refused version is interpreted (VER-10)",
+        "exit-envelope": "blocked: version refusal; no other key of a refused version is interpreted (VER-10)"
+      },
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 3,
+    "failed": 1,
+    "not_run": 3,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 7
+  },
+  "excluded": {
+    "version-newer": "classification stops at the first refused class (VER-10 order); a later class is not admitted"
+  },
+  "harness": null,
+  "static": null,
+  "notes": "A well-formed Contract 2.0 envelope (envelopeVersion and nextAction). The refusal names the kept checker route from retained-2.json and never invokes it."
+}

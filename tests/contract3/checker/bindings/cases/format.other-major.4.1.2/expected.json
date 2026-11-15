@@ -1,0 +1,56 @@
+{
+  "bindingVersion": 1,
+  "id": "format.other-major.4.1.2",
+  "rule": "version-major",
+  "group": "V",
+  "kind": "format-case",
+  "oracle": ["formatCases/other-major/values/2"],
+  "verification": ["V-16", "V-17"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": ["format.other-major.4.1.2/subject:run"],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_UNSUPPORTED_CONTRACT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": ["format.other-major.4.1.2/subject", "4.1.2"]
+  },
+  "rows": [
+    {
+      "caseId": "format.other-major.4.1.2/subject",
+      "passed": ["json-framing", "version-malformed", "machine-stderr"],
+      "failed": {
+        "version-major": "VERSION_UNSUPPORTED_MAJOR"
+      },
+      "notRun": {
+        "strict-keys": "blocked: version refusal; no other key of a refused version is interpreted (VER-10)",
+        "presence": "blocked: version refusal; no other key of a refused version is interpreted (VER-10)",
+        "exit-envelope": "blocked: version refusal; no other key of a refused version is interpreted (VER-10)"
+      },
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 3,
+    "failed": 1,
+    "not_run": 3,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 7
+  },
+  "excluded": {
+    "version-newer": "classification stops at the first refused class (VER-10 order); a later class is not admitted"
+  },
+  "harness": null,
+  "static": null,
+  "notes": null
+}

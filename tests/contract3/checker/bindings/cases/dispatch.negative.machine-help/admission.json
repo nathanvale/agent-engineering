@@ -1,0 +1,27 @@
+{
+  "admissionVersion": 1,
+  "cli": "specimen",
+  "cases": [
+    {
+      "caseId": "dispatch.negative.machine-help/subject",
+      "rules": ["dispatch"],
+      "role": "help",
+      "mode": "machine",
+      "target": {
+        "kind": "run",
+        "program": "bun-runtime",
+        "args": ["../../../specimens/target.mjs", "--help", "--json"],
+        "cwd": ".",
+        "env": {
+          "SPECIMEN_TABLE": "subject.table.json"
+        }
+      },
+      "expect": {
+        "exitCode": 0,
+        "causeCode": "SUCCESS_UNCHANGED",
+        "outcome": "success",
+        "commandIdentity": "specimen.help"
+      }
+    }
+  ]
+}

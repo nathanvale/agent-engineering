@@ -1,0 +1,63 @@
+{
+  "bindingVersion": 1,
+  "id": "command-selection.negative",
+  "rule": "command-selection",
+  "group": "P",
+  "kind": "negative",
+  "oracle": ["rules/command-selection/negative"],
+  "verification": ["V-43"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": ["command-selection.negative/subject:run"],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": [
+      "command-selection.negative/subject",
+      "3.0.0",
+      "stations"
+    ]
+  },
+  "rows": [
+    {
+      "caseId": "command-selection.negative/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "exit-expected",
+        "cause-expected"
+      ],
+      "failed": {
+        "command-selection": "COMMAND_DISCOVERY_SELECTION"
+      },
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 8,
+    "failed": 1,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 9
+  },
+  "excluded": {},
+  "harness": null,
+  "static": null,
+  "notes": null
+}

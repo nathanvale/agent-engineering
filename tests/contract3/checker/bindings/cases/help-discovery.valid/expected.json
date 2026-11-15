@@ -1,0 +1,77 @@
+{
+  "bindingVersion": 1,
+  "id": "help-discovery.valid",
+  "rule": "help-discovery",
+  "group": "P",
+  "kind": "valid-twin",
+  "oracle": ["rules/help-discovery/validTwin"],
+  "verification": ["V-43"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [
+    "help-discovery.valid/discovery:run",
+    "help-discovery.valid/subject:run"
+  ],
+  "checker": {
+    "exitCode": 0,
+    "outcome": "success",
+    "causeCode": "SUCCESS_UNCHANGED",
+    "failureClass": null,
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": "report",
+    "stderr": "",
+    "messageIncludes": []
+  },
+  "rows": [
+    {
+      "caseId": "help-discovery.valid/discovery",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "exit-expected",
+        "cause-expected"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "help-discovery.valid/subject",
+      "passed": [
+        "help-discovery",
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "exit-expected",
+        "cause-expected"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 17,
+    "failed": 0,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 17
+  },
+  "excluded": {},
+  "harness": null,
+  "static": null,
+  "notes": null
+}

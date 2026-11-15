@@ -1,0 +1,107 @@
+{
+  "bindingVersion": 1,
+  "id": "deterministic-fields.negative",
+  "rule": "deterministic-fields",
+  "group": "P",
+  "kind": "negative",
+  "oracle": [
+    "rules/deterministic-fields/negative",
+    "rules/deterministic-fields/requiredVariations/0"
+  ],
+  "verification": ["V-48"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [
+    "deterministic-fields.negative/first:run",
+    "deterministic-fields.negative/second:run"
+  ],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": ["deterministic-fields.negative/second", "3.0.0", "data"]
+  },
+  "rows": [
+    {
+      "caseId": "deterministic-fields.negative/discovery",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "deterministic-fields.negative/cd-list",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "station-duplicate",
+        "retry-policy",
+        "input-schema"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "deterministic-fields.negative/first",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "station-observed"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "deterministic-fields.negative/second",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "station-observed"
+      ],
+      "failed": {
+        "deterministic-fields": "DETERMINISTIC_RESULT_CHANGED"
+      },
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 26,
+    "failed": 1,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 27
+  },
+  "excluded": {},
+  "harness": null,
+  "static": null,
+  "notes": null
+}

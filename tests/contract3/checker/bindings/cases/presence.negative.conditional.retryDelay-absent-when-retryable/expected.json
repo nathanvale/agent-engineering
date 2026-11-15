@@ -1,0 +1,104 @@
+{
+  "bindingVersion": 1,
+  "id": "presence.negative.conditional.retryDelay-absent-when-retryable",
+  "rule": "presence",
+  "group": "E",
+  "kind": "variation-negative",
+  "oracle": ["rules/presence/requiredVariations/2"],
+  "verification": ["V-34"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": [
+      "presence.negative.conditional.retryDelay-absent-when-retryable/subject",
+      "3.0.0",
+      "retryDelayMilliseconds"
+    ]
+  },
+  "rows": [
+    {
+      "caseId": "presence.negative.conditional.retryDelay-absent-when-retryable/discovery",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "presence.negative.conditional.retryDelay-absent-when-retryable/cd-apply",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "station-duplicate",
+        "retry-policy",
+        "input-schema"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "presence.negative.conditional.retryDelay-absent-when-retryable/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "version-major",
+        "version-newer",
+        "guidance-arm",
+        "retry-kind",
+        "metadata-values",
+        "json-values",
+        "effects-sets",
+        "effects-state",
+        "failure-data",
+        "closed-union",
+        "available-order",
+        "guidance-template",
+        "available-target",
+        "station-fixed",
+        "binding-keys"
+      ],
+      "failed": {
+        "presence": "KEY_PRESENCE"
+      },
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 29,
+    "failed": 1,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 30
+  },
+  "excluded": {
+    "strict-keys": "reads keyset, which this mutation changes",
+    "result-correlation": "reads delay, which this mutation changes",
+    "retry-delay": "reads delay, which this mutation changes"
+  },
+  "harness": null,
+  "static": null,
+  "notes": null
+}

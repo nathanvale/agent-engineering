@@ -1,0 +1,56 @@
+{
+  "bindingVersion": 1,
+  "id": "fallback-version.valid",
+  "rule": "fallback-version",
+  "group": "E",
+  "kind": "valid-twin",
+  "oracle": ["rules/fallback-version/validTwin"],
+  "verification": ["V-16"],
+  "reader": "test-minor-3.1.0",
+  "provisional": ["d3-reader"],
+  "admission": "admission.json",
+  "targetExecutions": [],
+  "checker": {
+    "exitCode": 0,
+    "outcome": "success",
+    "causeCode": "SUCCESS_UNCHANGED",
+    "failureClass": null,
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": "report",
+    "stderr": "",
+    "messageIncludes": []
+  },
+  "rows": [
+    {
+      "caseId": "fallback-version.valid/subject",
+      "passed": [
+        "fallback-version",
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "presence",
+        "result-correlation",
+        "guidance-arm"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 7,
+    "failed": 0,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 7
+  },
+  "excluded": {},
+  "harness": null,
+  "static": null,
+  "notes": "An INTERNAL_PREPARATION fallback at 3.0.0 using only 3.0.0 keys and members, read by the 3.1 reader."
+}

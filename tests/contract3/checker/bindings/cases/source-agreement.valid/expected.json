@@ -1,0 +1,44 @@
+{
+  "bindingVersion": 1,
+  "id": "source-agreement.valid",
+  "rule": "source-agreement",
+  "group": "T",
+  "kind": "static-valid",
+  "oracle": [
+    "rules/source-agreement/validTwin",
+    "rules/source-agreement/negative"
+  ],
+  "verification": ["V-35"],
+  "reader": null,
+  "provisional": [],
+  "admission": null,
+  "targetExecutions": [],
+  "checker": null,
+  "rows": [],
+  "rowsUnbound": null,
+  "counts": null,
+  "excluded": {},
+  "harness": null,
+  "static": {
+    "expected": {
+      "exitOwner": {
+        "success": 0,
+        "internal": 1,
+        "usage": 2,
+        "domain": 3,
+        "schema": 4,
+        "transient": 75
+      },
+      "commonCauses": "expectations.json#/common_causes/rows (20 rows)",
+      "resultTruthTable": "expectations.json#/result_truth_table/rows (20 rows)",
+      "effectStateTable": "expectations.json#/effect_state_table/rows (5 rows)",
+      "signalExits": {
+        "130": "SIGINT",
+        "143": "SIGTERM"
+      }
+    },
+    "assertion": "The checker's typed tables equal these independent values.",
+    "negativeControl": "Change one exit (for example transient to 3) in the checker's typed owner only; the static test must fail with CONTRACT_TABLE_DRIFT. The mutation site is the implementer's file."
+  },
+  "notes": null
+}

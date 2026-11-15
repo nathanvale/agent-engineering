@@ -1,0 +1,85 @@
+{
+  "admissionVersion": 1,
+  "cli": "specimen",
+  "cases": [
+    {
+      "caseId": "effects-sets.negative.unsorted.completed/discovery",
+      "rules": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "role": "discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/discovery.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "effects-sets.negative.unsorted.completed/cd-apply",
+      "rules": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "station-duplicate",
+        "retry-policy",
+        "input-schema"
+      ],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-apply.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "effects-sets.negative.unsorted.completed/subject",
+      "rules": [
+        "effects-sets",
+        "json-framing",
+        "version-malformed",
+        "version-major",
+        "version-newer",
+        "strict-keys",
+        "presence",
+        "result-correlation",
+        "guidance-arm",
+        "retry-kind",
+        "metadata-values",
+        "json-values",
+        "failure-data",
+        "handoff-shape",
+        "closed-union",
+        "available-order",
+        "inspection-target",
+        "guidance-template",
+        "available-target",
+        "station-fixed",
+        "retry-delay",
+        "binding-keys"
+      ],
+      "role": "command",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "subject.stdout",
+        "stderr": "subject.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    }
+  ]
+}

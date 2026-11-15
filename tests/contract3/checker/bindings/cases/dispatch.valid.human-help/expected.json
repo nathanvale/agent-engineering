@@ -1,0 +1,48 @@
+{
+  "bindingVersion": 1,
+  "id": "dispatch.valid.human-help",
+  "rule": "dispatch",
+  "group": "P",
+  "kind": "variation-valid",
+  "oracle": ["rules/dispatch/requiredVariations/4"],
+  "verification": ["V-43"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": ["dispatch.valid.human-help/subject:run"],
+  "checker": {
+    "exitCode": 0,
+    "outcome": "success",
+    "causeCode": "SUCCESS_UNCHANGED",
+    "failureClass": null,
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": "report",
+    "stderr": "",
+    "messageIncludes": []
+  },
+  "rows": [
+    {
+      "caseId": "dispatch.valid.human-help/subject",
+      "passed": ["dispatch", "exit-expected"],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 2,
+    "failed": 0,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 2
+  },
+  "excluded": {},
+  "harness": null,
+  "static": null,
+  "notes": "Human help exits 2. The negative admits only dispatch: its output may not be one envelope."
+}

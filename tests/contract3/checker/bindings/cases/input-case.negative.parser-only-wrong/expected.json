@@ -1,0 +1,92 @@
+{
+  "bindingVersion": 1,
+  "id": "input-case.negative.parser-only-wrong",
+  "rule": "input-case",
+  "group": "P",
+  "kind": "variation-negative",
+  "oracle": ["rules/input-case/requiredVariations/1"],
+  "verification": ["V-44"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": ["input-case.negative.parser-only-wrong/subject:run"],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": [
+      "input-case.negative.parser-only-wrong/subject",
+      "3.0.0"
+    ]
+  },
+  "rows": [
+    {
+      "caseId": "input-case.negative.parser-only-wrong/discovery",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "input-case.negative.parser-only-wrong/cd-find",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "station-duplicate",
+        "retry-policy",
+        "input-schema"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "input-case.negative.parser-only-wrong/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "station-observed"
+      ],
+      "failed": {
+        "input-case": "INPUT_CASE_MISMATCH"
+      },
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 19,
+    "failed": 1,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 20
+  },
+  "excluded": {
+    "exit-expected": "reads observed, which this mutation changes",
+    "cause-expected": "reads observed, which this mutation changes"
+  },
+  "harness": null,
+  "static": null,
+  "notes": null
+}

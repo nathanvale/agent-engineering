@@ -1,0 +1,10 @@
+{
+  "argv": ["--discover-command", "specimen.dispatch", "--json"],
+  "responses": [
+    {
+      "stdout": "cd-dispatch.0.stdout",
+      "stderr": null,
+      "exit": 0
+    }
+  ]
+}

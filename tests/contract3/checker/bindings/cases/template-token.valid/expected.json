@@ -1,0 +1,86 @@
+{
+  "bindingVersion": 1,
+  "id": "template-token.valid",
+  "rule": "template-token",
+  "group": "E",
+  "kind": "valid-twin",
+  "oracle": ["rules/template-token/validTwin"],
+  "verification": ["V-14"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [],
+  "checker": {
+    "exitCode": 0,
+    "outcome": "success",
+    "causeCode": "SUCCESS_UNCHANGED",
+    "failureClass": null,
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": "report",
+    "stderr": "",
+    "messageIncludes": []
+  },
+  "rows": [
+    {
+      "caseId": "template-token.valid/discovery",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "template-token.valid/subject",
+      "passed": [
+        "template-token",
+        "json-framing",
+        "version-malformed",
+        "version-major",
+        "version-newer",
+        "strict-keys",
+        "presence",
+        "result-correlation",
+        "effect-inventory",
+        "guidance-arm",
+        "retry-kind",
+        "done-outcome",
+        "metadata-values",
+        "json-values",
+        "effects-sets",
+        "effects-state",
+        "closed-union",
+        "available-order",
+        "station-duplicate",
+        "retry-policy",
+        "lost-result-inspect",
+        "input-schema",
+        "pattern-syntax"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 29,
+    "failed": 0,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 29
+  },
+  "excluded": {},
+  "harness": null,
+  "static": null,
+  "notes": "show's DOMAIN_NOTE_MISSING repairAction uses {runId}."
+}

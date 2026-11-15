@@ -1,0 +1,181 @@
+{
+  "admissionVersion": 1,
+  "cli": "specimen",
+  "cases": [
+    {
+      "caseId": "builtins.valid/discovery",
+      "rules": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "exit-expected",
+        "cause-expected",
+        "builtins"
+      ],
+      "role": "discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "run",
+        "program": "bun-runtime",
+        "args": ["../../../specimens/target.mjs", "--discover", "--json"],
+        "cwd": ".",
+        "env": {
+          "SPECIMEN_TABLE": "discovery.table.json"
+        }
+      },
+      "expect": {
+        "exitCode": 0,
+        "causeCode": "SUCCESS_UNCHANGED",
+        "outcome": "success",
+        "commandIdentity": "specimen.discovery"
+      }
+    },
+    {
+      "caseId": "builtins.valid/cd-help",
+      "rules": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "exit-expected",
+        "cause-expected",
+        "builtins"
+      ],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "run",
+        "program": "bun-runtime",
+        "args": [
+          "../../../specimens/target.mjs",
+          "--discover-command",
+          "specimen.help",
+          "--json"
+        ],
+        "cwd": ".",
+        "env": {
+          "SPECIMEN_TABLE": "cd-help.table.json"
+        }
+      },
+      "expect": {
+        "exitCode": 0,
+        "causeCode": "SUCCESS_UNCHANGED",
+        "outcome": "success",
+        "commandIdentity": "specimen.command-discovery"
+      }
+    },
+    {
+      "caseId": "builtins.valid/cd-discovery",
+      "rules": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "exit-expected",
+        "cause-expected",
+        "builtins"
+      ],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "run",
+        "program": "bun-runtime",
+        "args": [
+          "../../../specimens/target.mjs",
+          "--discover-command",
+          "specimen.discovery",
+          "--json"
+        ],
+        "cwd": ".",
+        "env": {
+          "SPECIMEN_TABLE": "cd-discovery.table.json"
+        }
+      },
+      "expect": {
+        "exitCode": 0,
+        "causeCode": "SUCCESS_UNCHANGED",
+        "outcome": "success",
+        "commandIdentity": "specimen.command-discovery"
+      }
+    },
+    {
+      "caseId": "builtins.valid/cd-commandDiscovery",
+      "rules": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "exit-expected",
+        "cause-expected",
+        "builtins"
+      ],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "run",
+        "program": "bun-runtime",
+        "args": [
+          "../../../specimens/target.mjs",
+          "--discover-command",
+          "specimen.command-discovery",
+          "--json"
+        ],
+        "cwd": ".",
+        "env": {
+          "SPECIMEN_TABLE": "cd-commandDiscovery.table.json"
+        }
+      },
+      "expect": {
+        "exitCode": 0,
+        "causeCode": "SUCCESS_UNCHANGED",
+        "outcome": "success",
+        "commandIdentity": "specimen.command-discovery"
+      }
+    },
+    {
+      "caseId": "builtins.valid/cd-dispatch",
+      "rules": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "exit-expected",
+        "cause-expected",
+        "builtins"
+      ],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "run",
+        "program": "bun-runtime",
+        "args": [
+          "../../../specimens/target.mjs",
+          "--discover-command",
+          "specimen.dispatch",
+          "--json"
+        ],
+        "cwd": ".",
+        "env": {
+          "SPECIMEN_TABLE": "cd-dispatch.table.json"
+        }
+      },
+      "expect": {
+        "exitCode": 0,
+        "causeCode": "SUCCESS_UNCHANGED",
+        "outcome": "success",
+        "commandIdentity": "specimen.command-discovery"
+      }
+    }
+  ]
+}

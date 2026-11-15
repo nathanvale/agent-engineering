@@ -1,0 +1,96 @@
+{
+  "bindingVersion": 1,
+  "id": "pattern-isolation.pattern-size",
+  "rule": "pattern-isolation",
+  "group": "H",
+  "kind": "harness",
+  "oracle": ["rules/pattern-isolation/requiredVariations/1"],
+  "verification": ["V-44"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [
+    "pattern-isolation.pattern-size/cd-find:run",
+    "pattern-isolation.pattern-size/subject:run"
+  ],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": ["pattern-isolation.pattern-size/subject", "3.0.0"]
+  },
+  "rows": [
+    {
+      "caseId": "pattern-isolation.pattern-size/discovery",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "pattern-isolation.pattern-size/cd-find",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "exit-expected",
+        "cause-expected",
+        "pattern-syntax"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "pattern-isolation.pattern-size/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "exit-expected",
+        "cause-expected"
+      ],
+      "failed": {
+        "pattern-budget": "PATTERN_BUDGET_EXCEEDED"
+      },
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 23,
+    "failed": 1,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 24
+  },
+  "excluded": {},
+  "harness": {
+    "rule": "pattern-isolation",
+    "assertion": "Refused for pattern size before any match; checker exits within 5,000 ms."
+  },
+  "static": null,
+  "notes": null
+}

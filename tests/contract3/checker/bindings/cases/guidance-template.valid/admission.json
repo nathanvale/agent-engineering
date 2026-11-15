@@ -1,0 +1,108 @@
+{
+  "admissionVersion": 1,
+  "cli": "specimen",
+  "cases": [
+    {
+      "caseId": "guidance-template.valid/discovery",
+      "rules": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "role": "discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/discovery.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "guidance-template.valid/cd-show",
+      "rules": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "station-duplicate",
+        "retry-policy",
+        "input-schema"
+      ],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-show.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "guidance-template.valid/cd-list",
+      "rules": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "station-duplicate",
+        "retry-policy",
+        "input-schema"
+      ],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "guidance-template.valid/subject",
+      "rules": [
+        "guidance-template",
+        "json-framing",
+        "version-malformed",
+        "version-major",
+        "version-newer",
+        "strict-keys",
+        "presence",
+        "result-correlation",
+        "effect-inventory",
+        "guidance-arm",
+        "retry-kind",
+        "metadata-values",
+        "json-values",
+        "effects-sets",
+        "effects-state",
+        "failure-data",
+        "closed-union",
+        "available-order",
+        "step-target",
+        "available-target",
+        "station-fixed",
+        "retry-delay",
+        "step-arguments",
+        "binding-keys"
+      ],
+      "role": "command",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "subject.stdout",
+        "stderr": "subject.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "bindingVersion": 1,
+  "id": "input-future-binding.valid",
+  "rule": "input-future-binding",
+  "group": "F",
+  "kind": "valid-twin",
+  "oracle": ["rules/input-future-binding/validTwin"],
+  "verification": ["V-44"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [
+    "input-future-binding.valid/subject:run",
+    "input-future-binding.valid/subject:probe"
+  ],
+  "checker": {
+    "exitCode": 0,
+    "outcome": "success",
+    "causeCode": "SUCCESS_UNCHANGED",
+    "failureClass": null,
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": "report",
+    "stderr": "",
+    "messageIncludes": []
+  },
+  "rows": [
+    {
+      "caseId": "input-future-binding.valid/discovery",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "input-future-binding.valid/cd-preview",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "station-duplicate",
+        "retry-policy",
+        "input-schema"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "input-future-binding.valid/subject",
+      "passed": [
+        "input-future-binding",
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "exit-expected",
+        "cause-expected",
+        "station-observed"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 22,
+    "failed": 0,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 22
+  },
+  "excluded": {},
+  "harness": null,
+  "static": null,
+  "notes": "--note becomes binding note in the apply step; list equals a route token (STEP-10), so it is refused before any effect. Binder reading: an argv value fault is USAGE_INVALID_INVOCATION (INPUT-2, CMD-9 step 3)."
+}

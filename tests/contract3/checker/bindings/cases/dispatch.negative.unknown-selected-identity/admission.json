@@ -1,0 +1,32 @@
+{
+  "admissionVersion": 1,
+  "cli": "specimen",
+  "cases": [
+    {
+      "caseId": "dispatch.negative.unknown-selected-identity/subject",
+      "rules": ["dispatch"],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "run",
+        "program": "bun-runtime",
+        "args": [
+          "../../../specimens/target.mjs",
+          "--discover-command",
+          "specimen.nope",
+          "--json"
+        ],
+        "cwd": ".",
+        "env": {
+          "SPECIMEN_TABLE": "subject.table.json"
+        }
+      },
+      "expect": {
+        "exitCode": 2,
+        "causeCode": "USAGE_UNKNOWN_COMMAND",
+        "outcome": "refused",
+        "commandIdentity": "specimen.command-discovery"
+      }
+    }
+  ]
+}

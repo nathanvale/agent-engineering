@@ -1,0 +1,31 @@
+{
+  "bindingVersion": 1,
+  "id": "budget.admission-cases",
+  "rule": "json-framing",
+  "group": "E",
+  "kind": "budget",
+  "oracle": ["futureBindings/3"],
+  "verification": ["V-34"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": []
+  },
+  "rows": null,
+  "rowsUnbound": null,
+  "counts": null,
+  "excluded": {},
+  "harness": null,
+  "static": null,
+  "notes": "ADMISSION_MAX_CASES + 1 captured cases: refused before any read or run."
+}

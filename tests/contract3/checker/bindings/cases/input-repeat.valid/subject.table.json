@@ -1,0 +1,12 @@
+{
+  "argv": ["find", "--json", "abc", "--tag", "x", "--tag", "y"],
+  "responses": [
+    {
+      "stdout": "subject.0.stdout",
+      "stderr": null,
+      "exit": 0,
+      "state": "tag=x\ntag=y\n"
+    }
+  ],
+  "state": "state.log"
+}

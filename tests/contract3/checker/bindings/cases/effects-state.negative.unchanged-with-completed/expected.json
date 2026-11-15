@@ -1,0 +1,104 @@
+{
+  "bindingVersion": 1,
+  "id": "effects-state.negative.unchanged-with-completed",
+  "rule": "effects-state",
+  "group": "E",
+  "kind": "variation-negative",
+  "oracle": ["rules/effects-state/requiredVariations/0"],
+  "verification": ["V-34"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": [
+      "effects-state.negative.unchanged-with-completed/subject",
+      "3.0.0",
+      "effects"
+    ]
+  },
+  "rows": [
+    {
+      "caseId": "effects-state.negative.unchanged-with-completed/discovery",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "effects-state.negative.unchanged-with-completed/cd-apply",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "station-duplicate",
+        "retry-policy",
+        "input-schema"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "effects-state.negative.unchanged-with-completed/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "version-major",
+        "version-newer",
+        "strict-keys",
+        "presence",
+        "result-correlation",
+        "guidance-arm",
+        "retry-kind",
+        "metadata-values",
+        "json-values",
+        "failure-data",
+        "closed-union",
+        "available-order",
+        "guidance-template",
+        "available-target",
+        "station-fixed",
+        "retry-delay",
+        "binding-keys"
+      ],
+      "failed": {
+        "effects-state": "EFFECT_STATE_MISMATCH"
+      },
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 31,
+    "failed": 1,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 32
+  },
+  "excluded": {
+    "effects-sets": "reads effects, which this mutation changes"
+  },
+  "harness": null,
+  "static": null,
+  "notes": null
+}

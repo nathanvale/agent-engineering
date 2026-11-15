@@ -1,0 +1,31 @@
+{
+  "bindingVersion": 1,
+  "id": "budget.stderr-over",
+  "rule": "json-framing",
+  "group": "E",
+  "kind": "budget",
+  "oracle": ["futureBindings/3"],
+  "verification": ["V-34"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": ["budget.stderr-over/subject:run"],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": ["budget.stderr-over/subject"]
+  },
+  "rows": null,
+  "rowsUnbound": "Interface gap G22: no rule owns a stream-budget refusal, so its component row is not bound.",
+  "counts": null,
+  "excluded": {},
+  "harness": null,
+  "static": null,
+  "notes": "TARGET_STDERR_MAX_BYTES + 1 bytes on stderr."
+}

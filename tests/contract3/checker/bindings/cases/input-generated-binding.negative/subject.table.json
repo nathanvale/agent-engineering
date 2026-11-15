@@ -1,0 +1,12 @@
+{
+  "argv": ["preview", "--note", "first draft", "--json"],
+  "responses": [
+    {
+      "stdout": "subject.0.stdout",
+      "stderr": null,
+      "exit": 1,
+      "state": "preview.record\n"
+    }
+  ],
+  "state": "state.log"
+}

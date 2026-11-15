@@ -1,0 +1,60 @@
+{
+  "bindingVersion": 1,
+  "id": "version.valid.production",
+  "rule": "version-malformed",
+  "group": "V",
+  "kind": "valid-twin",
+  "oracle": [
+    "rules/version-malformed/validTwin",
+    "rules/version-major/validTwin"
+  ],
+  "verification": ["V-16", "V-17"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": ["version.valid.production/subject:run"],
+  "checker": {
+    "exitCode": 0,
+    "outcome": "success",
+    "causeCode": "SUCCESS_UNCHANGED",
+    "failureClass": null,
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": "report",
+    "stderr": "",
+    "messageIncludes": ["3.0.0"]
+  },
+  "rows": [
+    {
+      "caseId": "version.valid.production/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "version-major",
+        "version-newer",
+        "machine-stderr",
+        "strict-keys",
+        "presence",
+        "exit-envelope"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 8,
+    "failed": 0,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 8
+  },
+  "excluded": {},
+  "harness": null,
+  "static": null,
+  "notes": "Production reader 3.0.0 accepts 3.0.0 without adaptation."
+}

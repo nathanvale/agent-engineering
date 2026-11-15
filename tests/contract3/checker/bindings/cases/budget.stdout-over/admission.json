@@ -1,0 +1,21 @@
+{
+  "admissionVersion": 1,
+  "cli": "specimen",
+  "cases": [
+    {
+      "caseId": "budget.stdout-over/subject",
+      "rules": ["json-framing"],
+      "role": "command",
+      "mode": "machine",
+      "target": {
+        "kind": "run",
+        "program": "bun-runtime",
+        "args": ["../../../specimens/target.mjs", "list", "--json"],
+        "cwd": ".",
+        "env": {
+          "SPECIMEN_TABLE": "subject.table.json"
+        }
+      }
+    }
+  ]
+}

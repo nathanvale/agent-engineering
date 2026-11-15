@@ -1,0 +1,86 @@
+{
+  "bindingVersion": 1,
+  "id": "input-presence.negative.repeatable-declaration",
+  "rule": "input-presence",
+  "group": "P",
+  "kind": "variation-negative",
+  "oracle": ["rules/input-presence/requiredVariations/2"],
+  "verification": ["V-44"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [
+    "input-presence.negative.repeatable-declaration/subject:run"
+  ],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": [
+      "input-presence.negative.repeatable-declaration/subject",
+      "3.0.0"
+    ]
+  },
+  "rows": [
+    {
+      "caseId": "input-presence.negative.repeatable-declaration/discovery",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "input-presence.negative.repeatable-declaration/cd-find",
+      "passed": ["json-framing", "version-malformed", "strict-keys"],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "input-presence.negative.repeatable-declaration/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "exit-expected",
+        "cause-expected",
+        "station-observed"
+      ],
+      "failed": {
+        "input-presence": "INPUT_PRESENCE_MISMATCH"
+      },
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 18,
+    "failed": 1,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 19
+  },
+  "excluded": {},
+  "harness": null,
+  "static": null,
+  "notes": null
+}

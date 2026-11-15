@@ -1,0 +1,103 @@
+{
+  "bindingVersion": 1,
+  "id": "token-argv.negative",
+  "rule": "token-argv",
+  "group": "P",
+  "kind": "negative",
+  "oracle": ["rules/token-argv/negative"],
+  "verification": ["V-14", "V-44"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": ["token-argv.negative/subject:run"],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": ["token-argv.negative/subject", "3.0.0", "args"]
+  },
+  "rows": [
+    {
+      "caseId": "token-argv.negative/discovery",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "token-argv.negative/cd-preview",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "station-duplicate",
+        "retry-policy",
+        "input-schema"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "token-argv.negative/cd-apply",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "station-duplicate",
+        "retry-policy",
+        "input-schema"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "token-argv.negative/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "machine-stderr",
+        "exit-envelope",
+        "exit-expected",
+        "cause-expected",
+        "station-observed"
+      ],
+      "failed": {
+        "token-argv": "TOKEN_ARGV_BOUNDARY"
+      },
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 26,
+    "failed": 1,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 27
+  },
+  "excluded": {
+    "result-correlation": "reads next, which this mutation changes"
+  },
+  "harness": null,
+  "static": null,
+  "notes": "G10 interpretation: element-for-element agreement of emitted args with the substituted template on a real run."
+}

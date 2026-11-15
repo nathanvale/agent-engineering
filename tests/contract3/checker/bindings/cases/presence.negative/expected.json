@@ -1,0 +1,101 @@
+{
+  "bindingVersion": 1,
+  "id": "presence.negative",
+  "rule": "presence",
+  "group": "E",
+  "kind": "negative",
+  "oracle": ["rules/presence/negative", "rules/presence/requiredVariations/0"],
+  "verification": ["V-34"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": ["presence.negative/subject", "3.0.0", "failureClass"]
+  },
+  "rows": [
+    {
+      "caseId": "presence.negative/discovery",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "presence.negative/cd-list",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "station-duplicate",
+        "retry-policy",
+        "input-schema"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "presence.negative/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "version-major",
+        "version-newer",
+        "effect-inventory",
+        "guidance-arm",
+        "retry-kind",
+        "done-outcome",
+        "metadata-values",
+        "json-values",
+        "effects-sets",
+        "effects-state",
+        "closed-union",
+        "available-order",
+        "guidance-template",
+        "available-target",
+        "retry-delay",
+        "binding-keys"
+      ],
+      "failed": {
+        "presence": "KEY_PRESENCE"
+      },
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 30,
+    "failed": 1,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 31
+  },
+  "excluded": {
+    "strict-keys": "reads keyset, which this mutation changes",
+    "result-correlation": "reads class, which this mutation changes",
+    "station-fixed": "reads class, which this mutation changes"
+  },
+  "harness": null,
+  "static": null,
+  "notes": null
+}

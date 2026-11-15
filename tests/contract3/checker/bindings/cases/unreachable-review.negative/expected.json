@@ -1,0 +1,90 @@
+{
+  "bindingVersion": 1,
+  "id": "unreachable-review.negative",
+  "rule": "unreachable-review",
+  "group": "R",
+  "kind": "negative",
+  "oracle": ["rules/unreachable-review/negative"],
+  "verification": ["V-13", "V-34"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": ["unreachable-review.negative/subject:run"],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": [
+      "unreachable-review.negative/subject",
+      "3.0.0",
+      "SCHEMA_INVALID_INPUT"
+    ]
+  },
+  "rows": [
+    {
+      "caseId": "unreachable-review.negative/discovery",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "unreachable-review.negative/cd-show",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "station-duplicate",
+        "retry-policy",
+        "input-schema"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "unreachable-review.negative/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "station-observed"
+      ],
+      "failed": {
+        "unreachable-review": "UNREACHABLE_UNJUSTIFIED"
+      },
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 19,
+    "failed": 1,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 20
+  },
+  "excluded": {},
+  "harness": null,
+  "static": null,
+  "notes": "show declares SCHEMA_INVALID_INPUT declared-unreachable; a run that reaches it is detectable."
+}

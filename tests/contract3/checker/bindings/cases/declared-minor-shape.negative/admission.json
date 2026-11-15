@@ -1,0 +1,29 @@
+{
+  "admissionVersion": 1,
+  "cli": "specimen",
+  "cases": [
+    {
+      "caseId": "declared-minor-shape.negative/subject",
+      "rules": [
+        "declared-minor-shape",
+        "json-framing",
+        "version-malformed",
+        "version-major",
+        "version-newer",
+        "result-correlation",
+        "guidance-arm",
+        "available-order"
+      ],
+      "role": "command",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "subject.stdout",
+        "stderr": "subject.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    }
+  ]
+}

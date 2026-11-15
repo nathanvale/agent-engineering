@@ -1,0 +1,11 @@
+{
+  "argv": ["list", "--json"],
+  "responses": [
+    {
+      "stdout": "list.0.stdout",
+      "stderr": null,
+      "exit": 0
+    }
+  ],
+  "state": "state.log"
+}

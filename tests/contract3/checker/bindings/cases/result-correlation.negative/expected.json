@@ -1,0 +1,121 @@
+{
+  "bindingVersion": 1,
+  "id": "result-correlation.negative",
+  "rule": "result-correlation",
+  "group": "E",
+  "kind": "negative",
+  "oracle": ["rules/result-correlation/negative"],
+  "verification": ["V-34"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": [
+      "result-correlation.negative/subject",
+      "3.0.0",
+      "exitCode"
+    ]
+  },
+  "rows": [
+    {
+      "caseId": "result-correlation.negative/discovery",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "result-correlation.negative/cd-show",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "station-duplicate",
+        "retry-policy",
+        "input-schema"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "result-correlation.negative/cd-list",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "station-duplicate",
+        "retry-policy",
+        "input-schema"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "result-correlation.negative/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "version-major",
+        "version-newer",
+        "strict-keys",
+        "presence",
+        "effect-inventory",
+        "guidance-arm",
+        "retry-kind",
+        "metadata-values",
+        "json-values",
+        "effects-sets",
+        "effects-state",
+        "failure-data",
+        "closed-union",
+        "available-order",
+        "step-target",
+        "guidance-template",
+        "available-target",
+        "retry-delay",
+        "step-arguments",
+        "binding-keys"
+      ],
+      "failed": {
+        "result-correlation": "RESULT_CORRELATION"
+      },
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 40,
+    "failed": 1,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 41
+  },
+  "excluded": {
+    "station-fixed": "reads exit, which this mutation changes"
+  },
+  "harness": null,
+  "static": null,
+  "notes": null
+}

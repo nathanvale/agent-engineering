@@ -1,0 +1,96 @@
+{
+  "bindingVersion": 1,
+  "id": "lost-result-literals.negative",
+  "rule": "lost-result-literals",
+  "group": "D",
+  "kind": "negative",
+  "oracle": [
+    "rules/lost-result-literals/negative",
+    "rules/lost-result-literals/requiredVariations/2"
+  ],
+  "verification": ["V-12"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": [
+      "lost-result-literals.negative/subject",
+      "3.0.0",
+      "ifNoResult"
+    ]
+  },
+  "rows": [
+    {
+      "caseId": "lost-result-literals.negative/discovery",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "lost-result-literals.negative/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "version-major",
+        "version-newer",
+        "strict-keys",
+        "presence",
+        "result-correlation",
+        "effect-inventory",
+        "guidance-arm",
+        "retry-kind",
+        "done-outcome",
+        "metadata-values",
+        "json-values",
+        "effects-sets",
+        "effects-state",
+        "closed-union",
+        "available-order",
+        "station-duplicate",
+        "retry-policy",
+        "input-schema",
+        "template-token"
+      ],
+      "failed": {
+        "lost-result-literals": "IF_NO_RESULT_LITERAL_INVALID"
+      },
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 27,
+    "failed": 1,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 28
+  },
+  "excluded": {
+    "lost-result-missing": "reads ifNoResult, which this mutation changes",
+    "lost-result-target": "reads ifNoResult, which this mutation changes"
+  },
+  "harness": null,
+  "static": null,
+  "notes": "Brace token inside ifNoResult args."
+}

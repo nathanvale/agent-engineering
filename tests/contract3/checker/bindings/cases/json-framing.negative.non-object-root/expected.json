@@ -1,0 +1,56 @@
+{
+  "bindingVersion": 1,
+  "id": "json-framing.negative.non-object-root",
+  "rule": "json-framing",
+  "group": "E",
+  "kind": "variation-negative",
+  "oracle": ["rules/json-framing/requiredVariations/4"],
+  "verification": ["V-34"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": ["json-framing.negative.non-object-root/subject"]
+  },
+  "rows": [
+    {
+      "caseId": "json-framing.negative.non-object-root/subject",
+      "passed": [],
+      "failed": {
+        "json-framing": "OUTPUT_FRAMING"
+      },
+      "notRun": {
+        "version-malformed": "blocked: json-framing failed on this case",
+        "strict-keys": "blocked: json-framing failed on this case",
+        "presence": "blocked: json-framing failed on this case"
+      },
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 0,
+    "failed": 1,
+    "not_run": 3,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 4
+  },
+  "excluded": {
+    "*": "every other envelope rule needs one parsed object; only the rows below are admitted, as not_run"
+  },
+  "harness": null,
+  "static": null,
+  "notes": null
+}

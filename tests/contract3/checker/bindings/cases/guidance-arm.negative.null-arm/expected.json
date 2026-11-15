@@ -1,0 +1,105 @@
+{
+  "bindingVersion": 1,
+  "id": "guidance-arm.negative.null-arm",
+  "rule": "guidance-arm",
+  "group": "E",
+  "kind": "variation-negative",
+  "oracle": ["rules/guidance-arm/requiredVariations/2"],
+  "verification": ["V-34"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": [
+      "guidance-arm.negative.null-arm/subject",
+      "3.0.0",
+      "handoff"
+    ]
+  },
+  "rows": [
+    {
+      "caseId": "guidance-arm.negative.null-arm/discovery",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "guidance-arm.negative.null-arm/cd-list",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "station-duplicate",
+        "retry-policy",
+        "input-schema"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "guidance-arm.negative.null-arm/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "version-major",
+        "version-newer",
+        "strict-keys",
+        "effect-inventory",
+        "retry-kind",
+        "done-outcome",
+        "metadata-values",
+        "json-values",
+        "effects-sets",
+        "effects-state",
+        "available-order",
+        "available-target",
+        "retry-delay",
+        "binding-keys"
+      ],
+      "failed": {
+        "guidance-arm": "GUIDANCE_ARM"
+      },
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 28,
+    "failed": 1,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 29
+  },
+  "excluded": {
+    "presence": "reads null, which this mutation changes",
+    "result-correlation": "reads arm, which this mutation changes",
+    "closed-union": "reads handoff, which this mutation changes",
+    "guidance-template": "reads handoff, arm, which this mutation changes",
+    "station-fixed": "reads arm, which this mutation changes"
+  },
+  "harness": null,
+  "static": null,
+  "notes": null
+}

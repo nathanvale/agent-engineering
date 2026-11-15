@@ -1,0 +1,15 @@
+{
+  "argv": ["apply", "--preview", "pv-7f3a", "--json"],
+  "responses": [
+    {
+      "stdout": "target.0.stdout",
+      "stderr": null,
+      "exit": 75
+    },
+    {
+      "stdout": "target.1.stdout",
+      "stderr": null,
+      "exit": 75
+    }
+  ]
+}

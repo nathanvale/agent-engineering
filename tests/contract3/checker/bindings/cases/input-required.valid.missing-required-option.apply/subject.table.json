@@ -1,0 +1,10 @@
+{
+  "argv": ["apply", "--json", "--note", "x"],
+  "responses": [
+    {
+      "stdout": "subject.0.stdout",
+      "stderr": null,
+      "exit": 2
+    }
+  ]
+}

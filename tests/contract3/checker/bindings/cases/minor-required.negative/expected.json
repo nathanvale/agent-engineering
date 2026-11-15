@@ -1,0 +1,33 @@
+{
+  "bindingVersion": 1,
+  "id": "minor-required.negative",
+  "rule": "minor-required",
+  "group": "T",
+  "kind": "static-negative",
+  "oracle": [
+    "rules/minor-required/negative",
+    "additionalControls/version-compatibility"
+  ],
+  "verification": ["V-16"],
+  "reader": null,
+  "provisional": ["fixture-minor-table"],
+  "admission": null,
+  "targetExecutions": [],
+  "checker": null,
+  "rows": [],
+  "rowsUnbound": null,
+  "counts": null,
+  "excluded": {},
+  "harness": null,
+  "static": {
+    "input": "table.json",
+    "expected": "incompatible",
+    "findings": [
+      {
+        "code": "MINOR_REQUIRES_KEY",
+        "mentions": "fixtureNote"
+      }
+    ]
+  },
+  "notes": "minor-remove and minor-rename are judged as distinct findings: a rename is detected when one 3.0.0 key disappears and one new key appears in the same object."
+}
