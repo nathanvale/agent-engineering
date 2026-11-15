@@ -303,7 +303,40 @@ declarations, using existing discovery routes, with navigation, dispatch and
 no-domain-effect tests and unresolved schema choices kept explicit. The
 [navigation proposal](navigation-proposal.md) supplies that wording and its
 unrun acceptance checks for the next candidate. This is a requested draft,
-not acceptance of its exact text or an input-schema extension.
+not acceptance of its exact text. A12 below subsequently accepts the
+input-schema requirement while leaving its format for the draft.
+
+## A12. Generate argument and option schemas from input declarations
+
+Status: accepted direction. Resolves the input-discovery choice within Q2;
+qualifies STEP-6 and the navigation proposal's previously open input schema.
+
+Nathan: "Yes, require argument and option schemas generated from the command's
+input declarations. Leave the exact format for the draft. Make that durable."
+
+- Require selected-command discovery to describe accepted arguments and
+  options, including requiredness and declared validation constraints.
+- Generate the schema from the same input declarations used by the command's
+  parser and validator. Keep a single owner rather than a separately authored
+  description that can drift.
+- Leave the exact wire format, supported constraint vocabulary and its
+  integration with the version rules for the revised contract draft.
+- Preserve runtime validation. Discoverable input constraints do not prove
+  resource existence, current state, permission or safety to execute, and
+  valid arguments never confer authority.
+
+Reason and trade-off: an agent can learn how to construct an invocation
+through the existing discovery route. The contract grows to describe inputs
+and requires proof that the description agrees with actual parsing. This
+does not choose a schema library, change the toolchain or migrate existing
+CLIs. Acceptance of the exact contract text still precedes implementation.
+
+Required proof, not yet run: changing input declarations updates discovery;
+independently specified valid invocations parse; missing required inputs and
+violations of published constraints refuse before domain effects; stale or
+incorrect schema output fails the check. Tests distinguish input-shape
+acceptance from subsequent runtime resource and authority checks. Navigation
+itself retains A11's no-domain-effect requirement.
 
 ## Requested repair guidance and diagnosis
 
@@ -322,12 +355,13 @@ the recovery decision; repair hints do not bypass authority or replay rules.
 
 ## Remaining work and next question
 
-Next walkthrough question: should selected-command discovery describe its
-accepted arguments and options, including which are required and their
-validation constraints? Q2 currently leaves that metadata out; STEP-6 checks
-suggested arguments only as tokens. A11 requests dynamic navigation but does
-not by itself accept an input-schema extension. Prefer deriving any accepted
-extension from the same owner that parses and validates the command's input.
+Next walkthrough question: may the state add-on automatically reclaim a lock
+when it can prove the owner has stopped, while refusing and handing off when
+it cannot prove that? This remains unresolved. Q4 identifies the conflict
+between the inherited lifecycle rule against automatic stale-lock takeover
+and decision 20's dead-owner reclaim. A1 and A2 settle unknown-outcome closure
+and affected-resource blocking; neither settles lock takeover. Reclaiming a
+lock would not settle the interrupted operation or authorise replay.
 
 Other unresolved matters include the recovery and lock design, the detailed
 version policy, lifecycle departures, remaining schema/lint questions and the

@@ -142,13 +142,22 @@ function commandSummaries(commands: readonly RegisteredCommand[]) {
 // A process test must prove that each route reaches the intended handler.
 ```
 
-## Unresolved schema choices and integration boundary
+## Accepted input-schema direction and remaining draft choices
 
-- **Per-command inputs remain open.** Whether selected-command discovery
-  publishes accepted arguments/options, requiredness and validation constraints
-  is still Q2. Root `HelpData.options` does not settle this. If accepted,
-  derive it from the input parser/validator owner; decide its exact wire shape
-  and compatibility rules before implementing it. This proposal adds no schema.
+- **Per-command input schemas are required.** [Accepted A12](accepted-decisions-2026-11-15.md#a12-generate-argument-and-option-schemas-from-input-declarations)
+  requires schemas generated from the command's input declarations. Publish
+  them through selected-command discovery. The exact format and supported
+  constraint vocabulary remain for the draft; root `HelpData.options` alone
+  does not meet the requirement. Preserve runtime validation and the accepted
+  version rules. No schema library or wire keys are selected here.
+- **N9. Input-schema agreement, required proof not yet run.** Change a
+  fixture's input declarations and verify discovery changes with them.
+  Independently specified valid inputs parse; missing required inputs and
+  violations of published constraints refuse before domain effects. A stale
+  schema or disagreement with the parser fails the check. Keep runtime
+  resource and authority checks separate from input-shape validation. N6's
+  warning about token-only validation remains relevant until the revised
+  schema contract and its checks are implemented.
 - **Station construction remains to reconcile.** Derivation from executable
   declarations is required here; Q1's exact constructor design and other
   unaccepted station schema details are not accepted by implication.
@@ -160,7 +169,7 @@ function commandSummaries(commands: readonly RegisteredCommand[]) {
   per-command live availability fields are outside this proposal.
 
 Integrate accepted wording into DISC and its verification rows in the next
-candidate, reconcile it with A1 through A11, then obtain review of the new
+candidate, reconcile it with A1 through A12, then obtain review of the new
 exact text and manifest. Nathan's acceptance of the exact contract remains
 required before Contract 3.0 implementation.
 
