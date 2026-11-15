@@ -1,0 +1,70 @@
+{
+  "bindingVersion": 1,
+  "id": "root-routes.negative",
+  "rule": "root-routes",
+  "group": "D",
+  "kind": "negative",
+  "oracle": ["rules/root-routes/negative"],
+  "verification": ["V-43"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": ["root-routes.negative/subject", "3.0.0", "route"]
+  },
+  "rows": [
+    {
+      "caseId": "root-routes.negative/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "version-major",
+        "version-newer",
+        "strict-keys",
+        "presence",
+        "result-correlation",
+        "effect-inventory",
+        "guidance-arm",
+        "retry-kind",
+        "done-outcome",
+        "metadata-values",
+        "json-values",
+        "effects-sets",
+        "effects-state",
+        "closed-union",
+        "available-order",
+        "version-copy",
+        "discovery-metadata"
+      ],
+      "failed": {
+        "root-routes": "ROOT_ROUTE_INVALID"
+      },
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 19,
+    "failed": 1,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 20
+  },
+  "excluded": {},
+  "harness": null,
+  "static": null,
+  "notes": null
+}
