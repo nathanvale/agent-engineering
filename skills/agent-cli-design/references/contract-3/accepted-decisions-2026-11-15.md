@@ -427,6 +427,45 @@ that demonstrate the documented lack of cleanup guarantee. Reconcile with
 A13: a stopped parent or a sent kill request alone does not prove all writers
 stopped or that reclaim is safe.
 
+## A15. Reject Object.assign in contract-handling code
+
+Status: accepted direction. Resolves the Object.assign restriction within
+Q8 and GATE-9a. Exact rule configuration and path scope remain for the draft.
+
+Nathan: "Yes, make Object.assign a lint error in code that constructs and
+handles contract values, and keep runtime validation mandatory. Make that
+durable."
+
+- Make `Object.assign` a lint error in code that constructs and handles
+  contract values. Name the applicable files and boundaries in the draft so
+  coverage is mechanically checkable.
+- Keep runtime result validation mandatory. This restriction catches a
+  demonstrated mutation route; it proves neither general immutability nor
+  the validity of external values.
+- Keep the restriction scoped to contract-handling code. This decision does
+  not ban mutation throughout a repository or select every additional rule
+  mentioned in Q8.
+
+Reason and trade-off: catch the demonstrated overwrite of a typed contract
+value during development, before it can reach the writer. Contract-handling
+code using this operation must be rewritten when it adopts 3.0. Rule scope,
+false positives and bypass specimens need maintenance. Existing CLI
+migrations remain separate work.
+
+The underlying review specimen and diagnostic record show a
+`no-restricted-syntax` restriction catching direct `Object.assign` calls.
+The review also shows that `prefer-object-spread` alone misses assignment
+onto an existing result. These are evidence for the draft, not acceptance of
+the review's entire lint configuration or proof of a production rule.
+
+Required proof, not yet run on the foundation: the demonstrated direct
+mutation fails lint at error severity in every intended source/test file
+kind; valid contract construction passes; unrelated code outside the declared
+scope is unaffected; and runtime validation still rejects invalid results
+when static checks are bypassed. Inspect alias and computed-property variants
+and record coverage limits rather than claiming all mutation is prevented.
+Select the exact enforcement under these criteria in the revised text.
+
 ## Requested repair guidance and diagnosis
 
 Nathan also requested repair hints so an agent can identify the next step,
@@ -444,14 +483,13 @@ the recovery decision; repair hints do not bypass authority or replay rules.
 
 ## Remaining work and next question
 
-Next walkthrough question: should an additional lint error prohibit
-`Object.assign` in code that constructs and handles contract values, closing
-the demonstrated mutation route past the assertion rule? Q8 and GATE-9a
-leave this additional restriction unselected. Exact scope and enforcement
-need drafting and fixtures; a targeted restriction is not a ban on mutation
-throughout every repository. Runtime result validation remains mandatory,
-and no single lint rule proves general immutability. The separate generic
-array-conversion bypass is not accepted by answering this question.
+Next walkthrough question: should contract-handling code also adopt the
+`no-unnecessary-type-parameters` lint rule, which the review showed rejecting
+a generic conversion from `unknown` to a caller-chosen type through array
+mutation? Q8 and GATE-9a leave this separate rule unselected. Keep genuine
+generic relationships and runtime validators; this is not a ban on generics
+or a claim that the rule detects every unchecked conversion. Exact scope,
+valid examples and diagnostic behaviour need qualification in the draft.
 
 Other unresolved matters include the recovery and lock design, the detailed
 version policy, detailed lifecycle wording, remaining schema/lint questions and the
