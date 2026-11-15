@@ -242,6 +242,62 @@ test-only future minors, not new production releases, for these checks.
 Exact version grammar and handling of common-cause name collisions still need
 reconciliation in the revised text; this is not acceptance of every Q5 clause.
 
+## A10. Refuse a missing command and keep explicit help successful
+
+Status: accepted. Resolves the no-argument choice in Q6, DISC-1 and DISC-4.
+
+Nathan: "Yes, show usage and exit 2 when no command is given, and exit 0 for
+--help. Make that durable."
+
+- Show usage guidance and exit 2 when the invocation supplies no command.
+- Keep an explicit `--help` request successful with exit 0.
+- Preserve the human/machine output distinction and avoid domain effects on
+  either route. Root routing must not treat a missing command as success.
+
+Reason and trade-off: agents and scripts detect accidentally missing commands
+instead of interpreting help as completed work. A person using a bare CLI
+still receives navigation guidance but gets a nonzero exit. The alternative
+discussed was treating bare invocation as successful help.
+
+Required proof, not yet run: real no-argument and explicit-help invocations
+return exits 2 and 0 respectively; machine output agrees with the real exit;
+neither invocation changes domain resources. Exact usage rendering remains
+to draft consistently with the inherited output rules.
+
+## A11. Generate an agent-facing command and station map
+
+Status: requested direction for the candidate. Relates to DISC-1 through
+DISC-9 and the station-declaration design in the accepted plan's B12.
+
+Nathan requested an agent-native help dashboard for navigating command
+contract stations, then clarified that the map should be generated dynamically.
+This paragraph paraphrases the transcribed request rather than quoting it.
+
+- Generate the navigation map from the executable's registered commands and
+  station definitions. Keep help and discovery aligned with the same owners.
+- Use the existing help, discovery and selected-command discovery surfaces
+  as the starting point. Preserve the single application CLI.
+- Let an agent find a command, inspect its possible outcomes and follow its
+  declared guidance, repair hints and handoff inspection routes.
+- Distinguish this map of possible outcomes from observed resource state.
+  Obtain current state through the appropriate inspection command; generating
+  help must not execute domain work or initialise unavailable integrations.
+- Preserve progressive discovery: list commands first, then inspect one
+  command's stations. The inherited rule does not dump every station at once.
+
+Reason: derive navigation from what the CLI actually declares, rather than
+maintaining a second map that can drift. The dynamic map is generated metadata,
+not an agent-generated guess or an assertion of current execution authority.
+Exact station construction APIs and rendering remain to draft. This request
+does not authorise a web application, interactive TUI, second CLI or automatic
+execution of the suggested paths.
+
+Required proof, not yet run: changing a command declaration changes its help
+and discovery consistently; every listed route dispatches to the intended
+command; stations match emitted outcomes; missing integrations do not break
+navigation; traversing the map causes no domain effects. No dashboard or
+Contract 3.0 implementation has been built by recording this direction.
+
 ## Requested repair guidance and diagnosis
 
 Nathan also requested repair hints so an agent can identify the next step,
@@ -259,10 +315,12 @@ the recovery decision; repair hints do not bypass authority or replay rules.
 
 ## Remaining work and next question
 
-Next walkthrough question: no-argument invocation in Q6 (DISC-4). Should a bare
-CLI invocation show usage as a missing-command refusal with exit 2, or show
-help as a successful request with exit 0? Explicit `--help` remains available.
-The draft proposes the refusal. No new decision has been made in this walkthrough.
+Next walkthrough question: should selected-command discovery describe its
+accepted arguments and options, including which are required and their
+validation constraints? Q2 currently leaves that metadata out; STEP-6 checks
+suggested arguments only as tokens. A11 requests dynamic navigation but does
+not by itself accept an input-schema extension. Prefer deriving any accepted
+extension from the same owner that parses and validates the command's input.
 
 Other unresolved matters include the recovery and lock design, the detailed
 version policy, lifecycle departures, remaining schema/lint questions and the
