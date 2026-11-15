@@ -1,0 +1,30 @@
+{
+  "bindingVersion": 1,
+  "id": "minor.valid",
+  "rule": "minor-remove",
+  "group": "T",
+  "kind": "static-valid",
+  "oracle": [
+    "rules/minor-remove/validTwin",
+    "rules/minor-rename/validTwin",
+    "rules/minor-required/validTwin",
+    "rules/minor-cause/validTwin"
+  ],
+  "verification": ["V-16"],
+  "reader": null,
+  "provisional": ["fixture-minor-table"],
+  "admission": null,
+  "targetExecutions": [],
+  "checker": null,
+  "rows": [],
+  "rowsUnbound": null,
+  "counts": null,
+  "excluded": {},
+  "harness": null,
+  "static": {
+    "input": "table.json",
+    "expected": "compatible",
+    "findings": []
+  },
+  "notes": null
+}

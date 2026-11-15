@@ -1,0 +1,24 @@
+{
+  "bindingVersion": 1,
+  "id": "snippet-status.valid",
+  "rule": "snippet-status",
+  "group": "T",
+  "kind": "static-valid",
+  "oracle": ["rules/snippet-status/validTwin", "rules/snippet-status/negative"],
+  "verification": ["V-35"],
+  "reader": null,
+  "provisional": [],
+  "admission": null,
+  "targetExecutions": [],
+  "checker": null,
+  "rows": [],
+  "rowsUnbound": null,
+  "counts": null,
+  "excluded": {},
+  "harness": null,
+  "static": {
+    "expected": "Every code snippet in the checker's help and documentation is labelled illustrative or has an exact typecheck proof.",
+    "negativeControl": "Remove the illustrative label from one uncompiled snippet; the static test must fail with SNIPPET_PROOF_MISSING."
+  },
+  "notes": null
+}

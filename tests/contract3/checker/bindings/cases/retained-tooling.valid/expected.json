@@ -1,0 +1,36 @@
+{
+  "bindingVersion": 1,
+  "id": "retained-tooling.valid",
+  "rule": "retained-tooling",
+  "group": "T",
+  "kind": "static-valid",
+  "oracle": [
+    "rules/retained-tooling/validTwin",
+    "rules/retained-tooling/negative",
+    "additionalControls/kept-tool-route"
+  ],
+  "verification": ["V-17", "V-34"],
+  "reader": null,
+  "provisional": [],
+  "admission": null,
+  "targetExecutions": [],
+  "checker": null,
+  "rows": [],
+  "rowsUnbound": null,
+  "counts": null,
+  "excluded": {},
+  "harness": null,
+  "static": {
+    "expected": {
+      "repository": "dotfiles",
+      "commit": "29bf4bb0f307f96d396aa087472a4dbed849c920",
+      "path": "config/agents/plugins/my-second-brain-playground/bin/cli-design-check",
+      "blob": "7bdc6dd22b4097076801188979e5a686fc124e48",
+      "runtime": "runtime/cli-design-check.js"
+    },
+    "source": "retained-2.json#/wrapperRoute/source and #/scripts",
+    "assertion": "The checker's kept-route constant equals these values byte for byte.",
+    "negativeControl": "Change the constant's path to select the new checker; the static test must fail with RETAINED_2_ROUTE_CHANGED."
+  },
+  "notes": null
+}
