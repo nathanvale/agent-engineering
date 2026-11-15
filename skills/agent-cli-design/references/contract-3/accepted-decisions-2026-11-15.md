@@ -466,6 +466,45 @@ when static checks are bypassed. Inspect alias and computed-property variants
 and record coverage limits rather than claiming all mutation is prevented.
 Select the exact enforcement under these criteria in the revised text.
 
+## A16. Reject unnecessary generic type parameters in contract-handling code
+
+Status: accepted direction. Resolves the second additional lint-rule choice
+within Q8 and GATE-9a. Exact scope and qualification remain for the draft.
+
+Nathan: "Yes, make that a lint error in contract-handling code, preserve
+genuine generics and keep runtime validation mandatory. Make that durable."
+
+"That" refers to the foreground proposal to adopt
+`@typescript-eslint/no-unnecessary-type-parameters` at error severity.
+
+- Apply this lint error to contract-handling code. Declare its applicable
+  source/test files and boundaries explicitly in the revised text.
+- Preserve genuine generic relationships, including useful input/output
+  relationships and validator-backed helpers. Prove valid specimens pass;
+  do not replace runtime validation with a caller-chosen return type.
+- Keep runtime validation mandatory. This rule catches the demonstrated
+  generic conversion through array mutation; it does not prove that every
+  unchecked conversion or mutable alias is impossible.
+
+Reason and trade-off: catch the reviewed helper that returns an unchecked
+value as a caller-chosen type without using a type assertion. Some helper
+signatures may need rewriting during adoption. The decision is scoped to
+contract-handling code, preserves the accepted toolchain and does not select
+the review's other proposed lint rules. Existing CLI migrations remain
+separate work.
+
+The retained review's `h02-generic-identity.ts` specimen and
+`eslint-fixes-dot.txt` record show the named rule rejecting that specimen.
+This is prototype evidence, not current foundation qualification.
+
+Required proof, not yet run on the foundation: the generic conversion
+specimen fails lint with the named rule at error severity; useful generics
+and validator-backed helpers pass lint and compilation; coverage reaches
+the intended source/test file kinds; unrelated code outside the declared
+scope is unaffected; and runtime validation rejects invalid results when
+static checks are bypassed. Attribute any TypeScript 6 lint versus TypeScript
+7 compilation disagreement without weakening checks to obtain a pass.
+
 ## Requested repair guidance and diagnosis
 
 Nathan also requested repair hints so an agent can identify the next step,
@@ -483,13 +522,15 @@ the recovery decision; repair hints do not bypass authority or replay rules.
 
 ## Remaining work and next question
 
-Next walkthrough question: should contract-handling code also adopt the
-`no-unnecessary-type-parameters` lint rule, which the review showed rejecting
-a generic conversion from `unknown` to a caller-chosen type through array
-mutation? Q8 and GATE-9a leave this separate rule unselected. Keep genuine
-generic relationships and runtime validators; this is not a ban on generics
-or a claim that the rule detects every unchecked conversion. Exact scope,
-valid examples and diagnostic behaviour need qualification in the draft.
+Next walkthrough question: should the final record of Nathan's acceptance
+of exact Contract 3.0 bytes live beside the contract in agent-engineering,
+or remain in the vault under the current route? This is the bounded
+acceptance-record part of Q9 and ROLL-9. A record must identify the accepted
+manifest hash and the evidence of Nathan's explicit acceptance; a status
+field or author name alone is not acceptance. Choosing its home would not
+accept the text, migrate planning or research, or settle every post-vault
+owner. Other B6 records and their repository-specific revisions still need
+explicit ownership before their acceptance steps can complete.
 
 Other unresolved matters include the recovery and lock design, the detailed
 version policy, detailed lifecycle wording, remaining schema/lint questions and the
