@@ -1,0 +1,109 @@
+{
+  "bindingVersion": 1,
+  "id": "step-arguments.negative.declaration-unsatisfiable",
+  "rule": "step-arguments",
+  "group": "X",
+  "kind": "variation-negative",
+  "oracle": ["rules/step-arguments/negative"],
+  "verification": ["V-12", "V-44"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": [
+      "step-arguments.negative.declaration-unsatisfiable/subject",
+      "3.0.0",
+      "args"
+    ]
+  },
+  "rows": [
+    {
+      "caseId": "step-arguments.negative.declaration-unsatisfiable/discovery",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "step-arguments.negative.declaration-unsatisfiable/cd-apply",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "station-duplicate",
+        "retry-policy",
+        "input-schema"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "step-arguments.negative.declaration-unsatisfiable/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "version-major",
+        "version-newer",
+        "strict-keys",
+        "presence",
+        "result-correlation",
+        "effect-inventory",
+        "guidance-arm",
+        "retry-kind",
+        "done-outcome",
+        "metadata-values",
+        "json-values",
+        "effects-sets",
+        "effects-state",
+        "closed-union",
+        "available-order",
+        "station-duplicate",
+        "retry-policy",
+        "lost-result-missing",
+        "lost-result-target",
+        "lost-result-literals",
+        "input-schema"
+      ],
+      "failed": {
+        "step-arguments": "STEP_ARGUMENTS_INVALID"
+      },
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 35,
+    "failed": 1,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 36
+  },
+  "excluded": {
+    "template-token": "reads templates, which this mutation changes",
+    "binding-placement": "reads templates, which this mutation changes"
+  },
+  "harness": null,
+  "static": null,
+  "notes": "F01 option 2: --note has no value token for any binding, so the template is rejected at declaration. The row sits on the command-discovery case."
+}
