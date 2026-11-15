@@ -15,7 +15,7 @@ manifest, [candidate.sha256](candidate.sha256), has SHA-256:
 
 `751cca38f0edc5012e8dad2170e1d46a0e90447dac1ce8a7ec4effe9f02dcd8a`
 
-This record is outside that manifest. Its five accepted directions qualify
+This record is outside that manifest. Its accepted directions qualify
 the corresponding open questions in [decisions.md](decisions.md); the frozen
 candidate has not yet incorporated them. Its existing review does not cover
 the future wording or design needed to implement these decisions.
@@ -132,6 +132,35 @@ where useful. The earlier illustrated file layout was not an exact layout spec.
 Required proof, not yet run: package and source implementations are discoverable
 and callable through the same CLI; no second application front door appears.
 
+## A6. Allow validated run values in arguments and resource IDs
+
+Status: accepted direction. Resolves the permission to add run-value bindings
+in Q3; relates to STEP-9a, STEP-10, WIRE-7, V-14 and V-39.
+
+Nathan: "Yes, allow validated run values in arguments and resource IDs, but
+keep command names and guidance fixed. Make that durable."
+
+- Permit validated run values, such as a preview ID, in whole argument tokens
+  and resource identifiers.
+- Keep command identities and guidance text fixed by their declarations.
+  A run value cannot introduce an instruction or select another command.
+- Preserve argv boundaries without shell evaluation. Validate caller-supplied
+  bound values before effects, and validate the emitted result at runtime.
+- Preserve the rule that guidance grants no execution authority. A valid
+  binding does not permit replay, repair or human closure by itself.
+
+Reason and trade-off: an agent can use the exact run-specific identifier
+without reconstructing a command from prose. This adds validation rules; the
+alternative was a text instruction referring the reader to message or data.
+The exact wire key, template notation and limits still need reviewed wording.
+This direction does not approve every detail of the existing Q3 proposal.
+
+Required proof, not yet run: legitimate values remain single arguments;
+malicious values cannot become options, command selectors or executable shell
+text; secret values are not exposed; invalid bound input is refused before
+effects; rendered guidance matches the fixed declaration after substitution.
+Types alone cannot establish these runtime properties.
+
 ## Requested repair guidance and diagnosis
 
 Nathan also requested repair hints so an agent can identify the next step,
@@ -149,9 +178,11 @@ the recovery decision; repair hints do not bypass authority or replay rules.
 
 ## Remaining work and next question
 
-Next walkthrough question: Q3, whether structured command guidance can carry
-validated values produced by the run, such as the ID of a preview. Its field
-shape and rules remain proposed. Preserve the user's opportunity to choose.
+Next walkthrough question: the producer-version part of Q5. Should normal
+responses always declare the CLI's implemented contract minor, requiring
+readers to upgrade first, or declare the lowest minor each response fits?
+Accepting older 3.x responses is already settled. The remaining version
+details, including fallback behaviour, remain proposed.
 
 Other unresolved matters include the recovery and lock design, the detailed
 version policy, lifecycle departures, remaining schema/lint questions and the
