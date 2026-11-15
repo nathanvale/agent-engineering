@@ -535,6 +535,38 @@ research/planning sources remain in place. No acceptance record asserting
 approval is created now: this decision chooses its future home, not acceptance
 of the current candidate or authority to implement it.
 
+## A18. Keep the contract patch number at zero
+
+Status: accepted direction. Resolves the patch-version choice within Q5,
+VER-1 and VER-2 for Contract 3.x.
+
+Nathan: "Yes, keep the contract patch number at zero and track
+implementation-only fixes in the CLI release version. Make that durable."
+
+- Use `3.<minor>.0` for Contract 3.x versions. A nonzero contract patch
+  number is not an admitted Contract 3.x version.
+- Track implementation-only fixes in the CLI release version. A fix that
+  changes neither the contract's format nor its meaning does not change
+  `contractVersion`.
+- Preserve A7 through A9: normal results declare the implemented contract
+  version, readers upgrade first, additive compatible changes use a minor,
+  breaking changes require a new major, and the emergency fallback retains
+  its 3.0.0 exception.
+
+Reason and trade-off: contract versions describe compatibility while CLI
+release versions identify implementation changes. The contract version alone
+cannot identify which implementation fix a CLI contains. This decision does
+not add a release-version field to the result envelope or choose its discovery
+location; use the CLI's release identity without conflating it with the
+contract version.
+
+Required proof, not yet run: an implementation-only fix leaves contract
+versioning unchanged while its release identity changes; readers reject
+nonzero Contract 3.x patch numbers; minor compatibility and the fallback
+exception still work. Exact malformed-version reporting remains to reconcile
+in the draft with inherited cause and guidance rules. No current release or
+runtime was changed by recording this decision.
+
 ## Requested repair guidance and diagnosis
 
 Nathan also requested repair hints so an agent can identify the next step,
@@ -552,11 +584,16 @@ the recovery decision; repair hints do not bypass authority or replay rules.
 
 ## Remaining work and next question
 
-The acceptance-record location is settled by A17. Nathan next requested a
-review of the answered TypeScript questions and remaining open ones using
-typescript-best-practices. Distinguish product choices from routine type,
-schema and lint design, and from missing implementation evidence. Do not
-turn a skill recommendation into a new accepted dependency or policy.
+Next walkthrough question: for a changing command requiring a single-use
+approval, should a held-lock refusal preserve the grant, with consumption
+allowed only after exclusive lock acquisition and before the approved effect?
+Q6 and CMD-15 propose this ordering; it is not yet accepted here. Keep grant
+validation and atomic single-use enforcement mandatory. This question does
+not grant permission to reuse a consumed approval after a crash or uncertainty.
+
+The TypeScript review separates remaining schema/type/lint engineering and
+missing implementation evidence from product choices. Do not turn a skill
+recommendation into a new accepted dependency or policy.
 Other B6 records and their repository-specific revisions retain their
 existing owners unless explicitly changed; this record does not settle the
 post-vault ownership question for them.
