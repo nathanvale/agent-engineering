@@ -1,0 +1,73 @@
+{
+  "bindingVersion": 1,
+  "id": "no-replay.executed-broken-supported",
+  "rule": "no-replay",
+  "group": "H",
+  "kind": "harness",
+  "oracle": [
+    "noReplayCases/executed-broken-supported",
+    "rules/no-replay/requiredVariations/0",
+    "noReplayProtocol/sensitivityControl"
+  ],
+  "verification": ["V-48"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": ["no-replay.executed-broken-supported/subject:run"],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": [
+      "no-replay.executed-broken-supported/subject",
+      "3.0.0",
+      "result"
+    ]
+  },
+  "rows": [
+    {
+      "caseId": "no-replay.executed-broken-supported/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "version-major",
+        "version-newer",
+        "machine-stderr"
+      ],
+      "failed": {
+        "presence": "KEY_PRESENCE"
+      },
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 5,
+    "failed": 1,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 6
+  },
+  "excluded": {},
+  "harness": {
+    "rule": "no-replay",
+    "counter": {
+      "file": "no-replay.counter",
+      "before": "absent",
+      "after": "1\n"
+    },
+    "readerStderr": "",
+    "sensitivityControl": "Perturb the checker to run this target a second time after its output; the counter becomes 2\\n and the harness must fail."
+  },
+  "static": null,
+  "notes": null
+}

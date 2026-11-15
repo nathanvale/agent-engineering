@@ -1,0 +1,100 @@
+{
+  "bindingVersion": 1,
+  "id": "pattern-isolation.lifecycle",
+  "rule": "pattern-isolation",
+  "group": "H",
+  "kind": "harness",
+  "oracle": [
+    "rules/pattern-isolation/requiredVariations/3",
+    "rules/pattern-isolation/negative"
+  ],
+  "verification": ["V-44"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [
+    "pattern-isolation.lifecycle/cd-find:run",
+    "pattern-isolation.lifecycle/subject:run"
+  ],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": ["pattern-isolation.lifecycle/subject", "3.0.0"]
+  },
+  "rows": [
+    {
+      "caseId": "pattern-isolation.lifecycle/discovery",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "pattern-isolation.lifecycle/cd-find",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "exit-expected",
+        "cause-expected",
+        "pattern-syntax"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "pattern-isolation.lifecycle/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "exit-expected",
+        "cause-expected"
+      ],
+      "failed": {
+        "pattern-budget": "PATTERN_BUDGET_EXCEEDED"
+      },
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 23,
+    "failed": 1,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 24
+  },
+  "excluded": {},
+  "harness": {
+    "rule": "pattern-isolation",
+    "assertion": "Send SIGTERM to the checker as soon as the second target run has started (poll for its process or 50 ms after the first run's exit). The checker exits 143 with empty stdout within 500 ms of the signal, or, if it already finished, with this binding's exit-4 refusal. It never hangs.",
+    "sensitivityControl": "Run the pattern synchronously on the checker's own thread with no budget; the harness must fail on the 500 ms bound."
+  },
+  "static": null,
+  "notes": null
+}

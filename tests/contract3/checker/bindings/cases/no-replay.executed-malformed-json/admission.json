@@ -1,0 +1,27 @@
+{
+  "admissionVersion": 1,
+  "cli": "specimen",
+  "cases": [
+    {
+      "caseId": "no-replay.executed-malformed-json/subject",
+      "rules": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "machine-stderr"
+      ],
+      "role": "command",
+      "mode": "machine",
+      "target": {
+        "kind": "run",
+        "program": "bun-runtime",
+        "args": ["../../../specimens/target.mjs", "list", "--json"],
+        "cwd": ".",
+        "env": {
+          "SPECIMEN_TABLE": "subject.table.json",
+          "SPECIMEN_COUNTER": "no-replay.counter"
+        }
+      }
+    }
+  ]
+}

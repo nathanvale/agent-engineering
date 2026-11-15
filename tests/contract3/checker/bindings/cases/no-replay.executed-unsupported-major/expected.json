@@ -1,0 +1,73 @@
+{
+  "bindingVersion": 1,
+  "id": "no-replay.executed-unsupported-major",
+  "rule": "no-replay",
+  "group": "H",
+  "kind": "harness",
+  "oracle": [
+    "noReplayCases/executed-unsupported-major",
+    "rules/no-replay/requiredVariations/0",
+    "noReplayProtocol/sensitivityControl"
+  ],
+  "verification": ["V-48"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": ["no-replay.executed-unsupported-major/subject:run"],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_UNSUPPORTED_CONTRACT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": [
+      "no-replay.executed-unsupported-major/subject",
+      "2.0.0",
+      "config/agents/plugins/my-second-brain-playground/bin/cli-design-check"
+    ]
+  },
+  "rows": [
+    {
+      "caseId": "no-replay.executed-unsupported-major/subject",
+      "passed": ["json-framing", "version-malformed", "machine-stderr"],
+      "failed": {
+        "version-major": "VERSION_UNSUPPORTED_MAJOR"
+      },
+      "notRun": {
+        "strict-keys": "blocked: version refusal; no other key of a refused version is interpreted (VER-10)",
+        "presence": "blocked: version refusal; no other key of a refused version is interpreted (VER-10)",
+        "exit-envelope": "blocked: version refusal; no other key of a refused version is interpreted (VER-10)"
+      },
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 3,
+    "failed": 1,
+    "not_run": 3,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 7
+  },
+  "excluded": {
+    "version-newer": "classification stops at the first refused class"
+  },
+  "harness": {
+    "rule": "no-replay",
+    "counter": {
+      "file": "no-replay.counter",
+      "before": "absent",
+      "after": "1\n"
+    },
+    "readerStderr": "",
+    "sensitivityControl": "Perturb the checker to run this target a second time after its output; the counter becomes 2\\n and the harness must fail."
+  },
+  "static": null,
+  "notes": null
+}
