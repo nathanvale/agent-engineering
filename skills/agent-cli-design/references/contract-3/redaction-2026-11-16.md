@@ -32,8 +32,10 @@ bundle the accepted source commit is
 The redacted bytes do not match the accepted manifest and are not claimed to.
 Two of its 20 files differ, so
 `shasum -a 256 -c references/contract-3/candidate.sha256` reports
-`requirement-map.md` and `review.md` as failed in every published commit. That
-result is expected and is the honest record of the difference.
+`requirement-map.md` and `review.md` as failed in every published commit whose
+`candidate.sha256` is the accepted manifest. Two earlier candidate manifests
+in pre-acceptance history no longer verify for the same reason. That result
+is expected and is the honest record of the difference.
 
 ## Redacted revision identity
 
@@ -77,8 +79,9 @@ evidence was copied into the repository.
 Removing the paths from history changed the identity of every commit from the
 first one that contained a path. Documents and commit messages written before
 16 November 2026 cite the original identities. They are kept as written and
-resolve through this table. Original identities exist only in the private
-recovery bundle.
+resolve through this table. Original identities are kept privately in the
+recovery bundle; they no longer appear in this repository's published
+branches.
 
 | Original commit                            | Published commit                           |
 | ------------------------------------------ | ------------------------------------------ |
