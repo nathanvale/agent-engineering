@@ -1,0 +1,100 @@
+{
+  "bindingVersion": 1,
+  "id": "result-correlation.valid.failed-unchanged-internal",
+  "rule": "result-correlation",
+  "group": "E",
+  "kind": "variation-valid",
+  "oracle": ["rules/result-correlation/requiredVariations/0"],
+  "verification": ["V-34"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [],
+  "checker": {
+    "exitCode": 0,
+    "outcome": "success",
+    "causeCode": "SUCCESS_UNCHANGED",
+    "failureClass": null,
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": "report",
+    "stderr": "",
+    "messageIncludes": []
+  },
+  "rows": [
+    {
+      "caseId": "result-correlation.valid.failed-unchanged-internal/discovery",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "result-correlation.valid.failed-unchanged-internal/cd-list",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "station-duplicate",
+        "retry-policy",
+        "input-schema"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "result-correlation.valid.failed-unchanged-internal/subject",
+      "passed": [
+        "result-correlation",
+        "json-framing",
+        "version-malformed",
+        "version-major",
+        "version-newer",
+        "strict-keys",
+        "presence",
+        "effect-inventory",
+        "guidance-arm",
+        "retry-kind",
+        "metadata-values",
+        "json-values",
+        "effects-sets",
+        "effects-state",
+        "failure-data",
+        "handoff-shape",
+        "closed-union",
+        "available-order",
+        "guidance-template",
+        "available-target",
+        "station-fixed",
+        "retry-delay",
+        "binding-keys"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 35,
+    "failed": 0,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 35
+  },
+  "excluded": {},
+  "harness": null,
+  "static": null,
+  "notes": "T0 result_truth_table row 8: failed-unchanged-internal."
+}

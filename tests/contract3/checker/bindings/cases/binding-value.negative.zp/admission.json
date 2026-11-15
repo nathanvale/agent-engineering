@@ -1,0 +1,78 @@
+{
+  "admissionVersion": 1,
+  "cli": "specimen",
+  "cases": [
+    {
+      "caseId": "binding-value.negative.zp/discovery",
+      "rules": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "role": "discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/discovery.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "binding-value.negative.zp/cd-preview",
+      "rules": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "station-duplicate",
+        "retry-policy",
+        "input-schema"
+      ],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-preview.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "binding-value.negative.zp/subject",
+      "rules": [
+        "binding-value",
+        "json-framing",
+        "version-malformed",
+        "version-major",
+        "version-newer",
+        "strict-keys",
+        "presence",
+        "guidance-arm",
+        "json-values",
+        "effects-sets",
+        "effects-state",
+        "available-order",
+        "available-target",
+        "station-fixed",
+        "retry-delay"
+      ],
+      "role": "command",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "subject.stdout",
+        "stderr": "subject.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    }
+  ]
+}

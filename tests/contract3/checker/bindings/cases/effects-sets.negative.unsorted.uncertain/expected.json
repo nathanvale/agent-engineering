@@ -1,0 +1,107 @@
+{
+  "bindingVersion": 1,
+  "id": "effects-sets.negative.unsorted.uncertain",
+  "rule": "effects-sets",
+  "group": "E",
+  "kind": "variation-negative",
+  "oracle": ["rules/effects-sets/requiredVariations/2"],
+  "verification": ["V-34"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": [
+      "effects-sets.negative.unsorted.uncertain/subject",
+      "3.0.0",
+      "effects"
+    ]
+  },
+  "rows": [
+    {
+      "caseId": "effects-sets.negative.unsorted.uncertain/discovery",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "effects-sets.negative.unsorted.uncertain/cd-apply",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "station-duplicate",
+        "retry-policy",
+        "input-schema"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "effects-sets.negative.unsorted.uncertain/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "version-major",
+        "version-newer",
+        "strict-keys",
+        "presence",
+        "result-correlation",
+        "guidance-arm",
+        "retry-kind",
+        "metadata-values",
+        "json-values",
+        "failure-data",
+        "handoff-shape",
+        "closed-union",
+        "available-order",
+        "inspection-target",
+        "guidance-template",
+        "available-target",
+        "station-fixed",
+        "retry-delay",
+        "binding-keys"
+      ],
+      "failed": {
+        "effects-sets": "EFFECT_SET_INVALID"
+      },
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 33,
+    "failed": 1,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 34
+  },
+  "excluded": {
+    "effects-state": "reads effects, which this mutation changes",
+    "attempted-effect": "reads attempted, effects, which this mutation changes"
+  },
+  "harness": null,
+  "static": null,
+  "notes": null
+}

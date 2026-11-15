@@ -1,0 +1,106 @@
+{
+  "bindingVersion": 1,
+  "id": "diagnostics-unavailable.negative.trusted-counter-type",
+  "rule": "diagnostics-unavailable",
+  "group": "E",
+  "kind": "variation-negative",
+  "oracle": ["rules/diagnostics-unavailable/requiredVariations/2"],
+  "verification": ["V-34"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": [
+      "diagnostics-unavailable.negative.trusted-counter-type/subject",
+      "3.0.0",
+      "droppedRecords"
+    ]
+  },
+  "rows": [
+    {
+      "caseId": "diagnostics-unavailable.negative.trusted-counter-type/discovery",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "diagnostics-unavailable.negative.trusted-counter-type/cd-list",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "station-duplicate",
+        "retry-policy",
+        "input-schema"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "diagnostics-unavailable.negative.trusted-counter-type/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "version-major",
+        "version-newer",
+        "strict-keys",
+        "result-correlation",
+        "effect-inventory",
+        "guidance-arm",
+        "retry-kind",
+        "done-outcome",
+        "metadata-values",
+        "json-values",
+        "effects-sets",
+        "effects-state",
+        "available-order",
+        "guidance-template",
+        "available-target",
+        "station-fixed",
+        "retry-delay",
+        "binding-keys"
+      ],
+      "failed": {
+        "diagnostics-unavailable": "DIAGNOSTICS_UNAVAILABLE_INVALID"
+      },
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 32,
+    "failed": 1,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 33
+  },
+  "excluded": {
+    "presence": "reads null, which this mutation changes",
+    "closed-union": "reads diagnostics, which this mutation changes"
+  },
+  "harness": null,
+  "static": null,
+  "notes": null
+}

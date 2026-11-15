@@ -1,0 +1,118 @@
+{
+  "bindingVersion": 1,
+  "id": "binding-value.valid",
+  "rule": "binding-value",
+  "group": "E",
+  "kind": "valid-twin",
+  "oracle": [
+    "rules/binding-value/validTwin",
+    "rules/binding-value/requiredVariations/4"
+  ],
+  "verification": ["V-14", "V-44"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [],
+  "checker": {
+    "exitCode": 0,
+    "outcome": "success",
+    "causeCode": "SUCCESS_UNCHANGED",
+    "failureClass": null,
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": "report",
+    "stderr": "",
+    "messageIncludes": []
+  },
+  "rows": [
+    {
+      "caseId": "binding-value.valid/discovery",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "binding-value.valid/cd-preview",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "station-duplicate",
+        "retry-policy",
+        "input-schema"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "binding-value.valid/cd-apply",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "station-duplicate",
+        "retry-policy",
+        "input-schema"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "binding-value.valid/subject",
+      "passed": [
+        "binding-value",
+        "json-framing",
+        "version-malformed",
+        "version-major",
+        "version-newer",
+        "strict-keys",
+        "presence",
+        "result-correlation",
+        "guidance-arm",
+        "retry-kind",
+        "metadata-values",
+        "json-values",
+        "effects-sets",
+        "effects-state",
+        "closed-union",
+        "available-order",
+        "step-target",
+        "guidance-template",
+        "available-target",
+        "station-fixed",
+        "retry-delay",
+        "step-arguments",
+        "binding-keys",
+        "binding-route"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 42,
+    "failed": 0,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 42
+  },
+  "excluded": {},
+  "harness": null,
+  "static": null,
+  "notes": "The row proves the lexical value rules only. Whether a value is a secret is reviewed, never claimed from shape (STEP-10, STEP-16)."
+}

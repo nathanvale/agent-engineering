@@ -1,0 +1,105 @@
+{
+  "bindingVersion": 1,
+  "id": "result-correlation.negative.failed-usage",
+  "rule": "result-correlation",
+  "group": "E",
+  "kind": "variation-negative",
+  "oracle": ["rules/result-correlation/requiredVariations/1"],
+  "verification": ["V-34"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": [
+      "result-correlation.negative.failed-usage/subject",
+      "3.0.0",
+      "outcome"
+    ]
+  },
+  "rows": [
+    {
+      "caseId": "result-correlation.negative.failed-usage/discovery",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "result-correlation.negative.failed-usage/cd-find",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "station-duplicate",
+        "retry-policy",
+        "input-schema"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "result-correlation.negative.failed-usage/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "version-major",
+        "version-newer",
+        "strict-keys",
+        "presence",
+        "effect-inventory",
+        "guidance-arm",
+        "retry-kind",
+        "metadata-values",
+        "json-values",
+        "effects-sets",
+        "closed-union",
+        "available-order",
+        "available-target"
+      ],
+      "failed": {
+        "result-correlation": "RESULT_CORRELATION"
+      },
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 27,
+    "failed": 1,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 28
+  },
+  "excluded": {
+    "effects-state": "reads outcome, which this mutation changes",
+    "failure-data": "reads outcome, which this mutation changes",
+    "guidance-template": "reads outcome, which this mutation changes",
+    "station-fixed": "reads outcome, which this mutation changes",
+    "retry-delay": "reads outcome, which this mutation changes",
+    "binding-keys": "reads outcome, which this mutation changes"
+  },
+  "harness": null,
+  "static": null,
+  "notes": null
+}

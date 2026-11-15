@@ -1,0 +1,108 @@
+{
+  "admissionVersion": 1,
+  "cli": "specimen",
+  "cases": [
+    {
+      "caseId": "binding-value.valid/discovery",
+      "rules": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "role": "discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/discovery.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "binding-value.valid/cd-preview",
+      "rules": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "station-duplicate",
+        "retry-policy",
+        "input-schema"
+      ],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-preview.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "binding-value.valid/cd-apply",
+      "rules": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "station-duplicate",
+        "retry-policy",
+        "input-schema"
+      ],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-apply.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "binding-value.valid/subject",
+      "rules": [
+        "binding-value",
+        "json-framing",
+        "version-malformed",
+        "version-major",
+        "version-newer",
+        "strict-keys",
+        "presence",
+        "result-correlation",
+        "guidance-arm",
+        "retry-kind",
+        "metadata-values",
+        "json-values",
+        "effects-sets",
+        "effects-state",
+        "closed-union",
+        "available-order",
+        "step-target",
+        "guidance-template",
+        "available-target",
+        "station-fixed",
+        "retry-delay",
+        "step-arguments",
+        "binding-keys",
+        "binding-route"
+      ],
+      "role": "command",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "subject.stdout",
+        "stderr": "subject.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    }
+  ]
+}

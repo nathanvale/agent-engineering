@@ -1,0 +1,72 @@
+{
+  "bindingVersion": 1,
+  "id": "strict-keys.negative.unknown-key.help-data",
+  "rule": "strict-keys",
+  "group": "E",
+  "kind": "variation-negative",
+  "oracle": ["rules/strict-keys/requiredVariations/0"],
+  "verification": ["V-34"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": [
+      "strict-keys.negative.unknown-key.help-data/subject",
+      "3.0.0",
+      "unlisted"
+    ]
+  },
+  "rows": [
+    {
+      "caseId": "strict-keys.negative.unknown-key.help-data/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "version-major",
+        "version-newer",
+        "result-correlation",
+        "effect-inventory",
+        "guidance-arm",
+        "retry-kind",
+        "done-outcome",
+        "metadata-values",
+        "json-values",
+        "effects-sets",
+        "effects-state",
+        "closed-union",
+        "available-order"
+      ],
+      "failed": {
+        "strict-keys": "UNLISTED_KEY"
+      },
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 15,
+    "failed": 1,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 16
+  },
+  "excluded": {
+    "presence": "reads keyset, which this mutation changes"
+  },
+  "harness": null,
+  "static": null,
+  "notes": null
+}

@@ -1,0 +1,20 @@
+{
+  "admissionVersion": 1,
+  "cli": "specimen",
+  "cases": [
+    {
+      "caseId": "json-framing.negative.truncated/subject",
+      "rules": ["json-framing", "version-malformed", "strict-keys", "presence"],
+      "role": "command",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "subject.stdout",
+        "stderr": "subject.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    }
+  ]
+}

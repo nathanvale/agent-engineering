@@ -1,0 +1,69 @@
+{
+  "bindingVersion": 1,
+  "id": "version-copy.valid",
+  "rule": "version-copy",
+  "group": "E",
+  "kind": "valid-twin",
+  "oracle": ["rules/version-copy/validTwin"],
+  "verification": ["V-16"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [],
+  "checker": {
+    "exitCode": 0,
+    "outcome": "success",
+    "causeCode": "SUCCESS_UNCHANGED",
+    "failureClass": null,
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": "report",
+    "stderr": "",
+    "messageIncludes": []
+  },
+  "rows": [
+    {
+      "caseId": "version-copy.valid/subject",
+      "passed": [
+        "version-copy",
+        "json-framing",
+        "version-malformed",
+        "version-major",
+        "version-newer",
+        "strict-keys",
+        "presence",
+        "result-correlation",
+        "effect-inventory",
+        "guidance-arm",
+        "retry-kind",
+        "done-outcome",
+        "metadata-values",
+        "json-values",
+        "effects-sets",
+        "effects-state",
+        "closed-union",
+        "available-order",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 20,
+    "failed": 0,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 20
+  },
+  "excluded": {},
+  "harness": null,
+  "static": null,
+  "notes": null
+}

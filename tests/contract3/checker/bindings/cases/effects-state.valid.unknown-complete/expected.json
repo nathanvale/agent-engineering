@@ -1,0 +1,101 @@
+{
+  "bindingVersion": 1,
+  "id": "effects-state.valid.unknown-complete",
+  "rule": "effects-state",
+  "group": "E",
+  "kind": "variation-valid",
+  "oracle": ["rules/effects-state/requiredVariations/0"],
+  "verification": ["V-34"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [],
+  "checker": {
+    "exitCode": 0,
+    "outcome": "success",
+    "causeCode": "SUCCESS_UNCHANGED",
+    "failureClass": null,
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": "report",
+    "stderr": "",
+    "messageIncludes": []
+  },
+  "rows": [
+    {
+      "caseId": "effects-state.valid.unknown-complete/discovery",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "effects-state.valid.unknown-complete/cd-apply",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "station-duplicate",
+        "retry-policy",
+        "input-schema"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "effects-state.valid.unknown-complete/subject",
+      "passed": [
+        "effects-state",
+        "json-framing",
+        "version-malformed",
+        "version-major",
+        "version-newer",
+        "strict-keys",
+        "presence",
+        "result-correlation",
+        "guidance-arm",
+        "retry-kind",
+        "metadata-values",
+        "json-values",
+        "effects-sets",
+        "attempted-effect",
+        "failure-data",
+        "handoff-shape",
+        "closed-union",
+        "available-order",
+        "inspection-target",
+        "guidance-template",
+        "available-target",
+        "station-fixed",
+        "retry-delay",
+        "binding-keys"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 36,
+    "failed": 0,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 36
+  },
+  "excluded": {},
+  "harness": null,
+  "static": null,
+  "notes": null
+}
