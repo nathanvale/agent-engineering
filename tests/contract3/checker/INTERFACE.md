@@ -109,10 +109,12 @@ Case = {
   expect?: Expected,            // independent expected values; never production output
   sameAs?: string,              // deterministic-fields: the earlier caseId to compare with
   normalize?: string[],         // deterministic-fields: extra JSON Pointers under /result/data declared as time fields
-  probe?: Probe                 // D2 proposal only
+  probe?: Probe,                // D2 proposal only
+  selector?: string             // Phase 2a addition: command-discovery case only; the selected identity
 }
 
-Run = { kind: "run", program: "bun-runtime" | string, args: string[], cwd?: string, env?: { [name]: string } }
+Run = { kind: "run", program: "bun-runtime" | string, args: string[], cwd?: string, env?: { [name]: string },
+        argvOffset?: integer }  // Phase 2a addition: leading args that are not the target CLI's own argv (default 0)
 Captured = { kind: "captured", stdout: string, stderr: string, exit: { code: integer } | { signal: string } }
 
 Expected = {
@@ -144,6 +146,18 @@ whole invocation with `SCHEMA_INVALID_INPUT` and zero target executions:
 
 An unreadable admission or captured file is `DOMAIN_PRECONDITION_UNMET`
 (section 6), also before any target runs.
+
+Phase 2a additions (16 November 2026, implementer): `argvOffset` and
+`selector` are optional and additive; an admission bound to the original note
+stays valid. Input rules need `argvOffset` to find the target CLI's argv;
+`command-selection` compares with `selector` when given. Adopted from the
+binder's review: one pure judgement entry point `judgeObservations(admission,
+observations, minors)` returning schema rows with failed rows included (G1);
+the G2 prerequisite model; the G15 probe mapping, which also covers input
+rules when a probe is admitted (G9); identity ownership (G17); human-mode
+criteria (G18); compact `{kind, command, args}` encoding for the `ifNoResult`
+size limit (G19). `diagnostics-absent`, the `fallback-version` negative and
+`minor-meaning` stay stopped: they report `not_run` with a reason.
 
 ## 4. Target execution protocol
 
