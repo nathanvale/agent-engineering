@@ -1,0 +1,10 @@
+{
+  "argv": ["find", "--json", "abc", "--until", "b"],
+  "responses": [
+    {
+      "stdout": "subject.0.stdout",
+      "stderr": null,
+      "exit": 0
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "bindingVersion": 1,
+  "id": "builtins.negative.remove-command-discovery",
+  "rule": "builtins",
+  "group": "P",
+  "kind": "variation-negative",
+  "oracle": ["rules/builtins/requiredVariations/0"],
+  "verification": ["V-11", "V-43"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [
+    "builtins.negative.remove-command-discovery/subject:run"
+  ],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": [
+      "builtins.negative.remove-command-discovery/subject",
+      "3.0.0",
+      "specimen.command-discovery"
+    ]
+  },
+  "rows": [
+    {
+      "caseId": "builtins.negative.remove-command-discovery/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "exit-expected",
+        "cause-expected"
+      ],
+      "failed": {
+        "builtins": "BUILTIN_NOT_DECLARED"
+      },
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 8,
+    "failed": 1,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 9
+  },
+  "excluded": {},
+  "harness": null,
+  "static": null,
+  "notes": null
+}

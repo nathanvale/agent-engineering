@@ -1,0 +1,10 @@
+{
+  "argv": ["list", "--bogus", "--json"],
+  "responses": [
+    {
+      "stdout": "list-usage.0.stdout",
+      "stderr": null,
+      "exit": 2
+    }
+  ]
+}

@@ -1,0 +1,102 @@
+{
+  "admissionVersion": 1,
+  "cli": "specimen",
+  "cases": [
+    {
+      "caseId": "pattern-budget.valid/discovery",
+      "rules": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "role": "discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/discovery.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "pattern-budget.valid/cd-find",
+      "rules": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "exit-expected",
+        "cause-expected",
+        "pattern-syntax"
+      ],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "run",
+        "program": "bun-runtime",
+        "args": [
+          "../../../specimens/target.mjs",
+          "--discover-command",
+          "specimen.find",
+          "--json"
+        ],
+        "cwd": ".",
+        "env": {
+          "SPECIMEN_TABLE": "cd-find.table.json"
+        }
+      },
+      "expect": {
+        "exitCode": 0,
+        "causeCode": "SUCCESS_UNCHANGED",
+        "outcome": "success",
+        "commandIdentity": "specimen.command-discovery"
+      }
+    },
+    {
+      "caseId": "pattern-budget.valid/subject",
+      "rules": [
+        "pattern-budget",
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "exit-expected",
+        "cause-expected",
+        "station-observed"
+      ],
+      "role": "command",
+      "mode": "machine",
+      "target": {
+        "kind": "run",
+        "program": "bun-runtime",
+        "args": [
+          "../../../specimens/target.mjs",
+          "find",
+          "--json",
+          "abc",
+          "--code",
+          "abc"
+        ],
+        "cwd": ".",
+        "env": {
+          "SPECIMEN_TABLE": "subject.table.json"
+        }
+      },
+      "expect": {
+        "exitCode": 0,
+        "causeCode": "SUCCESS_UNCHANGED",
+        "outcome": "success",
+        "commandIdentity": "specimen.find"
+      }
+    }
+  ]
+}

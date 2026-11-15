@@ -1,0 +1,10 @@
+{
+  "argv": ["list", "--json", "--deadline-ms", "5000"],
+  "responses": [
+    {
+      "stdout": "subject.0.stdout",
+      "stderr": null,
+      "exit": 2
+    }
+  ]
+}

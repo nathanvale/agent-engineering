@@ -1,0 +1,15 @@
+{
+  "argv": ["list", "--json"],
+  "responses": [
+    {
+      "stdout": "target.0.stdout",
+      "stderr": null,
+      "exit": 0
+    },
+    {
+      "stdout": "target.1.stdout",
+      "stderr": null,
+      "exit": 0
+    }
+  ]
+}

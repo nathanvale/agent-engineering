@@ -1,0 +1,41 @@
+{
+  "admissionVersion": 1,
+  "cli": "specimen",
+  "cases": [
+    {
+      "caseId": "dispatch.valid.missing-selector/subject",
+      "rules": [
+        "dispatch",
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "exit-expected",
+        "cause-expected"
+      ],
+      "role": "dispatch",
+      "mode": "machine",
+      "target": {
+        "kind": "run",
+        "program": "bun-runtime",
+        "args": [
+          "../../../specimens/target.mjs",
+          "--discover-command",
+          "--json"
+        ],
+        "cwd": ".",
+        "env": {
+          "SPECIMEN_TABLE": "subject.table.json"
+        }
+      },
+      "expect": {
+        "exitCode": 2,
+        "causeCode": "USAGE_INVALID_INVOCATION",
+        "outcome": "refused",
+        "commandIdentity": "specimen.dispatch"
+      }
+    }
+  ]
+}

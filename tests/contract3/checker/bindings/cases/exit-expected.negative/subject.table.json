@@ -1,0 +1,10 @@
+{
+  "argv": ["show", "n-9", "--json"],
+  "responses": [
+    {
+      "stdout": "subject.0.stdout",
+      "stderr": null,
+      "exit": 1
+    }
+  ]
+}

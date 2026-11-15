@@ -1,0 +1,37 @@
+{
+  "admissionVersion": 1,
+  "cli": "specimen",
+  "cases": [
+    {
+      "caseId": "builtins.negative.remove-dispatch/subject",
+      "rules": [
+        "builtins",
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "exit-expected",
+        "cause-expected"
+      ],
+      "role": "discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "run",
+        "program": "bun-runtime",
+        "args": ["../../../specimens/target.mjs", "--discover", "--json"],
+        "cwd": ".",
+        "env": {
+          "SPECIMEN_TABLE": "subject.table.json"
+        }
+      },
+      "expect": {
+        "exitCode": 0,
+        "causeCode": "SUCCESS_UNCHANGED",
+        "outcome": "success",
+        "commandIdentity": "specimen.discovery"
+      }
+    }
+  ]
+}

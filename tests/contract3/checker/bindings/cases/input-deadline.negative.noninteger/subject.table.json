@@ -1,0 +1,10 @@
+{
+  "argv": ["apply", "--json", "--preview", "pv-7f3a", "--deadline-ms", "1.5"],
+  "responses": [
+    {
+      "stdout": "subject.0.stdout",
+      "stderr": null,
+      "exit": 0
+    }
+  ]
+}

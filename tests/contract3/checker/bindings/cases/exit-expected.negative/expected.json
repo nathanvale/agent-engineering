@@ -1,0 +1,88 @@
+{
+  "bindingVersion": 1,
+  "id": "exit-expected.negative",
+  "rule": "exit-expected",
+  "group": "P",
+  "kind": "negative",
+  "oracle": ["rules/exit-expected/negative"],
+  "verification": ["V-9"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": ["exit-expected.negative/subject:run"],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": ["exit-expected.negative/subject", "3.0.0"]
+  },
+  "rows": [
+    {
+      "caseId": "exit-expected.negative/discovery",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "exit-expected.negative/cd-show",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "station-duplicate",
+        "retry-policy",
+        "input-schema"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "exit-expected.negative/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "station-observed"
+      ],
+      "failed": {
+        "exit-expected": "EXPECTED_EXIT_MISMATCH"
+      },
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 19,
+    "failed": 1,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 20
+  },
+  "excluded": {
+    "cause-expected": "reads observed, which this mutation changes"
+  },
+  "harness": null,
+  "static": null,
+  "notes": "The negative is a valid exit-1 internal refusal that agrees with its own process exit; the independent expectation is exit 3 (V-9)."
+}

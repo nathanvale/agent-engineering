@@ -1,0 +1,58 @@
+{
+  "bindingVersion": 1,
+  "id": "machine-stderr.negative.discovery",
+  "rule": "machine-stderr",
+  "group": "P",
+  "kind": "variation-negative",
+  "oracle": ["rules/machine-stderr/requiredVariations/1"],
+  "verification": ["V-34"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": ["machine-stderr.negative.discovery/subject:run"],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": ["machine-stderr.negative.discovery/subject", "3.0.0"]
+  },
+  "rows": [
+    {
+      "caseId": "machine-stderr.negative.discovery/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "exit-envelope",
+        "exit-expected",
+        "cause-expected"
+      ],
+      "failed": {
+        "machine-stderr": "MACHINE_STDERR_NOT_EMPTY"
+      },
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 7,
+    "failed": 1,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 8
+  },
+  "excluded": {},
+  "harness": null,
+  "static": null,
+  "notes": null
+}

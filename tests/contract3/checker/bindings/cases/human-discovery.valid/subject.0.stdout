@@ -1,0 +1,13 @@
+specimen contract 3.0.0
+
+Commands:
+  specimen.help
+  specimen.discovery
+  specimen.command-discovery
+  specimen.dispatch
+  specimen.list
+  specimen.show
+  specimen.find
+  specimen.preview
+  specimen.apply
+  specimen.pending

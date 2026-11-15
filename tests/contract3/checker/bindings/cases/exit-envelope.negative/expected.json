@@ -1,0 +1,88 @@
+{
+  "bindingVersion": 1,
+  "id": "exit-envelope.negative",
+  "rule": "exit-envelope",
+  "group": "P",
+  "kind": "negative",
+  "oracle": ["rules/exit-envelope/negative"],
+  "verification": ["V-9"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": ["exit-envelope.negative/subject:run"],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": ["exit-envelope.negative/subject", "3.0.0", "exitCode"]
+  },
+  "rows": [
+    {
+      "caseId": "exit-envelope.negative/discovery",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "exit-envelope.negative/cd-show",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "station-duplicate",
+        "retry-policy",
+        "input-schema"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "exit-envelope.negative/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "cause-expected",
+        "station-observed"
+      ],
+      "failed": {
+        "exit-envelope": "ENVELOPE_EXIT_MISMATCH"
+      },
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 19,
+    "failed": 1,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 20
+  },
+  "excluded": {
+    "exit-expected": "reads realExit, which this mutation changes"
+  },
+  "harness": null,
+  "static": null,
+  "notes": null
+}

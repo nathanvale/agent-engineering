@@ -1,0 +1,99 @@
+{
+  "admissionVersion": 1,
+  "cli": "specimen",
+  "cases": [
+    {
+      "caseId": "deterministic-fields.valid/discovery",
+      "rules": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "role": "discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/discovery.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "deterministic-fields.valid/cd-list",
+      "rules": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "station-duplicate",
+        "retry-policy",
+        "input-schema"
+      ],
+      "role": "command-discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "captured",
+        "stdout": "../../shared/cd-list.stdout",
+        "stderr": "../../shared/empty.stderr",
+        "exit": {
+          "code": 0
+        }
+      }
+    },
+    {
+      "caseId": "deterministic-fields.valid/first",
+      "rules": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "station-observed"
+      ],
+      "role": "command",
+      "mode": "machine",
+      "target": {
+        "kind": "run",
+        "program": "bun-runtime",
+        "args": ["../../../specimens/target.mjs", "list", "--json"],
+        "cwd": ".",
+        "env": {
+          "SPECIMEN_TABLE": "target.table.json",
+          "SPECIMEN_COUNTER": "det.counter"
+        }
+      }
+    },
+    {
+      "caseId": "deterministic-fields.valid/second",
+      "rules": [
+        "deterministic-fields",
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "station-observed"
+      ],
+      "role": "command",
+      "mode": "machine",
+      "target": {
+        "kind": "run",
+        "program": "bun-runtime",
+        "args": ["../../../specimens/target.mjs", "list", "--json"],
+        "cwd": ".",
+        "env": {
+          "SPECIMEN_TABLE": "target.table.json",
+          "SPECIMEN_COUNTER": "det.counter"
+        }
+      },
+      "sameAs": "deterministic-fields.valid/first",
+      "normalize": ["/result/data/generatedAt"]
+    }
+  ]
+}

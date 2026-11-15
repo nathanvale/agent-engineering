@@ -1,0 +1,31 @@
+{
+  "bindingVersion": 1,
+  "id": "deterministic-fields.negative.normalize-outside-data",
+  "rule": "deterministic-fields",
+  "group": "P",
+  "kind": "variation-negative",
+  "oracle": ["rules/deterministic-fields/requiredVariations/3"],
+  "verification": ["V-48"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": ["/result/effects"]
+  },
+  "rows": null,
+  "rowsUnbound": null,
+  "counts": null,
+  "excluded": {},
+  "harness": null,
+  "static": null,
+  "notes": "LIFE-14: only run identity and genuine time normalize. The admission is refused before any target runs."
+}
