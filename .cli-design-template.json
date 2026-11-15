@@ -1,0 +1,11 @@
+{
+  "specRevision": "4",
+  "templateRevision": "7cb52b781850403120f2f0c2aa7e31c1e3fec1ec",
+  "templateDirty": false,
+  "sourcePacket": "https://github.com/myagentdojo/my-second-brain-playground/tree/main/projects/cli-design-skill",
+  "starter": "simple",
+  "profile": "durable",
+  "entryPoint": "src/cli.ts",
+  "commandOwner": "src/commands.ts",
+  "registrationVersion": 1
+}
