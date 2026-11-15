@@ -338,6 +338,48 @@ incorrect schema output fails the check. Tests distinguish input-shape
 acceptance from subsequent runtime resource and authority checks. Navigation
 itself retains A11's no-domain-effect requirement.
 
+## A13. Reclaim a lock only with proven stopped ownership and exclusive takeover
+
+Status: accepted direction. Resolves Q4's policy conflict for the next
+Contract 3.0 draft; the mechanism and its evidence remain incomplete.
+
+Nathan: "Yes, allow automatic reclaim only when the owner is proven stopped
+and exclusive takeover is guaranteed. Hand off to a person if either is
+uncertain, and never automatically replay effects. Make that durable."
+
+- Permit automatic reclaim only when runtime evidence proves the owner has
+  stopped and the takeover mechanism guarantees exclusive ownership.
+- If either condition is uncertain, preserve the lock protection and hand
+  off to a person with inspection and repair guidance. Lock age alone is
+  not proof that an owner has stopped.
+- Keep reclaim separate from settlement. Acquiring a lock neither proves
+  what the interrupted operation did nor marks it complete. Never
+  automatically replay effects after reclaim.
+- Preserve A1's authorised unknown-outcome closure and A2's affected-resource
+  scope. Unrelated work continues only when independence is established.
+
+This is a narrow successor to the inherited lifecycle rule against automatic
+stale-lock takeover, reconciling it with decision 20's dead-owner reclaim.
+It does not retrospectively change Contract 2.0 or approve a previously
+rejected reclaim design. The state add-on owns the shared mechanism; host
+commands do not each invent a takeover policy.
+
+Reason and trade-off: a proven abandoned lock need not require manual removal,
+but uncertain cases still need a person. Runtime ownership and concurrency
+proof are required; a TypeScript value, caller assertion or process-age
+heuristic is insufficient. The draft must state the supported environment
+and the limits of the ownership evidence.
+
+Required proof, not yet run: live owners are never displaced; two competing
+reclaimers cannot both gain ownership; ambiguous process identity or liveness
+produces a handoff without takeover; a crash during takeover preserves
+exclusivity; reclaim preserves interrupted-operation evidence and repeats no
+completed or uncertain effect. Account for still-running delegated work
+when establishing safe ownership: a stopped parent alone does not prove
+all writers have stopped. Use real concurrent processes, isolated resources
+and failing controls against the supported environment. The shared recovery
+design and independent review remain prerequisites to implementation.
+
 ## Requested repair guidance and diagnosis
 
 Nathan also requested repair hints so an agent can identify the next step,
@@ -355,13 +397,14 @@ the recovery decision; repair hints do not bypass authority or replay rules.
 
 ## Remaining work and next question
 
-Next walkthrough question: may the state add-on automatically reclaim a lock
-when it can prove the owner has stopped, while refusing and handing off when
-it cannot prove that? This remains unresolved. Q4 identifies the conflict
-between the inherited lifecycle rule against automatic stale-lock takeover
-and decision 20's dead-owner reclaim. A1 and A2 settle unknown-outcome closure
-and affected-resource blocking; neither settles lock takeover. Reclaiming a
-lock would not settle the interrupted operation or authorise replay.
+Next walkthrough question: should controlled shutdown also stop programs the
+CLI launched, including a bounded graceful stop on the first signal and a
+forced termination attempt on a repeated signal or a catchable crash? Q10
+and LIFE-11 propose changing inherited lifecycle rows to carry decision 20's
+program-ownership direction. Exact shutdown wording remains unaccepted.
+Separate attempting termination from observing it: forced termination of the
+CLI itself, abort and power loss cannot promise cleanup. Stopping a program
+does not undo its effects or prove an external operation stopped.
 
 Other unresolved matters include the recovery and lock design, the detailed
 version policy, lifecycle departures, remaining schema/lint questions and the
