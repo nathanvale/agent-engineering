@@ -29,6 +29,8 @@ export interface CommandDefinition {
   effectClass: EffectClass;
   route: readonly string[];
   summary: string;
+  /** Tokens after the route are passed to execute; otherwise the route is exact. */
+  acceptsArguments?: true;
   execute(args: string[]): Promise<OperationResult>;
   stations(): readonly unknown[];
 }

@@ -220,6 +220,7 @@ test("machine status emits a strict internal fallback after serialization fails"
   expect(envelope).toMatchObject({
     availablePaths: [
       "example.command-discovery",
+      "example.contract3.check",
       "example.discovery",
       "example.dispatch",
       "example.help",
@@ -333,7 +334,7 @@ test("human help names the supported invocation", () => {
   expect(result.exitCode).toBe(0);
   expect(result.stderr).toBe("");
   expect(result.stdout).toBe(
-    "Usage: example COMMAND [--json]\nstatus\ntemplate info\n",
+    "Usage: example COMMAND [--json]\nstatus\ntemplate info\ncontract3 check\n",
   );
 });
 

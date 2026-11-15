@@ -1,4 +1,8 @@
 import type { CommandDefinition } from "./commands-contract.ts";
+import {
+  checkerStations,
+  executeCheck,
+} from "./domains/contract3-check/host-adapter.ts";
 
 export const commands: CommandDefinition[] = [
   {
@@ -17,5 +21,15 @@ export const commands: CommandDefinition[] = [
     execute: async () =>
       (await import("./domains/template.ts")).inspectTemplate(),
     stations: () => [],
+  },
+  {
+    commandIdentity: "example.contract3.check",
+    effectClass: "inspect",
+    route: ["contract3", "check"],
+    summary:
+      "Judge a Contract 3 CLI's output against an admitted case set without rerunning it.",
+    acceptsArguments: true,
+    execute: (args) => executeCheck("example.contract3.check", args),
+    stations: () => checkerStations("example.contract3.check"),
   },
 ];

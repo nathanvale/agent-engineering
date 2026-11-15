@@ -212,6 +212,24 @@ function commandDiscovery(
   const builtIns = builtInStations(command.commandIdentity);
   if (builtIns.length > 0)
     return { command, semantics: "possible-outcomes", stations: builtIns };
+  const declared =
+    commands
+      .find(
+        (candidate) => candidate.commandIdentity === command.commandIdentity,
+      )
+      ?.stations() ?? [];
+  if (declared.length > 0)
+    return {
+      command,
+      semantics: "possible-outcomes",
+      stations: [
+        failureDiscoveryStation({
+          ...COMMAND_FAILURE_STATION,
+          commandIdentity: command.commandIdentity,
+        }),
+        ...declared,
+      ],
+    };
   return {
     command,
     semantics: "possible-outcomes",
@@ -491,11 +509,12 @@ function formatOperation(
 async function runSelectedCommand(
   selected: CommandDefinition,
   json: boolean,
+  commandArgs: string[],
 ): Promise<number> {
   activeCommandIdentity = selected.commandIdentity;
   let operation;
   try {
-    operation = await selected.execute([]);
+    operation = await selected.execute(commandArgs);
   } catch {
     return reportInternalFailure(
       { ...COMMAND_FAILURE_STATION, commandIdentity: selected.commandIdentity },
@@ -556,10 +575,17 @@ async function main(argv: string[]): Promise<number> {
   if (inspection !== undefined) return inspection;
   const selected = commands.find(
     (command) =>
-      command.route.length === args.length &&
+      (command.acceptsArguments === true
+        ? args.length >= command.route.length
+        : command.route.length === args.length) &&
       command.route.every((token, index) => token === args[index]),
   );
-  if (selected !== undefined) return await runSelectedCommand(selected, json);
+  if (selected !== undefined)
+    return await runSelectedCommand(
+      selected,
+      json,
+      args.slice(selected.route.length),
+    );
   return reportUsage(json);
 }
 
