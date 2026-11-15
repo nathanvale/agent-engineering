@@ -1,0 +1,1751 @@
+{
+  "fixtureVersion": 1,
+  "kind": "independent-checker-report-expectations",
+  "observed_status": "not_run",
+  "authority": {
+    "foundationCommit": "719c89e0cd9e35629d6fb3ee918ed729166b7b57",
+    "acceptedContractCommit": "5693651d19c6fba2430c904688e583266dbe58a0",
+    "manifestSha256": "c162c9850ca506fd839ce36b2b1a8172f064516b0f229dd34a5678b366b02b9d",
+    "criterion": "C3-FND-7",
+    "ticket": "T6",
+    "sources": ["VER-14", "ROLL-8"]
+  },
+  "reportSchema": "checker-report.schema.json",
+  "preservedOracles": {
+    "requirements": "expectations.json",
+    "retained2": "retained-2.json",
+    "identityCounts": {
+      "verification": 49,
+      "commonCauses": 20,
+      "compilerLocks": 34
+    }
+  },
+  "expectedRuleCount": 92,
+  "rowIdentity": ["ruleId", "caseId"],
+  "reportSemantics": [
+    "Report data is engineering-owned under VER-14; no envelope key, common cause or station identity is added.",
+    "A report has exactly the independently admitted ruleId/caseId pairs; reject missing, duplicate and unexpected identities before iterating.",
+    "ruleId resolves here; caseId is frozen by the test-owned specimen admission before checker implementation for that case.",
+    "Every failed row uses that rule findingCode; all independently detectable findings remain visible. A single-finding cap is not imposed.",
+    "For a single-rule negative, every unrelated evaluable row remains passed. Prerequisites not evaluated remain not_run with a reason; never invent observations.",
+    "A passed row requires actual evidence at its promised proof layer. Schema validity of a report alone never establishes proof.",
+    "not_run, missing, skipped and timed_out are unproved, never passed or declared_unreachable.",
+    "declared_unreachable requires reviewed impossibility and evidence; it is not a passing execution.",
+    "Pin exact counts by status in every admitted specimen. Do not infer qualification from an empty or partial report.",
+    "Messages are bounded, redacted explanations of the violated field/correlation and repair direction; no byte-exact diagnostic prose oracle.",
+    "This report is not a universal evidence schema or a qualification summary for all 49 V rows."
+  ],
+  "rules": [
+    {
+      "id": "version-malformed",
+      "findingCode": "VERSION_MALFORMED",
+      "sources": ["VER-1", "VER-10"],
+      "verification": ["V-16", "V-17"],
+      "validTwin": "Valid 3.0.0 version.",
+      "negative": "Replace version with 3.0.1.",
+      "proofLayer": "version",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "version-major",
+      "findingCode": "VERSION_UNSUPPORTED_MAJOR",
+      "sources": ["VER-3", "VER-10", "VER-13", "ROLL-5"],
+      "verification": ["V-17"],
+      "validTwin": "Valid 3.0.0 output.",
+      "negative": "Use well-formed 2.0.0 output; name the preserved checker in refusal.",
+      "proofLayer": "version",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "version-newer",
+      "findingCode": "VERSION_UNSUPPORTED_MINOR",
+      "sources": ["VER-3", "VER-10", "VER-15"],
+      "verification": ["V-16"],
+      "validTwin": "Test-only reader 3.1.0 accepts 3.1.0.",
+      "negative": "Supply test-only 3.2.0 to reader 3.1.0.",
+      "proofLayer": "version",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "declared-minor-shape",
+      "findingCode": "DECLARED_MINOR_SHAPE",
+      "sources": ["VER-4", "VER-4a", "VER-15"],
+      "verification": ["V-16"],
+      "validTwin": "3.0.0 omits a field added only in test-only 3.1.0.",
+      "negative": "Add that test-only field to 3.0.0 output.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "version-copy",
+      "findingCode": "VERSION_COPY_MISMATCH",
+      "sources": ["VER-2a", "DISC-6"],
+      "verification": ["V-16"],
+      "validTwin": "Discovery and envelope both declare 3.0.0.",
+      "negative": "Change only discovery copy to 3.1.0.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "json-framing",
+      "findingCode": "OUTPUT_FRAMING",
+      "sources": ["WIRE-1"],
+      "verification": ["V-34"],
+      "validTwin": "One UTF-8 JSON object followed by one newline.",
+      "negative": "Append a second object to otherwise-valid output.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": [
+        "Truncated JSON.",
+        "Extra object.",
+        "Trailing human text.",
+        "Missing terminating newline.",
+        "Non-object root."
+      ]
+    },
+    {
+      "id": "strict-keys",
+      "findingCode": "UNLISTED_KEY",
+      "sources": ["WIRE-1", "WIRE-6", "WIRE-8", "DISC-6"],
+      "verification": ["V-34"],
+      "validTwin": "No legacy or unknown keys at any object.",
+      "negative": "Add envelopeVersion to otherwise-valid 3.0.0 envelope.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": [
+        "Unknown key at every strict object/variant.",
+        "Legacy envelopeVersion, nextAction, profile and generationConventionVersion each independently rejected."
+      ]
+    },
+    {
+      "id": "presence",
+      "findingCode": "KEY_PRESENCE",
+      "sources": ["WIRE-2", "WIRE-7"],
+      "verification": ["V-34"],
+      "validTwin": "Required nullable failureClass is explicitly null on success.",
+      "negative": "Delete failureClass.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": [
+        "Omit each required or nullable field.",
+        "Null for optional/conditional key.",
+        "Present conditional key when condition false; absent when true."
+      ]
+    },
+    {
+      "id": "result-correlation",
+      "findingCode": "RESULT_CORRELATION",
+      "sources": ["WIRE-14", "WIRE-15", "WIRE-16"],
+      "verification": ["V-34"],
+      "validTwin": "Use one independently legal T0 truth-table row.",
+      "negative": "Change its exitCode without changing the cause/class.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": [
+        "Every T0 truth-table row as valid twin.",
+        "Failed usage; transient completed/partial/unknown each invalid.",
+        "Common causes retain T0 fixed class/outcome/state."
+      ]
+    },
+    {
+      "id": "effect-inventory",
+      "findingCode": "EFFECT_INVENTORY",
+      "sources": ["WIRE-10", "WIRE-12", "WIRE-13"],
+      "verification": ["V-34"],
+      "validTwin": "Inspect result has three empty effect lists and complete inventory.",
+      "negative": "Add one completed effect to an inspect result.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "guidance-arm",
+      "findingCode": "GUIDANCE_ARM",
+      "sources": ["WIRE-7"],
+      "verification": ["V-34"],
+      "validTwin": "Exactly one of next and handoff.",
+      "negative": "Add a handoff alongside next.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": [
+        "Neither arm.",
+        "Both arms.",
+        "Null instead of absent arm."
+      ]
+    },
+    {
+      "id": "retry-kind",
+      "findingCode": "RETRY_KIND",
+      "sources": ["WIRE-17", "STEP-4"],
+      "verification": ["V-34"],
+      "validTwin": "Retryable transient unchanged result carries retry.",
+      "negative": "Use instruction next instead of retry.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "done-outcome",
+      "findingCode": "DONE_OUTCOME",
+      "sources": ["STEP-5"],
+      "verification": ["V-34"],
+      "validTwin": "Success with done.",
+      "negative": "Use done on an otherwise-valid refusal.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "exit-expected",
+      "findingCode": "EXPECTED_EXIT_MISMATCH",
+      "sources": ["WIRE-7", "GATE-2", "ROLL-8"],
+      "verification": ["V-9"],
+      "validTwin": "Real exit and envelope exit both equal independently expected exit 3.",
+      "negative": "Replace intended domain refusal with valid internal fallback and real exit 1.",
+      "proofLayer": "process",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "cause-expected",
+      "findingCode": "EXPECTED_CAUSE_MISMATCH",
+      "sources": ["DISC-12", "GATE-2", "ROLL-8"],
+      "verification": ["V-9"],
+      "validTwin": "Observed cause equals independent specimen expected cause.",
+      "negative": "Catalogue and implementation agree on a wrong same-exit cause.",
+      "proofLayer": "process",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "exit-envelope",
+      "findingCode": "ENVELOPE_EXIT_MISMATCH",
+      "sources": ["WIRE-7", "GATE-2"],
+      "verification": ["V-9"],
+      "validTwin": "Real exit equals envelope exit.",
+      "negative": "Print valid exit-3 envelope but exit 1.",
+      "proofLayer": "process",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "builtins",
+      "findingCode": "BUILTIN_NOT_DECLARED",
+      "sources": ["DISC-5", "DISC-11"],
+      "verification": ["V-11", "V-43"],
+      "validTwin": "All four T0 built-in identities discoverable.",
+      "negative": "Remove only help from discovery.",
+      "proofLayer": "process",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": [
+        "Remove each of help/discovery/command-discovery/dispatch separately.",
+        "Each built-in individually command-discoverable."
+      ]
+    },
+    {
+      "id": "station-observed",
+      "findingCode": "UNDECLARED_STATION",
+      "sources": ["DISC-11", "DISC-12"],
+      "verification": ["V-13"],
+      "validTwin": "Observed tuple belongs to selected command stations.",
+      "negative": "Emit a legal but undeclared tuple.",
+      "proofLayer": "process",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "station-required",
+      "findingCode": "REQUIRED_STATION_UNOBSERVED",
+      "sources": ["DISC-12"],
+      "verification": ["V-13"],
+      "validTwin": "Every admitted required station has process evidence.",
+      "negative": "Omit one required specimen run.",
+      "proofLayer": "process",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "station-duplicate",
+      "findingCode": "STATION_DUPLICATE",
+      "sources": ["DISC-12"],
+      "verification": ["V-10"],
+      "validTwin": "Each tuple occurs once.",
+      "negative": "Duplicate a tuple with different words.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "step-target",
+      "findingCode": "STEP_TARGET_UNDECLARED",
+      "sources": ["STEP-6"],
+      "verification": ["V-12"],
+      "validTwin": "Next command names a declared route with valid args.",
+      "negative": "Name an undeclared command.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "inspection-target",
+      "findingCode": "INSPECTION_TARGET_MUTATES",
+      "sources": ["STEP-12"],
+      "verification": ["V-12"],
+      "validTwin": "Handoff command inspection names inspect command.",
+      "negative": "Name a declared changing command.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": ["Changing target.", "Undeclared target."]
+    },
+    {
+      "id": "lost-result-missing",
+      "findingCode": "IF_NO_RESULT_MISSING",
+      "sources": ["DISC-13"],
+      "verification": ["V-12"],
+      "validTwin": "Changing command declares a read-only command step.",
+      "negative": "Set changing command ifNoResult to null.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "lost-result-target",
+      "findingCode": "IF_NO_RESULT_TARGET",
+      "sources": ["DISC-13"],
+      "verification": ["V-12"],
+      "validTwin": "Changing command names declared inspect route.",
+      "negative": "Name an undeclared route in ifNoResult.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": ["Undeclared target.", "Declared changing target."]
+    },
+    {
+      "id": "guidance-template",
+      "findingCode": "GUIDANCE_TEMPLATE_MISMATCH",
+      "sources": ["STEP-9", "STEP-9a", "STEP-14"],
+      "verification": ["V-14"],
+      "validTwin": "Emitted guidance equals substituted station guidance.",
+      "negative": "Change the fixed repair words only in emitted output.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "template-token",
+      "findingCode": "TEMPLATE_TOKEN_UNKNOWN",
+      "sources": ["STEP-9"],
+      "verification": ["V-14"],
+      "validTwin": "Template uses only the five named tokens or legal bindings.",
+      "negative": "Use {unknownToken}.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "binding-keys",
+      "findingCode": "BINDING_KEYS",
+      "sources": ["STEP-10"],
+      "verification": ["V-14"],
+      "validTwin": "Bindings object has exactly the template-named keys.",
+      "negative": "Delete one required binding.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": [
+        "Missing key.",
+        "Extra key.",
+        "Bindings present with no token.",
+        "Invalid binding name."
+      ]
+    },
+    {
+      "id": "binding-value",
+      "findingCode": "BINDING_VALUE",
+      "sources": ["STEP-10"],
+      "verification": ["V-14", "V-44"],
+      "validTwin": "Nonsecret identifier meets byte, character and target rules.",
+      "negative": "Substitute leading-dash binding value.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": [
+        "Empty and whitespace-only.",
+        "1024 UTF-8 bytes valid; 1025 invalid.",
+        "Leading dash.",
+        "Cc/Cf/Zl/Zp each invalid.",
+        "Nonsecret classification requires review, not lexical claim."
+      ]
+    },
+    {
+      "id": "available-target",
+      "findingCode": "AVAILABLE_PATH_UNDECLARED",
+      "sources": ["WIRE-6a"],
+      "verification": ["V-15"],
+      "validTwin": "All availablePaths identities appear in discovery.",
+      "negative": "Add an undeclared identity while keeping sort order.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "available-order",
+      "findingCode": "AVAILABLE_PATH_ORDER",
+      "sources": ["WIRE-5", "WIRE-6a"],
+      "verification": ["V-15"],
+      "validTwin": "Unique code-unit-sorted availablePaths.",
+      "negative": "Reverse two distinct entries.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": ["Unsorted two identities.", "Duplicate identity."]
+    },
+    {
+      "id": "input-case",
+      "findingCode": "INPUT_CASE_MISMATCH",
+      "sources": ["INPUT-1", "INPUT-2", "INPUT-3", "INPUT-5"],
+      "verification": ["V-44"],
+      "validTwin": "Independent argv cases agree with parser and projection.",
+      "negative": "Parser and projection both accept forbidden --name=value.",
+      "proofLayer": "process",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": [
+        "Schema only wrong.",
+        "Parser only wrong.",
+        "Both agree on same wrong grammar."
+      ]
+    },
+    {
+      "id": "step-arguments",
+      "findingCode": "STEP_ARGUMENTS_INVALID",
+      "sources": ["STEP-6", "INPUT-4"],
+      "verification": ["V-12", "V-44"],
+      "validTwin": "Rendered arguments satisfy target input schema.",
+      "negative": "Omit a required target operand.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "pattern-budget",
+      "findingCode": "PATTERN_BUDGET_EXCEEDED",
+      "sources": ["INPUT-2"],
+      "verification": ["V-44"],
+      "validTwin": "Bounded benign external pattern completes within independently frozen budgets.",
+      "negative": "Adversarial backtracking exceeds the finite budget and terminates.",
+      "proofLayer": "process",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "human-discovery",
+      "findingCode": "HUMAN_DISCOVERY_INVALID",
+      "sources": ["DISC-1", "ROLL-8"],
+      "verification": ["V-34", "V-43"],
+      "validTwin": "Bare --discover returns human summary on stdout and exit 0.",
+      "negative": "Require --json before discovery works.",
+      "proofLayer": "process",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "navigation-effects",
+      "findingCode": "NAVIGATION_EFFECT",
+      "sources": ["DISC-2a", "INPUT-1", "INPUT-5"],
+      "verification": ["V-43"],
+      "validTwin": "Navigation works with denied provider access and unchanged domain state.",
+      "negative": "Eagerly initialise a provider or write domain state while navigating.",
+      "proofLayer": "process",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "no-replay",
+      "findingCode": "TARGET_REPLAYED",
+      "sources": ["LIFE-13", "VER-11"],
+      "verification": ["V-48"],
+      "validTwin": "Executed target increments independent durable counter once, malformed response refused.",
+      "negative": "Reader executes the target a second time after malformed output.",
+      "proofLayer": "process",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": [
+        "Each of the five noReplayCases has a valid twin and counter sensitivity control."
+      ]
+    },
+    {
+      "id": "deterministic-fields",
+      "findingCode": "DETERMINISTIC_RESULT_CHANGED",
+      "sources": ["LIFE-14"],
+      "verification": ["V-48"],
+      "validTwin": "Only identity/time vary between deterministic invocations.",
+      "negative": "Change domain data or recovery field; do not normalise it.",
+      "proofLayer": "process",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": [
+        "Change domain data.",
+        "Change effects.",
+        "Change recovery/guidance.",
+        "Only run identity and genuine time may normalize."
+      ]
+    },
+    {
+      "id": "metadata-values",
+      "findingCode": "METADATA_VALUE",
+      "sources": ["WIRE-3"],
+      "verification": ["V-34"],
+      "validTwin": "Nonempty metadata, nonsecret identities and safe integers.",
+      "negative": "Use whitespace-only commandIdentity.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "json-values",
+      "findingCode": "JSON_VALUE_INVALID",
+      "sources": ["WIRE-4", "LIFE-7"],
+      "verification": ["V-34"],
+      "validTwin": "Plain finite JSON at admitted depth.",
+      "negative": "Supply invalid JSON number or invalid decoded value to reader ingress.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "effects-sets",
+      "findingCode": "EFFECT_SET_INVALID",
+      "sources": ["WIRE-10"],
+      "verification": ["V-34"],
+      "validTwin": "Effect lists are unique, disjoint and sorted.",
+      "negative": "Put one effect in both completed and remaining.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": [
+        "Duplicate within each list.",
+        "Pairwise overlap.",
+        "Unsorted each list."
+      ]
+    },
+    {
+      "id": "effects-state",
+      "findingCode": "EFFECT_STATE_MISMATCH",
+      "sources": ["WIRE-12"],
+      "verification": ["V-34"],
+      "validTwin": "Each T0 effect-state row meets all list and inventory constraints.",
+      "negative": "Unknown with complete inventory and empty uncertain list.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": [
+        "All five independently listed T0 effect-state rows and one invalid constraint per row.",
+        "Success unchanged cannot retain remaining effects."
+      ]
+    },
+    {
+      "id": "attempted-effect",
+      "findingCode": "ATTEMPTED_EFFECT_INVALID",
+      "sources": ["WIRE-7", "GATE-2"],
+      "verification": ["V-34"],
+      "validTwin": "Attempted effect on failed result is present in exactly one effect list.",
+      "negative": "Name an attempted effect absent from all lists.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "failure-data",
+      "findingCode": "FAILURE_DATA_PRESENT",
+      "sources": ["WIRE-7"],
+      "verification": ["V-34"],
+      "validTwin": "Refused/failed data is null.",
+      "negative": "Put report data into a refused envelope.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "retry-delay",
+      "findingCode": "RETRY_DELAY_INVALID",
+      "sources": ["WIRE-7", "DISC-8"],
+      "verification": ["V-34"],
+      "validTwin": "Retry delay present iff retryable and inside positive station bounds.",
+      "negative": "Return a delay above the declared maximum.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": [
+        "Missing retry delay.",
+        "Delay present on nonretryable.",
+        "Zero/unsafe/noninteger delay.",
+        "Below minimum/above maximum."
+      ]
+    },
+    {
+      "id": "handoff-shape",
+      "findingCode": "HANDOFF_INVALID",
+      "sources": ["WIRE-9", "STEP-12"],
+      "verification": ["V-12", "V-34"],
+      "validTwin": "Human/operator handoff has nonempty valid inspections.",
+      "negative": "Use done as inspection entry.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "closed-union",
+      "findingCode": "CLOSED_MEMBER_UNKNOWN",
+      "sources": ["VER-7", "STEP-8"],
+      "verification": ["V-16", "V-34"],
+      "validTwin": "Every contract-owned member belongs to declared minor vocabulary.",
+      "negative": "Use an unknown next kind at 3.0.0.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "open-cause",
+      "findingCode": "HOST_CAUSE_REJECTED",
+      "sources": ["VER-7", "WIRE-19", "WIRE-20"],
+      "verification": ["V-16", "V-34"],
+      "validTwin": "Unknown host cause with otherwise legal declared semantics is accepted.",
+      "negative": "Checker rejects it solely because absent from common-cause list.",
+      "proofLayer": "process",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "retry-policy",
+      "findingCode": "RETRY_POLICY_INVALID",
+      "sources": ["DISC-8"],
+      "verification": ["V-34"],
+      "validTwin": "False retry uses none; true uses finite positive safe bounds.",
+      "negative": "Bounded policy maximum below minimum.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "station-fixed",
+      "findingCode": "STATION_FIXED_FIELD_MISMATCH",
+      "sources": ["DISC-9", "DISC-12", "STEP-14"],
+      "verification": ["V-13", "V-14"],
+      "validTwin": "Result matches every fixed field of its station.",
+      "negative": "Change effectClass or retry policy only in observed output.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "unreachable-review",
+      "findingCode": "UNREACHABLE_UNJUSTIFIED",
+      "sources": ["DISC-8", "DISC-12"],
+      "verification": ["V-13", "V-34"],
+      "validTwin": "Impossible station has reviewed reason; required has null rationale.",
+      "negative": "Use declared-unreachable to hide a reachable but unrun station.",
+      "proofLayer": "review",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "help-discovery",
+      "findingCode": "HELP_DISCOVERY_MISMATCH",
+      "sources": ["DISC-3", "DISC-5"],
+      "verification": ["V-43"],
+      "validTwin": "Host help commands match owners; built-ins are options and discoverable commands.",
+      "negative": "Expose stale host route in help.",
+      "proofLayer": "process",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "discovery-metadata",
+      "findingCode": "DISCOVERY_METADATA_INVALID",
+      "sources": ["DISC-6"],
+      "verification": ["V-43"],
+      "validTwin": "Exact exits/signals and maintenance exclusions from T0.",
+      "negative": "Map exit 75 to domain.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "command-selection",
+      "findingCode": "COMMAND_DISCOVERY_SELECTION",
+      "sources": ["DISC-1", "DISC-7", "INPUT-5"],
+      "verification": ["V-43"],
+      "validTwin": "One selected command input and possible stations.",
+      "negative": "Dump all command stations for one selector.",
+      "proofLayer": "process",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "dispatch",
+      "findingCode": "DISPATCH_MISMATCH",
+      "sources": ["DISC-1", "DISC-2", "DISC-4"],
+      "verification": ["V-43"],
+      "validTwin": "No args/missing/incompatible selectors exit 2; unknown selector names command-discovery.",
+      "negative": "No-argument invocation dispatches a host root operation.",
+      "proofLayer": "process",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": [
+        "No args exit 2.",
+        "Missing selector exit 2.",
+        "Incompatible built-ins exit 2.",
+        "Unknown selected identity command-discovery cause/exit 2.",
+        "Human help stdout exit 0; machine help success inspect."
+      ]
+    },
+    {
+      "id": "root-routes",
+      "findingCode": "ROOT_ROUTE_INVALID",
+      "sources": ["DISC-3", "DISC-4"],
+      "verification": ["V-43"],
+      "validTwin": "Unique identities; at most one host empty route requiring input.",
+      "negative": "Admit two host root operations.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "global-mode",
+      "findingCode": "GLOBAL_MODE_MISMATCH",
+      "sources": ["DISC-2", "INPUT-3"],
+      "verification": ["V-43", "V-44"],
+      "validTwin": "--json global before delimiter, operand after delimiter.",
+      "negative": "Treat operand --json after -- as global switch.",
+      "proofLayer": "process",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "provider-loading",
+      "findingCode": "NAVIGATION_PROVIDER_REQUIRED",
+      "sources": ["DISC-2a", "INPUT-1"],
+      "verification": ["V-43"],
+      "validTwin": "Unavailable provider leaves help, discovery and unrelated command usable.",
+      "negative": "Require credential/network initialization to list commands.",
+      "proofLayer": "process",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "lost-result-inspect",
+      "findingCode": "INSPECT_IF_NO_RESULT",
+      "sources": ["DISC-13"],
+      "verification": ["V-12"],
+      "validTwin": "Inspect command ifNoResult is null.",
+      "negative": "Add non-null ifNoResult to inspect command.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "lost-result-literals",
+      "findingCode": "IF_NO_RESULT_LITERAL_INVALID",
+      "sources": ["DISC-13"],
+      "verification": ["V-12"],
+      "validTwin": "At most 16 literal args and at most 2048 UTF-8 bytes, no forbidden token/control.",
+      "negative": "Use a binding token inside ifNoResult args.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": [
+        "16 args valid/17 invalid.",
+        "2048 encoded bytes valid/2049 invalid.",
+        "Brace token and each forbidden Unicode category."
+      ]
+    },
+    {
+      "id": "binding-placement",
+      "findingCode": "BINDING_PLACEMENT",
+      "sources": ["STEP-9a", "STEP-10"],
+      "verification": ["V-14"],
+      "validTwin": "Binding only whole arg or resource.id; command/kind never templated.",
+      "negative": "Embed binding inside instruction text.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": [
+        "Partial args element.",
+        "instruction.text, repairAction, reason, resource.kind each forbidden.",
+        "command and kind never template slots."
+      ]
+    },
+    {
+      "id": "binding-route",
+      "findingCode": "BINDING_ROUTE_TOKEN",
+      "sources": ["STEP-10", "INPUT-3"],
+      "verification": ["V-14", "V-44"],
+      "validTwin": "Bound arg is not any declared route token and route matching is exact.",
+      "negative": "Render a binding equal to a declared route token.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "token-argv",
+      "findingCode": "TOKEN_ARGV_BOUNDARY",
+      "sources": ["STEP-6", "STEP-9a"],
+      "verification": ["V-14", "V-44"],
+      "validTwin": "Each substituted arg remains exactly one token, never shell-evaluated.",
+      "negative": "Split a rendered value with spaces into two argv tokens.",
+      "proofLayer": "process",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "input-schema",
+      "findingCode": "INPUT_SCHEMA_INVALID",
+      "sources": ["INPUT-2"],
+      "verification": ["V-44"],
+      "validTwin": "Strict admitted input schema and unique resolvable slots.",
+      "negative": "Option alias shadows --json.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": [
+        "Required arguments after optional.",
+        "Duplicate slot/name/alias.",
+        "Global shadow.",
+        "Implicit rest or additional arguments/options true.",
+        "Invalid bounds, empty/duplicate/out-of-bound choices.",
+        "Unresolved requires/exclusive slots and unsatisfiable required combination."
+      ]
+    },
+    {
+      "id": "input-required",
+      "findingCode": "INPUT_REQUIRED_MISMATCH",
+      "sources": ["INPUT-2"],
+      "verification": ["V-44"],
+      "validTwin": "Missing required and extra operand refuse usage before effects.",
+      "negative": "Accept omitted required slot.",
+      "proofLayer": "process",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": [
+        "Each required positional and option missing.",
+        "Extra operand."
+      ]
+    },
+    {
+      "id": "input-option",
+      "findingCode": "INPUT_OPTION_MISMATCH",
+      "sources": ["INPUT-2"],
+      "verification": ["V-44"],
+      "validTwin": "Exact token plus separate value; unknown/abbreviated/bundled/equals forms refuse.",
+      "negative": "Accept undeclared abbreviation.",
+      "proofLayer": "process",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": [
+        "Unknown option.",
+        "Abbreviation.",
+        "Short-option bundle.",
+        "--name=value.",
+        "Missing following value."
+      ]
+    },
+    {
+      "id": "input-presence",
+      "findingCode": "INPUT_PRESENCE_MISMATCH",
+      "sources": ["INPUT-2"],
+      "verification": ["V-44"],
+      "validTwin": "Presence flag consumes no value and cannot repeat.",
+      "negative": "Accept --flag true as a presence flag value.",
+      "proofLayer": "process",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": [
+        "Repeated presence flag.",
+        "Arbitrary truthy string.",
+        "repeatable:true declaration."
+      ]
+    },
+    {
+      "id": "input-repeat",
+      "findingCode": "INPUT_REPETITION_MISMATCH",
+      "sources": ["INPUT-2"],
+      "verification": ["V-44"],
+      "validTwin": "Repeatable values preserve occurrence order; other repetition refuses.",
+      "negative": "Reverse repeated value occurrence order.",
+      "proofLayer": "process",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": [
+        "Repeated nonrepeatable value.",
+        "Repeatable values preserve order."
+      ]
+    },
+    {
+      "id": "input-string",
+      "findingCode": "INPUT_STRING_MISMATCH",
+      "sources": ["INPUT-2"],
+      "verification": ["V-44"],
+      "validTwin": "Code-point bounds, finite choices and full Unicode matching.",
+      "negative": "Count astral character as two units.",
+      "proofLayer": "process",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": [
+        "Inclusive min/max and just outside.",
+        "Astral Unicode code point.",
+        "Every finite choice and one nonchoice.",
+        "Full-string Unicode pattern vs substring."
+      ]
+    },
+    {
+      "id": "input-integer",
+      "findingCode": "INPUT_INTEGER_MISMATCH",
+      "sources": ["INPUT-2"],
+      "verification": ["V-44"],
+      "validTwin": "Exact safe signed integer grammar and inclusive bounds.",
+      "negative": "Accept 01 or precision-losing integer.",
+      "proofLayer": "process",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": [
+        "Min/max and outside.",
+        "Negative option integer.",
+        "Empty/float/infinity/unsafe/leading-zero/plus-prefixed integer tokens."
+      ]
+    },
+    {
+      "id": "input-constraints",
+      "findingCode": "INPUT_CONSTRAINT_MISMATCH",
+      "sources": ["INPUT-2"],
+      "verification": ["V-44"],
+      "validTwin": "Requires/exclusive constraints resolve and are satisfiable.",
+      "negative": "Accept two exclusive members together.",
+      "proofLayer": "process",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": [
+        "Each requires missing dependent.",
+        "Each exclusive pair simultaneously present."
+      ]
+    },
+    {
+      "id": "input-hidden",
+      "findingCode": "INPUT_UNDECLARED_GRAMMAR",
+      "sources": ["INPUT-4"],
+      "verification": ["V-44"],
+      "validTwin": "Every argv constraint including special keywords is projected.",
+      "negative": "Parser secretly accepts an extra special keyword.",
+      "proofLayer": "process",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": [
+        "Hidden default.",
+        "Undeclared special keyword.",
+        "Unsupported custom grammar escape."
+      ]
+    },
+    {
+      "id": "input-dash",
+      "findingCode": "INPUT_DELIMITER_MISMATCH",
+      "sources": ["INPUT-3"],
+      "verification": ["V-44"],
+      "validTwin": "Dash operand requires --; declared value option consumes negative integer.",
+      "negative": "Reject valid negative integer option value.",
+      "proofLayer": "process",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": [
+        "Dash positional before -- invalid, after -- valid.",
+        "--json after -- remains operand.",
+        "Canonical identity chosen before operand parse."
+      ]
+    },
+    {
+      "id": "input-deadline",
+      "findingCode": "INPUT_DEADLINE_MISMATCH",
+      "sources": ["INPUT-2", "LIFE-5"],
+      "verification": ["V-44"],
+      "validTwin": "Deadline syntax is positive integer only where declared supported.",
+      "negative": "Accept --deadline-ms on unsupported command.",
+      "proofLayer": "process",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": [
+        "Supported positive integer accepted.",
+        "Zero/noninteger/missing value invalid.",
+        "Unsupported command rejects."
+      ]
+    },
+    {
+      "id": "input-future-binding",
+      "findingCode": "FUTURE_BINDING_TOO_LATE",
+      "sources": ["INPUT-4", "STEP-10", "CMD-9"],
+      "verification": ["V-44"],
+      "validTwin": "Caller future binding checked against target before current guard/effect.",
+      "negative": "Delay invalid target slot validation until output after effect.",
+      "proofLayer": "process",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "input-generated-binding",
+      "findingCode": "GENERATED_BINDING_TOO_LATE",
+      "sources": ["STEP-10"],
+      "verification": ["V-44"],
+      "validTwin": "Generated value checked at creation before dependent effects.",
+      "negative": "Perform dependent effect before validating generated invalid value.",
+      "proofLayer": "process",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "input-runtime",
+      "findingCode": "RUNTIME_VALIDATION_BYPASSED",
+      "sources": ["INPUT-3", "INPUT-4"],
+      "verification": ["V-44"],
+      "validTwin": "Valid syntax still needs runtime state/resource/authority validation.",
+      "negative": "Accept missing resource because syntax passed.",
+      "proofLayer": "process",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "pattern-syntax",
+      "findingCode": "PATTERN_SYNTAX_INVALID",
+      "sources": ["INPUT-2"],
+      "verification": ["V-44"],
+      "validTwin": "External patterns valid full-string Unicode without caller flags or stateful mode.",
+      "negative": "Admit malformed external regexp syntax.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "pattern-isolation",
+      "findingCode": "PATTERN_ISOLATION_MISSING",
+      "sources": ["INPUT-2"],
+      "verification": ["V-44"],
+      "validTwin": "Finite input/pattern/time budgets in terminable boundary; reader remains responsive.",
+      "negative": "Run hostile pattern synchronously in reader lifecycle.",
+      "proofLayer": "process",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": [
+        "Finite input-size budget.",
+        "Finite pattern-size budget.",
+        "Finite elapsed budget with termination.",
+        "Pathological pattern cannot block reader lifecycle."
+      ]
+    },
+    {
+      "id": "minor-remove",
+      "findingCode": "MINOR_REMOVES_KEY",
+      "sources": ["VER-6", "VER-15"],
+      "verification": ["V-16"],
+      "validTwin": "Test-only minor preserves prior keys.",
+      "negative": "Remove old optional key from test-only field table.",
+      "proofLayer": "static",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "minor-rename",
+      "findingCode": "MINOR_RENAMES_KEY",
+      "sources": ["VER-6", "VER-15"],
+      "verification": ["V-16"],
+      "validTwin": "Test-only minor preserves old names.",
+      "negative": "Rename prior key in test-only field table.",
+      "proofLayer": "static",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "minor-required",
+      "findingCode": "MINOR_REQUIRES_KEY",
+      "sources": ["VER-5", "VER-6", "VER-15"],
+      "verification": ["V-16"],
+      "validTwin": "New key remains optional/conditional with old absence meaning.",
+      "negative": "Require newly added field.",
+      "proofLayer": "static",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "minor-meaning",
+      "findingCode": "MINOR_CHANGES_MEANING",
+      "sources": ["VER-6", "VER-15"],
+      "verification": ["V-16"],
+      "validTwin": "Absent new key preserves old semantics.",
+      "negative": "Treat old missing key as new authority to mutate.",
+      "proofLayer": "review",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "minor-cause",
+      "findingCode": "MINOR_ADDS_COMMON_CAUSE",
+      "sources": ["VER-6a", "VER-15"],
+      "verification": ["V-16"],
+      "validTwin": "Common causes remain exactly T0 twenty.",
+      "negative": "Add a common cause in fixture-only minor.",
+      "proofLayer": "static",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "fallback-version",
+      "findingCode": "FALLBACK_VERSION_INVALID",
+      "sources": ["VER-9", "LIFE-10"],
+      "verification": ["V-16"],
+      "validTwin": "Fallback uses only 3.0.0 keys/members and version.",
+      "negative": "Stamp fallback with fixture-only 3.1.0.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "source-agreement",
+      "findingCode": "CONTRACT_TABLE_DRIFT",
+      "sources": ["ROLL-10"],
+      "verification": ["V-35"],
+      "validTwin": "Frozen tables, typed owner and checker agree with independent T0.",
+      "negative": "Change one exit/table alone.",
+      "proofLayer": "static",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "snippet-status",
+      "findingCode": "SNIPPET_PROOF_MISSING",
+      "sources": ["ROLL-10"],
+      "verification": ["V-35"],
+      "validTwin": "Snippet either labelled illustrative or has exact typecheck proof.",
+      "negative": "Claim uncompiled snippet as proved.",
+      "proofLayer": "static",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "diagnostics-available",
+      "findingCode": "DIAGNOSTICS_AVAILABLE_INVALID",
+      "sources": ["DIAG-1", "DIAG-2"],
+      "verification": ["V-34"],
+      "validTwin": "Available diagnostics has valid safe counters, path/null, closed and loss enums.",
+      "negative": "Set droppedRecords to negative value.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": [
+        "Each enum and required field.",
+        "Negative/unsafe counters.",
+        "Absolute path or null; bounded shape cannot prove private custody."
+      ]
+    },
+    {
+      "id": "diagnostics-unavailable",
+      "findingCode": "DIAGNOSTICS_UNAVAILABLE_INVALID",
+      "sources": ["DIAG-3"],
+      "verification": ["V-34"],
+      "validTwin": "Unavailable has allowed reason and only independently trusted optional fields.",
+      "negative": "Use setup as unavailable reason.",
+      "proofLayer": "shape",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": [
+        "Empty trusted object valid.",
+        "Unknown fields remain absent; no invented zero/null/false.",
+        "Invalid reason/field types rejected."
+      ]
+    },
+    {
+      "id": "diagnostics-absent",
+      "findingCode": "DIAGNOSTICS_UNDECLARED",
+      "sources": ["DIAG-17"],
+      "verification": ["V-34"],
+      "validTwin": "Disabled diagnostics emits no diagnostics key.",
+      "negative": "Emit diagnostics without enabled add-on.",
+      "proofLayer": "process",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "observer-exclusions",
+      "findingCode": "OBSERVATION_EXCLUSION_HIDDEN",
+      "sources": ["ROLL-8"],
+      "verification": ["V-34"],
+      "validTwin": "Every unavailable/omitted observation disclosed with reason, not passed.",
+      "negative": "Omit timed-out required row from report.",
+      "proofLayer": "process",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "retained-tooling",
+      "findingCode": "RETAINED_2_ROUTE_CHANGED",
+      "sources": ["ROLL-4", "ROLL-5", "ROLL-6"],
+      "verification": ["V-17", "V-34"],
+      "validTwin": "Pinned source, wrappers and actual 2.0 consumer routes remain intact.",
+      "negative": "Change wrapper to select new checker.",
+      "proofLayer": "static",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    },
+    {
+      "id": "raw-retention",
+      "findingCode": "RAW_RETENTION_ENABLED",
+      "sources": ["ROLL-8"],
+      "verification": ["V-34"],
+      "validTwin": "Product raw-stream retention remains disabled under accepted scope.",
+      "negative": "Write retained target raw streams without capability admission.",
+      "proofLayer": "process",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": []
+    }
+  ],
+  "formatCases": [
+    {
+      "id": "malformed",
+      "values": [
+        null,
+        3,
+        "3.0",
+        "3.0.1",
+        "03.0.0",
+        "3.0.0-beta",
+        "3.0.0+build",
+        " 3.0.0 "
+      ],
+      "missingValueAlso": true,
+      "readerVersion": "3.0.0",
+      "expected": {
+        "outcome": "refused",
+        "effectClass": "inspect",
+        "transactionState": "unchanged",
+        "failureClass": "schema",
+        "causeCode": "SCHEMA_INVALID_INPUT",
+        "exitCode": 4,
+        "data": null
+      },
+      "findingCode": "VERSION_MALFORMED",
+      "messageRequires": [
+        "contractVersion",
+        "safe bounded/redacted value or null when absent"
+      ],
+      "sources": ["VER-1", "VER-10", "VER-11"]
+    },
+    {
+      "id": "other-major",
+      "values": ["2.0.0", "1.0.0", "4.1.2"],
+      "readerVersion": "3.0.0",
+      "expected": {
+        "outcome": "refused",
+        "effectClass": "inspect",
+        "transactionState": "unchanged",
+        "failureClass": "schema",
+        "causeCode": "SCHEMA_UNSUPPORTED_CONTRACT",
+        "exitCode": 4,
+        "data": null
+      },
+      "findingCode": "VERSION_UNSUPPORTED_MAJOR",
+      "messageRequires": [
+        "exact observed version",
+        "matching-major reader",
+        "preserved 2.0 checker for 2.0.0"
+      ],
+      "sources": ["VER-10", "VER-11", "VER-13", "ROLL-5"]
+    },
+    {
+      "id": "newer-minor",
+      "values": ["3.2.0"],
+      "readerVersion": "3.1.0",
+      "testOnly": true,
+      "expected": {
+        "outcome": "refused",
+        "effectClass": "inspect",
+        "transactionState": "unchanged",
+        "failureClass": "schema",
+        "causeCode": "SCHEMA_UNSUPPORTED_CONTRACT",
+        "exitCode": 4,
+        "data": null
+      },
+      "findingCode": "VERSION_UNSUPPORTED_MINOR",
+      "messageRequires": ["3.2.0", "3.1.0", "upgrade reader"],
+      "sources": ["VER-10", "VER-15"]
+    },
+    {
+      "id": "broken-supported",
+      "values": ["3.0.0"],
+      "readerVersion": "3.0.0",
+      "expected": {
+        "outcome": "refused",
+        "effectClass": "inspect",
+        "transactionState": "unchanged",
+        "failureClass": "schema",
+        "causeCode": "SCHEMA_INVALID_INPUT",
+        "exitCode": 4,
+        "data": null
+      },
+      "findingCode": null,
+      "messageRequires": ["observed version", "violated key or correlation"],
+      "sources": ["VER-10", "VER-11"],
+      "note": "Use the precise independently admitted rule findingCode as an internal test expectation. No code field is added to refusal output."
+    },
+    {
+      "id": "valid-supported",
+      "values": ["3.0.0", "3.1.0"],
+      "readerVersion": "3.1.0",
+      "testOnly": true,
+      "expected": {
+        "outcome": "success",
+        "effectClass": "inspect",
+        "transactionState": "unchanged",
+        "failureClass": null,
+        "exitCode": 0
+      },
+      "findingCode": null,
+      "messageRequires": ["observed version", "accepted without adaptation"],
+      "sources": ["VER-3", "VER-10", "VER-14", "VER-15"],
+      "note": "Exact success cause and report cases bind through the admitted command declaration. 3.1.0 remains fixture-only."
+    }
+  ],
+  "noReplayCases": [
+    {
+      "id": "executed-malformed-json",
+      "targetObservation": "increment counter then emit truncated JSON",
+      "expectedCounterBefore": 0,
+      "expectedCounterAfter": 1,
+      "expectedReaderCause": "SCHEMA_INVALID_INPUT",
+      "sources": ["WIRE-1", "LIFE-13", "V-48"]
+    },
+    {
+      "id": "executed-malformed-version",
+      "targetObservation": "increment counter then emit version 3.0.1",
+      "expectedCounterBefore": 0,
+      "expectedCounterAfter": 1,
+      "expectedReaderCause": "SCHEMA_INVALID_INPUT",
+      "sources": ["VER-1", "VER-10", "LIFE-13", "V-48"]
+    },
+    {
+      "id": "executed-unsupported-major",
+      "targetObservation": "increment counter then emit well-formed 2.0.0",
+      "expectedCounterBefore": 0,
+      "expectedCounterAfter": 1,
+      "expectedReaderCause": "SCHEMA_UNSUPPORTED_CONTRACT",
+      "sources": ["VER-10", "VER-13", "LIFE-13", "V-48"]
+    },
+    {
+      "id": "executed-broken-supported",
+      "targetObservation": "increment counter then emit 3.0.0 with missing result",
+      "expectedCounterBefore": 0,
+      "expectedCounterAfter": 1,
+      "expectedReaderCause": "SCHEMA_INVALID_INPUT",
+      "sources": ["VER-10", "LIFE-13", "V-48"]
+    },
+    {
+      "id": "executed-pattern-budget",
+      "targetObservation": "increment counter then emit discovery with hostile external pattern",
+      "expectedCounterBefore": 0,
+      "expectedCounterAfter": 1,
+      "expectedReaderCause": "SCHEMA_INVALID_INPUT",
+      "sources": ["INPUT-2", "LIFE-13", "V-44", "V-48"]
+    }
+  ],
+  "noReplayProtocol": {
+    "layer": "real checker and target processes with independent counter readback",
+    "expectedReaderExit": 4,
+    "expectedReaderData": null,
+    "expectedReaderState": "unchanged",
+    "expectedReaderStderr": "",
+    "guidance": "Separate inspection of target effects, never target replay. Reader unchanged never asserts the executed target was unchanged.",
+    "validTwin": "Same single target execution and increment, but emit admitted valid output; reader succeeds and counter stays 1.",
+    "sensitivityControl": "Introduce automatic second target execution after invalid output; counter becomes 2 and the same harness must fail.",
+    "binding": null,
+    "observed_status": "not_run"
+  },
+  "additionalControls": [
+    {
+      "id": "unknown-host-cause",
+      "sources": ["VER-7", "WIRE-20"],
+      "expected": "Accept an unknown host cause whose declared row is otherwise legal; never use a closed cross-CLI cause allowlist."
+    },
+    {
+      "id": "classification-before-shape",
+      "sources": ["VER-10"],
+      "expected": "2.0.0 plus keys invalid under 3.0 remains unsupported major, without interpreting those keys as 3.0."
+    },
+    {
+      "id": "envelope-exits",
+      "sources": ["ROLL-8", "V-9", "V-34"],
+      "expected": "Admitted disposable target specimens produce real envelope-bearing exits 1, 4 and 75, each compared to its independent expected cause/exit, not merely envelope self-agreement."
+    },
+    {
+      "id": "version-compatibility",
+      "sources": ["VER-5", "VER-6", "VER-6a", "VER-15"],
+      "expected": "A fixture-only minor cannot remove, rename, require an older key, reinterpret older absence, change meaning or add a common cause. Future field table must be separately frozen before checker compatibility code."
+    },
+    {
+      "id": "kept-tool-route",
+      "sources": ["ROLL-4", "ROLL-5", "ROLL-6"],
+      "expected": "Read actual route and pins from retained-2.json and preserve them. Refusal does not invoke that checker or adapt output."
+    },
+    {
+      "id": "checker-rule-disabled",
+      "sources": ["ROLL-8", "V-34"],
+      "expected": "Disable each admitted rule separately; its otherwise-valid negative stops producing the expected finding and the independent test fails; restore to pass."
+    }
+  ],
+  "reportExamples": [
+    {
+      "reportVersion": 1,
+      "rows": [
+        {
+          "ruleId": "strict-keys",
+          "caseId": "strict-keys.valid",
+          "status": "passed",
+          "findings": [],
+          "evidence": ["synthetic-example-only:not-a-receipt"],
+          "reason": null
+        }
+      ]
+    },
+    {
+      "reportVersion": 1,
+      "rows": [
+        {
+          "ruleId": "strict-keys",
+          "caseId": "strict-keys.negative",
+          "status": "failed",
+          "findings": [
+            {
+              "code": "UNLISTED_KEY",
+              "message": "Unlisted envelopeVersion; remove that key."
+            }
+          ],
+          "evidence": ["synthetic-example-only:not-a-receipt"],
+          "reason": null
+        }
+      ]
+    },
+    {
+      "reportVersion": 1,
+      "rows": [
+        {
+          "ruleId": "no-replay",
+          "caseId": "no-replay.pending",
+          "status": "not_run",
+          "findings": [],
+          "evidence": [],
+          "reason": "T1/T2 public process binding is not admitted."
+        }
+      ]
+    }
+  ],
+  "futureBindings": [
+    {
+      "owner": "T6 with T1/T2",
+      "binding": "Actual command identity, CLI arguments, supported input/report modes, command-owned success/cause/guidance declarations and checker help.",
+      "status": "unbound"
+    },
+    {
+      "owner": "T6 independent fixture author",
+      "binding": "Concrete valid/invalid target bytes, command briefs, immutable case IDs, applicable rule sets and exact status counts; each rule variation beyond these seeds admitted independently before its production check.",
+      "status": "unbound"
+    },
+    {
+      "owner": "T6 and T2",
+      "binding": "Public checker/target process harness, stdin/stdout/stderr, real exits, deterministic counter barriers and all no-replay receipts.",
+      "status": "unbound"
+    },
+    {
+      "owner": "T6 and T1",
+      "binding": "Fixture-only minor field table, its old meaning, each compatibility violation, and numeric finite pattern/input/time budgets with terminable isolation.",
+      "status": "unbound"
+    },
+    {
+      "owner": "T6",
+      "binding": "Full row report transport for a refused invocation is intentionally unspecified. VER-10/11 require message details and data:null; VER-14 does not require a refusal sidecar or stderr report. No transport is invented here.",
+      "status": "intentionally_unbound"
+    },
+    {
+      "owner": "T1/T2 and originating tickets",
+      "binding": "Concrete target programs and process bindings for the frozen rules. V-9/V-12/V-14/V-15/V-16/V-35/V-43/V-44/V-48 remain final proof obligations of their originating owners. No independent semantic row/code choice is delegated to production implementation.",
+      "status": "unbound"
+    }
+  ],
+  "exclusions": {
+    "source": "expectations.json#/exclusions",
+    "rawStreamRetention": "disabled; private test evidence is not product raw-stream retention",
+    "qualification": "No host authority, reclaim, human-assisted takeover, OS/filesystem or live-provider qualification from these fixtures.",
+    "other": "No new production commands, contract edits, 2.0 migration, external writes, activation, policy naming or post-vault relocation."
+  },
+  "requirementBindings": [
+    {
+      "verification": "V-17",
+      "rules": ["version-malformed", "version-major", "retained-tooling"],
+      "additional": [
+        "formatCases/other-major",
+        "additionalControls/kept-tool-route"
+      ]
+    },
+    {
+      "verification": "V-34",
+      "rules": [
+        "json-framing",
+        "strict-keys",
+        "presence",
+        "result-correlation",
+        "effect-inventory",
+        "guidance-arm",
+        "retry-kind",
+        "done-outcome",
+        "human-discovery",
+        "metadata-values",
+        "json-values",
+        "effects-sets",
+        "effects-state",
+        "attempted-effect",
+        "failure-data",
+        "retry-delay",
+        "handoff-shape",
+        "closed-union",
+        "open-cause",
+        "retry-policy",
+        "unreachable-review",
+        "diagnostics-available",
+        "diagnostics-unavailable",
+        "diagnostics-absent",
+        "observer-exclusions",
+        "retained-tooling",
+        "raw-retention"
+      ],
+      "additional": [
+        "reportSemantics",
+        "additionalControls/envelope-exits",
+        "additionalControls/checker-rule-disabled"
+      ]
+    },
+    {
+      "verification": "V-9",
+      "rules": ["exit-expected", "cause-expected", "exit-envelope"],
+      "additional": ["additionalControls/envelope-exits"]
+    },
+    {
+      "verification": "V-12",
+      "rules": [
+        "step-target",
+        "inspection-target",
+        "lost-result-missing",
+        "lost-result-target",
+        "handoff-shape",
+        "lost-result-inspect",
+        "lost-result-literals",
+        "step-arguments"
+      ],
+      "additional": []
+    },
+    {
+      "verification": "V-14",
+      "rules": [
+        "guidance-template",
+        "template-token",
+        "binding-keys",
+        "binding-value",
+        "station-fixed",
+        "binding-placement",
+        "binding-route",
+        "token-argv"
+      ],
+      "additional": []
+    },
+    {
+      "verification": "V-15",
+      "rules": ["available-target", "available-order"],
+      "additional": []
+    },
+    {
+      "verification": "V-16",
+      "rules": [
+        "version-malformed",
+        "version-newer",
+        "declared-minor-shape",
+        "version-copy",
+        "closed-union",
+        "open-cause",
+        "minor-remove",
+        "minor-rename",
+        "minor-required",
+        "minor-meaning",
+        "minor-cause",
+        "fallback-version"
+      ],
+      "additional": [
+        "formatCases",
+        "additionalControls/classification-before-shape"
+      ]
+    },
+    {
+      "verification": "V-35",
+      "rules": ["source-agreement", "snippet-status"],
+      "additional": ["preservedOracles"]
+    },
+    {
+      "verification": "V-43",
+      "rules": [
+        "builtins",
+        "human-discovery",
+        "navigation-effects",
+        "help-discovery",
+        "discovery-metadata",
+        "command-selection",
+        "dispatch",
+        "root-routes",
+        "global-mode",
+        "provider-loading"
+      ],
+      "additional": ["T0 navigation_matrix"]
+    },
+    {
+      "verification": "V-44",
+      "rules": [
+        "binding-value",
+        "input-case",
+        "step-arguments",
+        "pattern-budget",
+        "global-mode",
+        "binding-route",
+        "token-argv",
+        "input-schema",
+        "input-required",
+        "input-option",
+        "input-presence",
+        "input-repeat",
+        "input-string",
+        "input-integer",
+        "input-constraints",
+        "input-hidden",
+        "input-dash",
+        "input-deadline",
+        "input-future-binding",
+        "input-generated-binding",
+        "input-runtime",
+        "pattern-syntax",
+        "pattern-isolation"
+      ],
+      "additional": [
+        "T0 runtime_input_matrix",
+        "noReplayCases/executed-pattern-budget"
+      ]
+    },
+    {
+      "verification": "V-48",
+      "rules": ["no-replay", "deterministic-fields"],
+      "additional": ["noReplayCases", "noReplayProtocol"]
+    }
+  ],
+  "supportBoundaries": [
+    {
+      "sources": ["STEP-16"],
+      "requirement": "Instruction addresses agent, binding nonsecret, human inspection read-only, inspection reports relevant state.",
+      "proof": "Independent meaning review, never inferred from shape.",
+      "bindingOwner": "Originating command/host reviewer; T6 discloses review exclusion."
+    },
+    {
+      "sources": ["GATE-2", "LIFE-7", "V-4", "V-18"],
+      "requirement": "Writer guard rejects cycles/undefined/functions/bigint/Date/nonfinite values and exact depth limits, fallback and transport.",
+      "proof": "T1/T2 runtime and process evidence; those in-memory values cannot be transmitted as valid JSON. T6 observes malformed stream rejection, envelope rules and actual exits only.",
+      "bindingOwner": "T1/T2; no checker-only closure."
+    },
+    {
+      "sources": ["DISC-14", "DISC-14a", "V-19"],
+      "requirement": "Lost-result report actually observes all unfinished work, honest corrupt-state refusal, meaningful inspection guidance.",
+      "proof": "T3/T8 host/recovery process and state evidence; T6 resolves route and syntax, never certifies resource truth.",
+      "bindingOwner": "T3/T8; review exclusion surfaced."
+    },
+    {
+      "sources": [
+        "DIAG-4",
+        "DIAG-7",
+        "DIAG-8",
+        "DIAG-9",
+        "DIAG-10",
+        "DIAG-11",
+        "DIAG-14",
+        "V-24"
+      ],
+      "requirement": "Diagnostics noninterference, secure files, caps, concurrency, shutdown accounting and retention.",
+      "proof": "T5/T8 real diagnostics evidence; T6 shape checking never certifies custody or observed counters.",
+      "bindingOwner": "T5/T8; disabled optional capability is not a pass."
+    }
+  ]
+}
