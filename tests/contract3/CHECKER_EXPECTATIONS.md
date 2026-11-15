@@ -2,7 +2,7 @@
 
 [checker-expectations.json](checker-expectations.json) freezes the T6 checker
 rule identities, finding codes, valid/negative pairs and required variants
-before production checker implementation. Its 92 pairs come from the accepted
+before production checker implementation. Its 93 pairs come from the accepted
 clauses, the foundation T6 brief and the independent T0 oracle. No production
 T1 implementation or checker output supplied expected values.
 
@@ -90,6 +90,13 @@ keeps the same increment and emits accepted output. A disposable retry defect
 must make the counter two and fail the harness. Capture real stdout/stderr,
 exit and state. The reader's unchanged result says nothing about whether the
 target changed its resource.
+
+Ordinary target machine completion must leave stderr empty, including help,
+discovery, usage refusals, internal failures and normal command completion.
+Each route variant has an otherwise-valid stdout/exit negative that emits one
+stderr line, and an empty-stderr valid twin. The target stream is distinct from
+the checker's own stderr. Exceptional lifecycle outcomes retain their separate
+LIFE-3 guarantees.
 
 Envelope-bearing target exits 1, 4 and 75 each require admitted process
 specimens. Compare both real exit and observed cause with independent expected

@@ -20,7 +20,7 @@
       "compilerLocks": 34
     }
   },
-  "expectedRuleCount": 92,
+  "expectedRuleCount": 93,
   "rowIdentity": ["ruleId", "caseId"],
   "reportSemantics": [
     "Report data is engineering-owned under VER-14; no envelope key, common cause or station identity is added.",
@@ -112,6 +112,24 @@
         "Trailing human text.",
         "Missing terminating newline.",
         "Non-object root."
+      ]
+    },
+    {
+      "id": "machine-stderr",
+      "findingCode": "MACHINE_STDERR_NOT_EMPTY",
+      "sources": ["LIFE-1", "ROLL-8"],
+      "verification": ["V-34"],
+      "validTwin": "Target ordinary machine completion emits one valid envelope, its independently expected exit, and zero stderr bytes.",
+      "negative": "Target emits one stderr line while preserving the otherwise-valid stdout envelope and independently expected exit.",
+      "proofLayer": "process",
+      "binding": null,
+      "observed_status": "not_run",
+      "requiredVariations": [
+        "Machine help.",
+        "Machine root discovery and selected-command discovery.",
+        "Machine usage refusal.",
+        "Machine internal failure.",
+        "Machine normal command completion."
       ]
     },
     {
@@ -1587,7 +1605,8 @@
         "diagnostics-absent",
         "observer-exclusions",
         "retained-tooling",
-        "raw-retention"
+        "raw-retention",
+        "machine-stderr"
       ],
       "additional": [
         "reportSemantics",
