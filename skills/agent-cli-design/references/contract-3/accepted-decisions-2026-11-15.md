@@ -505,6 +505,36 @@ scope is unaffected; and runtime validation rejects invalid results when
 static checks are bypassed. Attribute any TypeScript 6 lint versus TypeScript
 7 compilation disagreement without weakening checks to obtain a pass.
 
+## A17. Keep the contract acceptance record beside the contract
+
+Status: accepted ownership decision for the Contract 3.0 acceptance record.
+Resolves that bounded part of Q9 and ROLL-9.
+
+Nathan: "Yes, keep the Contract 3.0 acceptance record beside the contract in
+agent-engineering, and leave existing research and planning in place. Make
+that durable."
+
+- Keep the final Contract 3.0 acceptance record beside the contract in the
+  agent-engineering repository's agent-cli-design skill.
+- Bind it to the exact accepted manifest hash and evidence of Nathan's
+  explicit acceptance. A hash, status field or author name alone does not
+  establish approval.
+- Leave existing research and planning in place. This does not relocate the
+  source packet, settle the post-vault owner of other records or authorise a
+  migration.
+
+Reason and trade-off: the contract and evidence identifying its accepted
+bytes travel together. Broader project history remains with its existing
+owner, so retain references rather than creating competing canonical copies.
+The exact filename and record format are engineering details for the draft.
+
+Required proof when acceptance occurs: the record resolves to the actual
+explicit approval; the manifest and every covered file match the approved
+hashes; subsequent changed bytes are not represented as accepted; and
+research/planning sources remain in place. No acceptance record asserting
+approval is created now: this decision chooses its future home, not acceptance
+of the current candidate or authority to implement it.
+
 ## Requested repair guidance and diagnosis
 
 Nathan also requested repair hints so an agent can identify the next step,
@@ -522,15 +552,14 @@ the recovery decision; repair hints do not bypass authority or replay rules.
 
 ## Remaining work and next question
 
-Next walkthrough question: should the final record of Nathan's acceptance
-of exact Contract 3.0 bytes live beside the contract in agent-engineering,
-or remain in the vault under the current route? This is the bounded
-acceptance-record part of Q9 and ROLL-9. A record must identify the accepted
-manifest hash and the evidence of Nathan's explicit acceptance; a status
-field or author name alone is not acceptance. Choosing its home would not
-accept the text, migrate planning or research, or settle every post-vault
-owner. Other B6 records and their repository-specific revisions still need
-explicit ownership before their acceptance steps can complete.
+The acceptance-record location is settled by A17. Nathan next requested a
+review of the answered TypeScript questions and remaining open ones using
+typescript-best-practices. Distinguish product choices from routine type,
+schema and lint design, and from missing implementation evidence. Do not
+turn a skill recommendation into a new accepted dependency or policy.
+Other B6 records and their repository-specific revisions retain their
+existing owners unless explicitly changed; this record does not settle the
+post-vault ownership question for them.
 
 Other unresolved matters include the recovery and lock design, the detailed
 version policy, detailed lifecycle wording, remaining schema/lint questions and the
