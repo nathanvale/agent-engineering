@@ -1,0 +1,61 @@
+{
+  "bindingVersion": 1,
+  "id": "navigation-effects.valid",
+  "rule": "navigation-effects",
+  "group": "F",
+  "kind": "valid-twin",
+  "oracle": ["rules/navigation-effects/validTwin"],
+  "verification": ["V-43"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [
+    "navigation-effects.valid/subject:run",
+    "navigation-effects.valid/subject:probe"
+  ],
+  "checker": {
+    "exitCode": 0,
+    "outcome": "success",
+    "causeCode": "SUCCESS_UNCHANGED",
+    "failureClass": null,
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": "report",
+    "stderr": "",
+    "messageIncludes": []
+  },
+  "rows": [
+    {
+      "caseId": "navigation-effects.valid/subject",
+      "passed": [
+        "navigation-effects",
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "exit-expected",
+        "cause-expected"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 9,
+    "failed": 0,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 9
+  },
+  "excluded": {},
+  "harness": null,
+  "static": null,
+  "notes": "The negative prints valid discovery but writes provider.init to state; only the probe sees it."
+}

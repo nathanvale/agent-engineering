@@ -1,0 +1,99 @@
+{
+  "bindingVersion": 1,
+  "id": "provider-loading.valid",
+  "rule": "provider-loading",
+  "group": "F",
+  "kind": "valid-twin",
+  "oracle": ["rules/provider-loading/validTwin"],
+  "verification": ["V-43"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [
+    "provider-loading.valid/help:run",
+    "provider-loading.valid/help:probe",
+    "provider-loading.valid/list:run",
+    "provider-loading.valid/list:probe",
+    "provider-loading.valid/subject:run",
+    "provider-loading.valid/subject:probe"
+  ],
+  "checker": {
+    "exitCode": 0,
+    "outcome": "success",
+    "causeCode": "SUCCESS_UNCHANGED",
+    "failureClass": null,
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": "report",
+    "stderr": "",
+    "messageIncludes": []
+  },
+  "rows": [
+    {
+      "caseId": "provider-loading.valid/help",
+      "passed": [
+        "provider-loading",
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "exit-expected",
+        "cause-expected"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "provider-loading.valid/list",
+      "passed": [
+        "provider-loading",
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "exit-expected",
+        "cause-expected"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "provider-loading.valid/subject",
+      "passed": [
+        "provider-loading",
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "exit-expected",
+        "cause-expected"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 27,
+    "failed": 0,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 27
+  },
+  "excluded": {},
+  "harness": null,
+  "static": null,
+  "notes": "SPECIMEN_PROVIDER=unavailable stands for denied provider access; help, discovery and an unrelated command still succeed."
+}

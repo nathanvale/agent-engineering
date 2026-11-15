@@ -1,0 +1,101 @@
+{
+  "bindingVersion": 1,
+  "id": "provider-loading.negative",
+  "rule": "provider-loading",
+  "group": "F",
+  "kind": "negative",
+  "oracle": ["rules/provider-loading/negative"],
+  "verification": ["V-43"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [
+    "provider-loading.negative/help:run",
+    "provider-loading.negative/help:probe",
+    "provider-loading.negative/list:run",
+    "provider-loading.negative/list:probe",
+    "provider-loading.negative/subject:run",
+    "provider-loading.negative/subject:probe"
+  ],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": ["provider-loading.negative/subject", "3.0.0"]
+  },
+  "rows": [
+    {
+      "caseId": "provider-loading.negative/help",
+      "passed": [
+        "provider-loading",
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "exit-expected",
+        "cause-expected"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "provider-loading.negative/list",
+      "passed": [
+        "provider-loading",
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "exit-expected",
+        "cause-expected"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "provider-loading.negative/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope"
+      ],
+      "failed": {
+        "provider-loading": "NAVIGATION_PROVIDER_REQUIRED"
+      },
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 24,
+    "failed": 1,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 25
+  },
+  "excluded": {
+    "exit-expected": "reads observed, which this mutation changes",
+    "cause-expected": "reads observed, which this mutation changes"
+  },
+  "harness": null,
+  "static": null,
+  "notes": null
+}

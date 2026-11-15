@@ -1,0 +1,12 @@
+{
+  "argv": ["apply", "--preview", "pv-missing", "--json"],
+  "responses": [
+    {
+      "stdout": "subject.0.stdout",
+      "stderr": null,
+      "exit": 0,
+      "state": "audit.write\nindex.write\nnote.write\n"
+    }
+  ],
+  "state": "state.log"
+}

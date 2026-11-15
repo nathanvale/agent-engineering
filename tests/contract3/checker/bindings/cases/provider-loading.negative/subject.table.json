@@ -1,0 +1,11 @@
+{
+  "argv": ["--discover", "--json"],
+  "responses": [
+    {
+      "stdout": "subject.0.stdout",
+      "stderr": null,
+      "exit": 3
+    }
+  ],
+  "state": "state.log"
+}
