@@ -161,6 +161,30 @@ text; secret values are not exposed; invalid bound input is refused before
 effects; rendered guidance matches the fixed declaration after substitution.
 Types alone cannot establish these runtime properties.
 
+## A7. Declare the implemented contract version on normal responses
+
+Status: accepted. Resolves the producer-version choice in Q5 and VER-8.
+
+Nathan: "Yes, always declare the CLI's implemented contract version and
+upgrade readers first. Make that durable."
+
+- Stamp normal responses with the CLI's implemented contract version.
+- Upgrade readers before producers that emit a newer contract minor.
+- Preserve the already accepted rule that newer 3.x readers accept older
+  3.x responses. Do not choose a version separately for each normal response
+  based on the lowest schema it happens to fit.
+
+Reason and trade-off: use a predictable producer identity without per-response
+compatibility inference. Coordinated reader-first deployment is the cost;
+lowest-fitting-version stamping would keep some older readers usable longer
+but adds producer complexity.
+
+Required proof, not yet run: all normal responses carry the implemented
+version; reader-first rollout is checked; newer readers accept valid older
+3.x responses; unsupported newer versions are refused clearly. The emergency
+fallback's version was expressly left separate in the question Nathan answered.
+This does not accept the rest of the version grammar or Q5 policy by implication.
+
 ## Requested repair guidance and diagnosis
 
 Nathan also requested repair hints so an agent can identify the next step,
@@ -178,11 +202,11 @@ the recovery decision; repair hints do not bypass authority or replay rules.
 
 ## Remaining work and next question
 
-Next walkthrough question: the producer-version part of Q5. Should normal
-responses always declare the CLI's implemented contract minor, requiring
-readers to upgrade first, or declare the lowest minor each response fits?
-Accepting older 3.x responses is already settled. The remaining version
-details, including fallback behaviour, remain proposed.
+Next walkthrough question: the emergency fallback's version (Q5, VER-9).
+Should this exceptional response remain in the original 3.0.0 format so every
+3.x reader can understand it, or follow the CLI's implemented version like
+normal responses? No choice has been made. The remaining version grammar and
+evolution rules also remain proposed.
 
 Other unresolved matters include the recovery and lock design, the detailed
 version policy, lifecycle departures, remaining schema/lint questions and the
