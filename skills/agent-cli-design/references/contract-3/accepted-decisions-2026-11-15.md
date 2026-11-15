@@ -209,6 +209,39 @@ Required proof, not yet run: a producer at a test-only newer minor emits a
 readers accept it; its effect report remains honest; no fallback path retries
 the domain operation. No future minor is released by this decision.
 
+## A9. Allow additive changes within 3.x
+
+Status: accepted direction. Resolves the minor-evolution choice in Q5,
+VER-5 and VER-6.
+
+Nathan: "Yes, allow additive 3.x changes with readers upgraded first.
+Preserve existing meanings and require a new major for breaking changes.
+Make that durable."
+
+- Permit later 3.x minors to add optional fields and contract-owned union
+  members, including new next-step kinds, while preserving existing meanings.
+- Preserve the meaning of an older response and of an absent new field.
+- Require a new major for removing or renaming fields, making optional fields
+  mandatory, or changing established meanings or guarantees.
+- Upgrade readers first. A reader cannot interpret a newer normal response
+  merely because its fields look familiar; it refuses unsupported versions.
+  Validate supported responses against their declared version.
+- Keep A8's emergency fallback within the frozen 3.0.0 format.
+
+Reason and trade-off: small additions do not require repeated major-version
+migrations. Readers must retain older minor schemas and compatibility checks.
+Adding a union member still breaks exhaustive handling in an unupgraded
+reader; version refusal protects that reader. The alternative discussed was
+freezing additions throughout 3.x and requiring a major for each addition.
+
+Required proof, not yet run: valid older responses retain their original
+interpretation; a newer normal minor is refused by an older reader before
+interpretation; a field or union member not in the declared minor is rejected;
+breaking schema or meaning changes cannot be classified as additive. Use
+test-only future minors, not new production releases, for these checks.
+Exact version grammar and handling of common-cause name collisions still need
+reconciliation in the revised text; this is not acceptance of every Q5 clause.
+
 ## Requested repair guidance and diagnosis
 
 Nathan also requested repair hints so an agent can identify the next step,
@@ -226,11 +259,10 @@ the recovery decision; repair hints do not bypass authority or replay rules.
 
 ## Remaining work and next question
 
-Next walkthrough question: the minor-version evolution policy (Q5, VER-5
-and VER-6). May later 3.x minors add optional fields and new contract-owned
-union members while preserving every existing meaning, with readers upgraded
-first, or should those additions require a new major? No choice has been made.
-The remaining version grammar and common-cause rules also remain proposed.
+Next walkthrough question: no-argument invocation in Q6 (DISC-4). Should a bare
+CLI invocation show usage as a missing-command refusal with exit 2, or show
+help as a successful request with exit 0? Explicit `--help` remains available.
+The draft proposes the refusal. No new decision has been made in this walkthrough.
 
 Other unresolved matters include the recovery and lock design, the detailed
 version policy, lifecycle departures, remaining schema/lint questions and the
