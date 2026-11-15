@@ -1,0 +1,2326 @@
+{
+  "fixture_version": 1,
+  "kind": "independently_authored_requirement_oracle",
+  "observed_status": "not_run",
+  "authority": {
+    "contract_version": "3.0.0",
+    "accepted_commit": "5693651d19c6fba2430c904688e583266dbe58a0",
+    "manifest_sha256": "c162c9850ca506fd839ce36b2b1a8172f064516b0f229dd34a5678b366b02b9d",
+    "manifest": "skills/agent-cli-design/references/contract-3/candidate.sha256",
+    "acceptance_commit": "d6823e21992ac13e46bb53f6201863d8a1869075",
+    "acceptance_record": "skills/agent-cli-design/references/contract-3/acceptance-2026-11-15.md",
+    "approval_utc": "2026-11-15T09:00:12.342Z",
+    "approval_text_sha256": "4b05a3e111955fbb0130fa66333fdad371d43094ee335dd786e1d0224b78b3a2",
+    "approval_text": "Yes, accept this exact Contract 3.0 candidate and make that durable. Keep the deferred choices open. What do we need to do next before implementation?",
+    "foundation_spec_id": "spec_cds_contract3_foundation",
+    "foundation_spec_revision": "1",
+    "criterion": "C3-FND-1",
+    "ticket": "T0",
+    "foundation_acceptance_date": "2026-11-15",
+    "foundation_approval_text": "Yes, accept the foundation scope and both spec revisions. Make that durable, adopt the tickets and start implementation. Keep deferred choices open, and stop at reviewed draft PRs. Don’t merge or activate anything.",
+    "foundation_spec": "my-second-brain-playground/projects/cli-design-skill/specs/contract-3-foundation.md",
+    "note": "Later acceptance supersedes historical candidate labels, not bytes. Scope acceptance is not implementation or activation proof."
+  },
+  "expected_identity_counts": {
+    "verification": 49,
+    "common_causes": 20,
+    "compiler_locks": 34
+  },
+  "evidence_rules": {
+    "default_observed_status": "not_run",
+    "fields": [
+      "source_revisions",
+      "fixture_identity",
+      "command",
+      "input",
+      "startup_synchronisation",
+      "expected_result",
+      "before_state",
+      "after_state",
+      "real_stdout",
+      "real_stderr",
+      "real_exit",
+      "valid_twin",
+      "violating_control",
+      "observation_exclusions"
+    ],
+    "rules": [
+      "Assert exact test-owned identity sets before iterating rows.",
+      "Expected fields never come from production catalogue, implementation, schema projection or checker output.",
+      "Each skip has an asserted nonempty rationale; covered and skipped counts pinned.",
+      "Keep failed, timed_out, skipped, missing and declared_unreachable distinct.",
+      "Declared unreachable means reviewed impossible, never untested.",
+      "One otherwise-valid mutation per checker rule; unrelated rows stay green.",
+      "Each violating control fails in the same harness whose valid twin passes.",
+      "Lower-layer evidence does not substitute for a required process or host boundary."
+    ]
+  },
+  "verification": [
+    {
+      "id": "V-1",
+      "sources": ["GATE-3", "WIRE-15"],
+      "owner": "T1 kernel",
+      "layers": ["type"],
+      "expected": "Illegal cause declaration rejected at its declaration row.",
+      "negative_control": "Add transient cause with completed effects.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-2",
+      "sources": ["GATE-6", "GATE-7", "GATE-8"],
+      "owner": "T1 kernel lock suite",
+      "layers": ["type", "TS6 comparison"],
+      "expected": "All 34 named locks independently reject with one pinned diagnostic code and location; valid twins compile.",
+      "negative_control": "Remove each marker separately; omit a lock or accept its invalid program.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-3",
+      "sources": ["GATE-5"],
+      "owner": "T1 kernel",
+      "layers": ["type"],
+      "expected": "Typed result assigns to wire; reverse assignment fails.",
+      "negative_control": "Remove reverse-assignment marker and accept compilation.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-4",
+      "sources": ["LIFE-7", "LIFE-8", "LIFE-9"],
+      "owner": "T2 kernel",
+      "layers": ["process"],
+      "expected": "Wrong cause/exit result never reaches stdout; one bounded fallback and real exit 1.",
+      "negative_control": "Disable validation or emit invalid original envelope.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-5",
+      "sources": ["GATE-4", "GATE-9", "GATE-9a", "GATE-10", "GATE-14"],
+      "owner": "T1 kernel/template and independent reviewer",
+      "layers": ["lint", "type", "review", "runtime"],
+      "expected": "Each bypass rejected by its actual owner; const/satisfies/narrow brand twins pass; invalid runtime output rejected.",
+      "negative_control": "Inline disable, skipped mts/cts, outside-boundary predicate/assertion, outside-lock marker, conversion overload or double cast.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-6",
+      "sources": ["GATE-11"],
+      "owner": "T1 kernel/template and independent reviewer",
+      "layers": ["lint", "type", "review"],
+      "expected": "Missing switch member fails despite default; incomplete full Record/assertNever chain fail; complete twins pass; prohibited partial/fallback forms produce review findings.",
+      "negative_control": "Partial Record, Map/fallback lookup, ternary fallback, in check or if chain omitting assertNever.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-7",
+      "sources": ["GATE-4", "DISC-9"],
+      "owner": "T1 kernel",
+      "layers": ["runtime"],
+      "expected": "Stale run facts cannot replace declared cause, class, exit or words.",
+      "negative_control": "Spread stale result after fixed station fields.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-8",
+      "sources": ["WIRE-14", "WIRE-18", "ROLL-10"],
+      "owner": "T1 kernel and host cause owner",
+      "layers": ["runtime"],
+      "expected": "Every common/applicable domain cause matches independently authored fixed-field table.",
+      "negative_control": "Change one cause exit, class, state, retry behaviour or guidance.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-9",
+      "sources": ["WIRE-7", "GATE-2", "ROLL-8"],
+      "owner": "T2 final proof; T6 checker",
+      "layers": ["process"],
+      "expected": "Real cause and exit equal independent station expectation; process exit equals envelope exit.",
+      "negative_control": "Expected exit-3 refusal becomes consistent exit-1 fallback; alternatively print exit-3 envelope but exit 1.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-10",
+      "sources": ["DISC-12", "GATE-4"],
+      "owner": "T1 kernel",
+      "layers": ["runtime", "type"],
+      "expected": "Command/outcome/cause tuple unique and identity bound at declaration.",
+      "negative_control": "Duplicate tuple with different words; emit another command identity.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-11",
+      "sources": ["DISC-5", "DISC-11"],
+      "owner": "T1 kernel and checker",
+      "layers": ["process"],
+      "expected": "Four built-ins listed and individually discoverable with applicable base stations.",
+      "negative_control": "Omit any built-in or its required base station.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-12",
+      "sources": ["STEP-6", "STEP-12", "DISC-13"],
+      "owner": "T1 final proof; T6 checker",
+      "layers": ["type", "process"],
+      "expected": "Command steps resolve; inspection targets inspect; changing ifNoResult resolves to inspect; inspect ifNoResult null.",
+      "negative_control": "Undeclared step, changing inspection target or changing null/undeclared/changing ifNoResult.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-13",
+      "sources": ["DISC-11", "DISC-12"],
+      "owner": "T8 host catalogue",
+      "layers": ["process"],
+      "expected": "Every observed station declared and every required declared station reached.",
+      "negative_control": "Delete specimen; emit undeclared station; count unreachable as reached.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-14",
+      "sources": ["STEP-9", "STEP-10", "STEP-14"],
+      "owner": "T1 final proof; T6 checker",
+      "layers": ["runtime", "process"],
+      "expected": "Emitted repair/guidance equals fixed template after allowed substitution; binding keys exact.",
+      "negative_control": "Unknown brace token, missing/extra binding or altered repair/inspection semantics.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-15",
+      "sources": ["WIRE-5", "WIRE-6a"],
+      "owner": "T1 final proof; T6 checker",
+      "layers": ["process"],
+      "expected": "availablePaths unique, code-unit sorted and discovery-resolvable.",
+      "negative_control": "Unknown identity, duplicate or unsorted list.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-16",
+      "sources": [
+        "VER-1",
+        "VER-2",
+        "VER-2a",
+        "VER-3",
+        "VER-4",
+        "VER-4a",
+        "VER-5",
+        "VER-6",
+        "VER-6a",
+        "VER-7",
+        "VER-8",
+        "VER-9",
+        "VER-10",
+        "VER-15"
+      ],
+      "owner": "T1 final proof; T6 checker",
+      "layers": ["process"],
+      "expected": "Format cases match independent version oracle; older shape retains older meaning; incompatible test-only minor rejected.",
+      "negative_control": "Reader 3.1 accepts 3.2/4.0.0/3.0.1/3.0; accepts 3.1 key in 3.0; accepts removed/renamed/new-required key or added common cause.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-17",
+      "sources": ["VER-10", "VER-13", "ROLL-5"],
+      "owner": "T6 checker",
+      "layers": ["process"],
+      "expected": "2.0.0 refused with SCHEMA_UNSUPPORTED_CONTRACT; observed version and kept checker named; no adaptation.",
+      "negative_control": "Adapt 2.0 output or omit kept checker route.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-18",
+      "sources": ["LIFE-9", "LIFE-10", "VER-9"],
+      "owner": "T2 kernel",
+      "layers": ["process"],
+      "expected": "One fallback attempt, <=16384 UTF-8 bytes, depth <=8, version 3.0.0, exit 1; failed fallback emits no recursive envelope or stderr.",
+      "negative_control": "Overlarge fallback, newer-minor key, second attempt or stderr exception.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-19",
+      "sources": [
+        "DISC-13",
+        "DISC-14",
+        "DISC-14a",
+        "DISC-15",
+        "CMD-10",
+        "CMD-13"
+      ],
+      "owner": "T3 state and kernel",
+      "layers": ["type", "process"],
+      "expected": "Interrupted/live/unknown intent listed; completed intent absent; report read-only; corrupt report refused; explicit report success guidance.",
+      "negative_control": "Empty report over unfinished intent, journal/resource repair in report or automatically derived done.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-20",
+      "sources": ["CMD-9", "CMD-15"],
+      "owner": "T4 approval and kernel",
+      "layers": ["real concurrent processes"],
+      "expected": "Input precedes grant read; non-consuming preflight; lock refusal preserves valid grant; under-lock revalidation; one durable consumption before one effect.",
+      "negative_control": "Reverse ordering, lose atomicity, expire/mismatch while waiting or refund after crash.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-21",
+      "sources": ["LIFE-11", "CMD-14", "GATE-7"],
+      "owner": "T2 programs/state/kernel",
+      "layers": ["process"],
+      "expected": "Current-run active recorded effect checked at every start; expired/wrong-run/effect handle starts no child; five cleanup paths bounded; captured streams isolated.",
+      "negative_control": "Retain handle past effect, race closure/start, disable lifetime check, omit forced kill or inherit streams/open stdin.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-22",
+      "sources": ["CMD-12", "REC-7", "REC-7b", "REC-9"],
+      "owner": "T3 state",
+      "layers": ["real concurrent processes"],
+      "expected": "At most one owner; stopped incarnation/delegated-writer proof plus exclusive takeover; stale claimant refused; bounded signal/deadline waiting.",
+      "negative_control": "Age-only reclaim, reused PID, hidden namespace, surviving child, stale unlink, missing atomicity, held-lock retry, omitted refusal station or pending report as only liveness inspection.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-23",
+      "sources": ["CMD-11"],
+      "owner": "T3 state",
+      "layers": ["process", "independent resource review"],
+      "expected": "Intent precedes effect; completion follows independent read-back; no-op/torn final/read-back failure never completed.",
+      "negative_control": "Record completion before independent read-back.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-24",
+      "sources": [
+        "DIAG-1",
+        "DIAG-2",
+        "DIAG-3",
+        "DIAG-4",
+        "DIAG-5",
+        "DIAG-6",
+        "DIAG-7",
+        "DIAG-8",
+        "DIAG-9",
+        "DIAG-10",
+        "DIAG-11",
+        "DIAG-12",
+        "DIAG-12a",
+        "DIAG-12b",
+        "DIAG-13",
+        "DIAG-14",
+        "DIAG-15",
+        "DIAG-16",
+        "DIAG-17"
+      ],
+      "owner": "T5 diagnostics",
+      "layers": ["process", "hostile filesystem"],
+      "expected": "Privacy, custody, limits, accounting, pruning and result independence satisfy the separate diagnostics matrix.",
+      "negative_control": "Remove each individual guard; correct domain outcome cannot excuse privacy/capacity failure.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-25",
+      "sources": ["ROLL-6", "ROLL-7"],
+      "owner": "T8 integration",
+      "layers": ["process", "revision manifest"],
+      "expected": "Every consumer/wrapper/built runtime uses intended checker; full isolated rollback restores release set.",
+      "negative_control": "Omit consumer, retain stale runtime, use wrong checker or restore only subset.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-26",
+      "sources": ["LIFE-2a", "LIFE-3", "LIFE-4", "LIFE-5", "LIFE-6", "LIFE-6a"],
+      "owner": "T2 kernel and checker",
+      "layers": ["process"],
+      "expected": "Every lifecycle matrix row has synchronised real observation and a sensitive violating stub.",
+      "negative_control": "Claim unobserved timing green; omit large drain/held stdin/signal/crash/path/input case.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-27",
+      "sources": ["WIRE-15", "DISC-8"],
+      "owner": "T3 state and kernel",
+      "layers": ["process"],
+      "expected": "Confirmed-unchanged temporary condition produces real exit 75 and declared safe bounded delay.",
+      "negative_control": "Out-of-bounds delay or retry when uncertainty/repair remains.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-28",
+      "sources": ["CMD-3", "CMD-17"],
+      "owner": "T7 template and checker",
+      "layers": ["process", "review"],
+      "expected": "Base, each add-on on base and full set pass; first changing command with state passes; existing-CLI mapping reviewed only when scoped.",
+      "negative_control": "Break one add-on station; affected sets fail while other sets pass.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-29",
+      "sources": ["CMD-6", "CMD-17"],
+      "owner": "T7 composer",
+      "layers": ["static", "process"],
+      "expected": "All 16 add-on combinations plan with unique ownership; installation changes only allowed paths.",
+      "negative_control": "Fragment claims host path, install edits host file or duplicate path owner.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-30",
+      "sources": ["CMD-7"],
+      "owner": "T7 admission",
+      "layers": ["static"],
+      "expected": "Stamped files match exact pinned template bytes.",
+      "negative_control": "Modify one stamped byte.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-31",
+      "sources": ["CMD-5", "CMD-18", "LIFE-8"],
+      "owner": "T7 template",
+      "layers": ["static", "process"],
+      "expected": "Base manifest/lock have zero runtime dependencies; complete base validator rejects invalid output.",
+      "negative_control": "Add runtime dependency or omit base validation.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-32",
+      "sources": ["CMD-1", "CMD-6"],
+      "owner": "T7 composer",
+      "layers": ["static", "process"],
+      "expected": "Old/new routes execute through original front door including cached registry, supported array forms and nonstandard contract files; conflicts refused before host writes.",
+      "negative_control": "Late registration, second CLI, route/path conflict, missing preflight or discovery-only proof.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-33",
+      "sources": ["ROLL-4", "ROLL-5"],
+      "owner": "T8 kept checker",
+      "layers": ["process", "byte identity"],
+      "expected": "Kept checker exact pin; every 2.0 consumer uses real arguments; broken 2.0 row detected.",
+      "negative_control": "Alter kept byte, substitute probe arguments or break one row.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-34",
+      "sources": ["ROLL-8"],
+      "owner": "T6 checker",
+      "layers": ["process"],
+      "expected": "Every admitted rule sensitive to isolated mutation; bare human discovery checked; exits 1/4/75 real; independent negatives/conformant/broken/wrong candidates judged.",
+      "negative_control": "Disable rule, use matching wrong catalogue/implementation, omit negative or claim deferred raw retention passed.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-35",
+      "sources": ["ROLL-10"],
+      "owner": "T1 final proof; T6 checker",
+      "layers": ["static"],
+      "expected": "Accepted tables, typed owner and checker agree independently; TypeScript snippets compiled with receipt or illustrative.",
+      "negative_control": "Change one of the three alone or leave uncompiled snippet unlabelled.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-36",
+      "sources": ["V-36"],
+      "owner": "T8 skill",
+      "layers": ["review"],
+      "expected": "Every inherited 2.0 rule has carrying clause or naming decision in requirement-map.md.",
+      "negative_control": "Remove both fate references from one rule group.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-37",
+      "sources": ["V-37"],
+      "owner": "T8 fresh agent",
+      "layers": ["process"],
+      "expected": "Fresh agent extends from skill alone with one new command/cause and clean checker; retain exact contract run-count wording without silently interpreting it.",
+      "negative_control": "Require outside-skill assistance, return checker finding or reuse prior agent as fresh.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-38",
+      "sources": ["V-38"],
+      "owner": "T8 verification workflow",
+      "layers": ["process"],
+      "expected": "3.0 journeys actually run; broken machine-stderr specimen fails.",
+      "negative_control": "Inject stray stderr or mark unrun journey passed.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-39",
+      "sources": [
+        "WIRE-12",
+        "WIRE-15",
+        "WIRE-16",
+        "WIRE-17",
+        "STEP-4",
+        "STEP-5",
+        "STEP-6",
+        "STEP-10",
+        "STEP-12",
+        "ROLL-8"
+      ],
+      "owner": "T1 kernel validator",
+      "layers": ["runtime"],
+      "expected": "Independent valid/invalid pairs for all correlations and ingress/egress routes; structural matrix enforced.",
+      "negative_control": "Disable one validator rule and accept its invalid specimen.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-40",
+      "sources": ["DISC-2a"],
+      "owner": "T8 host and kernel",
+      "layers": ["process"],
+      "expected": "Unavailable provider leaves help/discovery/unrelated command working; listing performs no network work.",
+      "negative_control": "Eagerly initialise every provider.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-41",
+      "sources": ["DISC-11", "DISC-11b", "DISC-13", "LIFE-9"],
+      "owner": "T8 kernel",
+      "layers": ["runtime", "process"],
+      "expected": "Command-owned schema-refusal words apply; reserved fallback tuples rejected; fallback size/depth bounds assured.",
+      "negative_control": "Declare reserved INTERNAL tuple, brace ifNoResult, >16 args, >2048 encoded bytes, forbidden Unicode or >128-byte identity.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-42",
+      "sources": [
+        "REC-1",
+        "REC-2",
+        "REC-3",
+        "REC-4",
+        "REC-5",
+        "REC-6",
+        "REC-7",
+        "REC-7a",
+        "REC-7b",
+        "REC-8",
+        "REC-9",
+        "REC-10",
+        "DISC-14",
+        "DISC-15"
+      ],
+      "owner": "T3 state/approval/host",
+      "layers": ["process", "authority qualification"],
+      "expected": "All REC-9 scenarios; monotonic closure, truthful history, scoped release, no replay and two later operations; actual-credential forgery fails.",
+      "negative_control": "Absence implies not-applied, self-authority, alias omission, replay, reopening closed case or bypassing surviving writer.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-43",
+      "sources": [
+        "DISC-1",
+        "DISC-2",
+        "DISC-2a",
+        "DISC-3",
+        "DISC-4",
+        "DISC-5",
+        "DISC-6",
+        "DISC-7",
+        "DISC-8",
+        "DISC-9",
+        "DISC-10",
+        "DISC-11",
+        "DISC-11b",
+        "DISC-12",
+        "INPUT-1",
+        "INPUT-5"
+      ],
+      "owner": "T1 kernel/composer/checker",
+      "layers": ["process"],
+      "expected": "Help->list->one input/station view->actual route; executable changes reflected; built-ins/unknown/no-args/help in human+JSON; no credentials/network/domain writes.",
+      "negative_control": "Stale table, undeclared route, all-stations dump, eager provider or wrong no-args exit.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-44",
+      "sources": [
+        "INPUT-1",
+        "INPUT-2",
+        "INPUT-3",
+        "INPUT-4",
+        "INPUT-5",
+        "STEP-6",
+        "STEP-10"
+      ],
+      "owner": "T1 host/kernel/checker",
+      "layers": ["runtime", "process"],
+      "expected": "Independent grammar/binding cases agree across projection/parser/process; caller future bindings rejected before guards/effects; untrusted pattern budget terminates.",
+      "negative_control": "Change schema/parser separately or together wrong, defer binding check until output or remove pattern isolation/budget.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-45",
+      "sources": ["GATE-9a", "GATE-14"],
+      "owner": "T1 generated lint and kernel",
+      "layers": ["lint", "runtime"],
+      "expected": "Direct Object.assign construction/mutation fail in scoped ts/mts/cts handlers/tests; unnecessary generic fails; genuine relationships pass; outside-scope handler admission fails.",
+      "negative_control": "Omit extension/path, ban genuine generic or evade through alias then accept corrupted output.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-46",
+      "sources": ["ROLL-9", "VER-2", "CMD-6"],
+      "owner": "T0 contract owner and independent reviewer",
+      "layers": ["review", "static"],
+      "expected": "Exact approved bytes/approval and owner split recorded; acceptance distinct from implementation; implementation fixes preserve patch zero.",
+      "negative_control": "Change hash, treat drafting permission as acceptance, move stamped owner or add release-version wire key.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-47",
+      "sources": ["CMD-10b", "CMD-15"],
+      "owner": "T4 approval/state/host",
+      "layers": ["process", "resource observation"],
+      "expected": "Missing/stale/consumed/mismatched grants give identical denial except legitimate run identity; apply bound to unconsumed preview/revision/authority/effects.",
+      "negative_control": "Mutate any binding, reuse consumed preview or disclose grant existence.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-48",
+      "sources": ["LIFE-13", "LIFE-14"],
+      "owner": "T2 final proof; T6 checker",
+      "layers": ["process", "canonical comparison"],
+      "expected": "Executed malformed target runs once; reader refuses unchanged with inspection; deterministic comparison normalises only identity/time.",
+      "negative_control": "Retry executed target or normalise changed domain/effect/recovery fields.",
+      "observed_status": "not_run"
+    },
+    {
+      "id": "V-49",
+      "sources": ["REC-5", "REC-7a", "REC-10", "CMD-15"],
+      "owner": "T3 state/approval/host",
+      "layers": ["process", "authority qualification"],
+      "expected": "Exact-owner attestation plus qualified exclusivity; preflight/acquire/reread/revalidate/consume/replace; coordination refusal preserves attestation; at most one takeover.",
+      "negative_control": "Forged/stale/consumed/wrong-scope/live-conflicting attestation, missing ordering/exclusivity, crash refund or takeover grant used for closure.",
+      "observed_status": "not_run"
+    }
+  ],
+  "common_causes": {
+    "sources": ["WIRE-14", "WIRE-18", "WIRE-19"],
+    "rows": [
+      {
+        "causeCode": "SUCCESS_UNCHANGED",
+        "failureClass": null,
+        "outcome": "success",
+        "transactionState": "unchanged",
+        "exitCode": 0,
+        "retryable": false,
+        "guidance": "N"
+      },
+      {
+        "causeCode": "SUCCESS_COMPLETED",
+        "failureClass": null,
+        "outcome": "success",
+        "transactionState": "completed",
+        "exitCode": 0,
+        "retryable": false,
+        "guidance": "N"
+      },
+      {
+        "causeCode": "USAGE_INVALID_INVOCATION",
+        "failureClass": "usage",
+        "outcome": "refused",
+        "transactionState": "unchanged",
+        "exitCode": 2,
+        "retryable": false,
+        "guidance": "N"
+      },
+      {
+        "causeCode": "USAGE_UNKNOWN_COMMAND",
+        "failureClass": "usage",
+        "outcome": "refused",
+        "transactionState": "unchanged",
+        "exitCode": 2,
+        "retryable": false,
+        "guidance": "N"
+      },
+      {
+        "causeCode": "SCHEMA_INVALID_INPUT",
+        "failureClass": "schema",
+        "outcome": "refused",
+        "transactionState": "unchanged",
+        "exitCode": 4,
+        "retryable": false,
+        "guidance": "N"
+      },
+      {
+        "causeCode": "SCHEMA_UNSUPPORTED_CONTRACT",
+        "failureClass": "schema",
+        "outcome": "refused",
+        "transactionState": "unchanged",
+        "exitCode": 4,
+        "retryable": false,
+        "guidance": "N"
+      },
+      {
+        "causeCode": "DOMAIN_PRECONDITION_UNMET",
+        "failureClass": "domain",
+        "outcome": "refused",
+        "transactionState": "unchanged",
+        "exitCode": 3,
+        "retryable": false,
+        "guidance": "N"
+      },
+      {
+        "causeCode": "DOMAIN_AUTHORITY_REQUIRED",
+        "failureClass": "domain",
+        "outcome": "refused",
+        "transactionState": "unchanged",
+        "exitCode": 3,
+        "retryable": false,
+        "guidance": "H"
+      },
+      {
+        "causeCode": "TRANSIENT_NOT_STARTED",
+        "failureClass": "transient",
+        "outcome": "refused",
+        "transactionState": "unchanged",
+        "exitCode": 75,
+        "retryable": true,
+        "guidance": "N:retry"
+      },
+      {
+        "causeCode": "TRANSIENT_ATTEMPT_UNCHANGED",
+        "failureClass": "transient",
+        "outcome": "failed",
+        "transactionState": "unchanged",
+        "exitCode": 75,
+        "retryable": true,
+        "guidance": "N:retry"
+      },
+      {
+        "causeCode": "DOMAIN_DEADLINE_BEFORE_START",
+        "failureClass": "domain",
+        "outcome": "refused",
+        "transactionState": "unchanged",
+        "exitCode": 3,
+        "retryable": false,
+        "guidance": "N"
+      },
+      {
+        "causeCode": "DOMAIN_DEADLINE_UNCHANGED",
+        "failureClass": "domain",
+        "outcome": "failed",
+        "transactionState": "unchanged",
+        "exitCode": 3,
+        "retryable": false,
+        "guidance": "N"
+      },
+      {
+        "causeCode": "DOMAIN_DEADLINE_COMPLETED",
+        "failureClass": "domain",
+        "outcome": "failed",
+        "transactionState": "completed",
+        "exitCode": 3,
+        "retryable": false,
+        "guidance": "H"
+      },
+      {
+        "causeCode": "DOMAIN_DEADLINE_PARTIAL",
+        "failureClass": "domain",
+        "outcome": "failed",
+        "transactionState": "partially-completed",
+        "exitCode": 3,
+        "retryable": false,
+        "guidance": "H"
+      },
+      {
+        "causeCode": "DOMAIN_DEADLINE_UNKNOWN",
+        "failureClass": "domain",
+        "outcome": "failed",
+        "transactionState": "unknown",
+        "exitCode": 3,
+        "retryable": false,
+        "guidance": "H"
+      },
+      {
+        "causeCode": "INTERNAL_PREPARATION",
+        "failureClass": "internal",
+        "outcome": "refused",
+        "transactionState": "unchanged",
+        "exitCode": 1,
+        "retryable": false,
+        "guidance": "N"
+      },
+      {
+        "causeCode": "INTERNAL_RESULT_UNCHANGED",
+        "failureClass": "internal",
+        "outcome": "failed",
+        "transactionState": "unchanged",
+        "exitCode": 1,
+        "retryable": false,
+        "guidance": "H"
+      },
+      {
+        "causeCode": "INTERNAL_RESULT_COMPLETED",
+        "failureClass": "internal",
+        "outcome": "failed",
+        "transactionState": "completed",
+        "exitCode": 1,
+        "retryable": false,
+        "guidance": "H"
+      },
+      {
+        "causeCode": "INTERNAL_RESULT_PARTIAL",
+        "failureClass": "internal",
+        "outcome": "failed",
+        "transactionState": "partially-completed",
+        "exitCode": 1,
+        "retryable": false,
+        "guidance": "H"
+      },
+      {
+        "causeCode": "INTERNAL_RESULT_UNKNOWN",
+        "failureClass": "internal",
+        "outcome": "failed",
+        "transactionState": "unknown",
+        "exitCode": 1,
+        "retryable": false,
+        "guidance": "H"
+      }
+    ],
+    "note": "Host causes remain open to readers and closed within their own CLI. Held-lock and unresolved-case causes are distinct host-owned causes, not additions here."
+  },
+  "result_truth_table": {
+    "sources": ["WIRE-15", "WIRE-16", "WIRE-17"],
+    "rows": [
+      {
+        "outcome": "success",
+        "transactionState": "unchanged",
+        "failureClass": null,
+        "exitCode": 0,
+        "retryable": false,
+        "guidance": "N"
+      },
+      {
+        "outcome": "success",
+        "transactionState": "completed",
+        "failureClass": null,
+        "exitCode": 0,
+        "retryable": false,
+        "guidance": "N"
+      },
+      {
+        "outcome": "refused",
+        "transactionState": "unchanged",
+        "failureClass": "usage",
+        "exitCode": 2,
+        "retryable": false,
+        "guidance": "N|H"
+      },
+      {
+        "outcome": "refused",
+        "transactionState": "unchanged",
+        "failureClass": "schema",
+        "exitCode": 4,
+        "retryable": false,
+        "guidance": "N|H"
+      },
+      {
+        "outcome": "refused",
+        "transactionState": "unchanged",
+        "failureClass": "domain",
+        "exitCode": 3,
+        "retryable": false,
+        "guidance": "N|H"
+      },
+      {
+        "outcome": "refused",
+        "transactionState": "unchanged",
+        "failureClass": "internal",
+        "exitCode": 1,
+        "retryable": false,
+        "guidance": "N|H"
+      },
+      {
+        "outcome": "refused",
+        "transactionState": "unchanged",
+        "failureClass": "transient",
+        "exitCode": 75,
+        "retryable": true,
+        "guidance": "N"
+      },
+      {
+        "outcome": "failed",
+        "transactionState": "unchanged",
+        "failureClass": "internal",
+        "exitCode": 1,
+        "retryable": false,
+        "guidance": "N|H"
+      },
+      {
+        "outcome": "failed",
+        "transactionState": "unchanged",
+        "failureClass": "domain",
+        "exitCode": 3,
+        "retryable": false,
+        "guidance": "N|H"
+      },
+      {
+        "outcome": "failed",
+        "transactionState": "unchanged",
+        "failureClass": "schema",
+        "exitCode": 4,
+        "retryable": false,
+        "guidance": "N|H"
+      },
+      {
+        "outcome": "failed",
+        "transactionState": "unchanged",
+        "failureClass": "transient",
+        "exitCode": 75,
+        "retryable": true,
+        "guidance": "N"
+      },
+      {
+        "outcome": "failed",
+        "transactionState": "completed",
+        "failureClass": "internal",
+        "exitCode": 1,
+        "retryable": false,
+        "guidance": "H"
+      },
+      {
+        "outcome": "failed",
+        "transactionState": "completed",
+        "failureClass": "domain",
+        "exitCode": 3,
+        "retryable": false,
+        "guidance": "H"
+      },
+      {
+        "outcome": "failed",
+        "transactionState": "completed",
+        "failureClass": "schema",
+        "exitCode": 4,
+        "retryable": false,
+        "guidance": "H"
+      },
+      {
+        "outcome": "failed",
+        "transactionState": "partially-completed",
+        "failureClass": "internal",
+        "exitCode": 1,
+        "retryable": false,
+        "guidance": "H"
+      },
+      {
+        "outcome": "failed",
+        "transactionState": "partially-completed",
+        "failureClass": "domain",
+        "exitCode": 3,
+        "retryable": false,
+        "guidance": "H"
+      },
+      {
+        "outcome": "failed",
+        "transactionState": "partially-completed",
+        "failureClass": "schema",
+        "exitCode": 4,
+        "retryable": false,
+        "guidance": "H"
+      },
+      {
+        "outcome": "failed",
+        "transactionState": "unknown",
+        "failureClass": "internal",
+        "exitCode": 1,
+        "retryable": false,
+        "guidance": "H"
+      },
+      {
+        "outcome": "failed",
+        "transactionState": "unknown",
+        "failureClass": "domain",
+        "exitCode": 3,
+        "retryable": false,
+        "guidance": "H"
+      },
+      {
+        "outcome": "failed",
+        "transactionState": "unknown",
+        "failureClass": "schema",
+        "exitCode": 4,
+        "retryable": false,
+        "guidance": "H"
+      }
+    ],
+    "rules": [
+      "Every omitted combination is invalid.",
+      "N means exactly next; H means exactly handoff.",
+      "Each station fixes one arm even where N|H is permitted.",
+      "Success failureClass and repairAction null; refusal/failure data null.",
+      "Retry requires confirmed unchanged, next.kind retry and positive bounded delay."
+    ]
+  },
+  "effect_state_table": {
+    "sources": ["WIRE-10", "WIRE-11", "WIRE-12", "WIRE-13"],
+    "rows": [
+      {
+        "transactionState": "unchanged",
+        "inventoryComplete": true,
+        "completed": "empty",
+        "remaining": "zero_or_more",
+        "uncertain": "empty"
+      },
+      {
+        "transactionState": "completed",
+        "inventoryComplete": true,
+        "completed": "one_or_more",
+        "remaining": "empty",
+        "uncertain": "empty"
+      },
+      {
+        "transactionState": "partially-completed",
+        "inventoryComplete": true,
+        "completed": "one_or_more",
+        "remaining": "one_or_more",
+        "uncertain": "empty"
+      },
+      {
+        "transactionState": "unknown",
+        "inventoryComplete": true,
+        "completed": "zero_or_more",
+        "remaining": "zero_or_more",
+        "uncertain": "one_or_more"
+      },
+      {
+        "transactionState": "unknown",
+        "inventoryComplete": false,
+        "completed": "zero_or_more",
+        "remaining": "zero_or_more",
+        "uncertain": "zero_or_more"
+      }
+    ],
+    "rules": [
+      "Lists unique, mutually disjoint and sorted.",
+      "Success has no remaining effects.",
+      "Inspect is unchanged with complete inventory and three empty lists.",
+      "attemptedEffect exists only on failed and belongs to an effects collection.",
+      "Collections never grant replay authority."
+    ]
+  },
+  "compiler_locks": [
+    {
+      "id": "N1",
+      "invalid_program": "failed + unknown + retryable true",
+      "owner": "T1 kernel and applicable add-on",
+      "sources": ["GATE-6", "GATE-8"],
+      "expected": {
+        "compiler_exit": "nonzero",
+        "diagnostic_count": 1,
+        "diagnostic_code": null,
+        "diagnostic_location": null,
+        "valid_twin_exit": 0
+      },
+      "observed_status": "not_run"
+    },
+    {
+      "id": "N2",
+      "invalid_program": "cause paired with wrong failureClass",
+      "owner": "T1 kernel and applicable add-on",
+      "sources": ["GATE-6", "GATE-8"],
+      "expected": {
+        "compiler_exit": "nonzero",
+        "diagnostic_count": 1,
+        "diagnostic_code": null,
+        "diagnostic_location": null,
+        "valid_twin_exit": 0
+      },
+      "observed_status": "not_run"
+    },
+    {
+      "id": "N3",
+      "invalid_program": "result carrying both next and handoff",
+      "owner": "T1 kernel and applicable add-on",
+      "sources": ["GATE-6", "GATE-8"],
+      "expected": {
+        "compiler_exit": "nonzero",
+        "diagnostic_count": 1,
+        "diagnostic_code": null,
+        "diagnostic_location": null,
+        "valid_twin_exit": 0
+      },
+      "observed_status": "not_run"
+    },
+    {
+      "id": "N4",
+      "invalid_program": "partially-completed with next and no handoff",
+      "owner": "T1 kernel and applicable add-on",
+      "sources": ["GATE-6", "GATE-8"],
+      "expected": {
+        "compiler_exit": "nonzero",
+        "diagnostic_count": 1,
+        "diagnostic_code": null,
+        "diagnostic_location": null,
+        "valid_twin_exit": 0
+      },
+      "observed_status": "not_run"
+    },
+    {
+      "id": "N5",
+      "invalid_program": "success with unknown",
+      "owner": "T1 kernel and applicable add-on",
+      "sources": ["GATE-6", "GATE-8"],
+      "expected": {
+        "compiler_exit": "nonzero",
+        "diagnostic_count": 1,
+        "diagnostic_code": null,
+        "diagnostic_location": null,
+        "valid_twin_exit": 0
+      },
+      "observed_status": "not_run"
+    },
+    {
+      "id": "N6",
+      "invalid_program": "handoff resource undefined",
+      "owner": "T1 kernel and applicable add-on",
+      "sources": ["GATE-6", "GATE-8"],
+      "expected": {
+        "compiler_exit": "nonzero",
+        "diagnostic_count": 1,
+        "diagnostic_code": null,
+        "diagnostic_location": null,
+        "valid_twin_exit": 0
+      },
+      "observed_status": "not_run"
+    },
+    {
+      "id": "N7",
+      "invalid_program": "authority slot receives resource identifier brand",
+      "owner": "T1 kernel and applicable add-on",
+      "sources": ["GATE-6", "GATE-8"],
+      "expected": {
+        "compiler_exit": "nonzero",
+        "diagnostic_count": 1,
+        "diagnostic_code": null,
+        "diagnostic_location": null,
+        "valid_twin_exit": 0
+      },
+      "observed_status": "not_run"
+    },
+    {
+      "id": "N8",
+      "invalid_program": "parsed-path slot receives raw string",
+      "owner": "T1 kernel and applicable add-on",
+      "sources": ["GATE-6", "GATE-8"],
+      "expected": {
+        "compiler_exit": "nonzero",
+        "diagnostic_count": 1,
+        "diagnostic_code": null,
+        "diagnostic_location": null,
+        "valid_twin_exit": 0
+      },
+      "observed_status": "not_run"
+    },
+    {
+      "id": "N9",
+      "invalid_program": "exit outside 0,1,2,3,4,75",
+      "owner": "T1 kernel and applicable add-on",
+      "sources": ["GATE-6", "GATE-8"],
+      "expected": {
+        "compiler_exit": "nonzero",
+        "diagnostic_count": 1,
+        "diagnostic_code": null,
+        "diagnostic_location": null,
+        "valid_twin_exit": 0
+      },
+      "observed_status": "not_run"
+    },
+    {
+      "id": "N10",
+      "invalid_program": "mutate exit owner member",
+      "owner": "T1 kernel and applicable add-on",
+      "sources": ["GATE-6", "GATE-8"],
+      "expected": {
+        "compiler_exit": "nonzero",
+        "diagnostic_count": 1,
+        "diagnostic_code": null,
+        "diagnostic_location": null,
+        "valid_twin_exit": 0
+      },
+      "observed_status": "not_run"
+    },
+    {
+      "id": "M1",
+      "invalid_program": "retryable true without retryDelayMilliseconds",
+      "owner": "T1 kernel and applicable add-on",
+      "sources": ["GATE-6", "GATE-8"],
+      "expected": {
+        "compiler_exit": "nonzero",
+        "diagnostic_count": 1,
+        "diagnostic_code": null,
+        "diagnostic_location": null,
+        "valid_twin_exit": 0
+      },
+      "observed_status": "not_run"
+    },
+    {
+      "id": "M2",
+      "invalid_program": "partially-completed with empty effects",
+      "owner": "T1 kernel and applicable add-on",
+      "sources": ["GATE-6", "GATE-8"],
+      "expected": {
+        "compiler_exit": "nonzero",
+        "diagnostic_count": 1,
+        "diagnostic_code": null,
+        "diagnostic_location": null,
+        "valid_twin_exit": 0
+      },
+      "observed_status": "not_run"
+    },
+    {
+      "id": "M3",
+      "invalid_program": "inspect result failed with unknown",
+      "owner": "T1 kernel and applicable add-on",
+      "sources": ["GATE-6", "GATE-8"],
+      "expected": {
+        "compiler_exit": "nonzero",
+        "diagnostic_count": 1,
+        "diagnostic_code": null,
+        "diagnostic_location": null,
+        "valid_twin_exit": 0
+      },
+      "observed_status": "not_run"
+    },
+    {
+      "id": "R1",
+      "invalid_program": "refused with unknown",
+      "owner": "T1 kernel and applicable add-on",
+      "sources": ["GATE-6", "GATE-8"],
+      "expected": {
+        "compiler_exit": "nonzero",
+        "diagnostic_count": 1,
+        "diagnostic_code": null,
+        "diagnostic_location": null,
+        "valid_twin_exit": 0
+      },
+      "observed_status": "not_run"
+    },
+    {
+      "id": "R2",
+      "invalid_program": "Date assigned to JsonValue",
+      "owner": "T1 kernel and applicable add-on",
+      "sources": ["GATE-6", "GATE-8"],
+      "expected": {
+        "compiler_exit": "nonzero",
+        "diagnostic_count": 1,
+        "diagnostic_code": null,
+        "diagnostic_location": null,
+        "valid_twin_exit": 0
+      },
+      "observed_status": "not_run"
+    },
+    {
+      "id": "R3",
+      "invalid_program": "nested undefined assigned to JsonValue",
+      "owner": "T1 kernel and applicable add-on",
+      "sources": ["GATE-6", "GATE-8"],
+      "expected": {
+        "compiler_exit": "nonzero",
+        "diagnostic_count": 1,
+        "diagnostic_code": null,
+        "diagnostic_location": null,
+        "valid_twin_exit": 0
+      },
+      "observed_status": "not_run"
+    },
+    {
+      "id": "R4",
+      "invalid_program": "refused with completed",
+      "owner": "T1 kernel and applicable add-on",
+      "sources": ["GATE-6", "GATE-8"],
+      "expected": {
+        "compiler_exit": "nonzero",
+        "diagnostic_count": 1,
+        "diagnostic_code": null,
+        "diagnostic_location": null,
+        "valid_twin_exit": 0
+      },
+      "observed_status": "not_run"
+    },
+    {
+      "id": "P1",
+      "invalid_program": "journal-limit refusal missing required next",
+      "owner": "T8 exemplar",
+      "sources": ["GATE-6", "GATE-8"],
+      "expected": {
+        "compiler_exit": "nonzero",
+        "diagnostic_count": 1,
+        "diagnostic_code": null,
+        "diagnostic_location": null,
+        "valid_twin_exit": 0
+      },
+      "observed_status": "not_run"
+    },
+    {
+      "id": "P2",
+      "invalid_program": "prior-run refusal missing required handoff",
+      "owner": "T8 exemplar",
+      "sources": ["GATE-6", "GATE-8"],
+      "expected": {
+        "compiler_exit": "nonzero",
+        "diagnostic_count": 1,
+        "diagnostic_code": null,
+        "diagnostic_location": null,
+        "valid_twin_exit": 0
+      },
+      "observed_status": "not_run"
+    },
+    {
+      "id": "P3",
+      "invalid_program": "partial-recovery handoff claiming unknown",
+      "owner": "T8 exemplar",
+      "sources": ["GATE-6", "GATE-8"],
+      "expected": {
+        "compiler_exit": "nonzero",
+        "diagnostic_count": 1,
+        "diagnostic_code": null,
+        "diagnostic_location": null,
+        "valid_twin_exit": 0
+      },
+      "observed_status": "not_run"
+    },
+    {
+      "id": "K1",
+      "invalid_program": "handler uses undeclared capability",
+      "owner": "T1 kernel and applicable add-on",
+      "sources": ["GATE-7", "GATE-8"],
+      "expected": {
+        "compiler_exit": "nonzero",
+        "diagnostic_count": 1,
+        "diagnostic_code": null,
+        "diagnostic_location": null,
+        "valid_twin_exit": 0
+      },
+      "observed_status": "not_run"
+    },
+    {
+      "id": "K2",
+      "invalid_program": "changing command lacks ifNoResult",
+      "owner": "T1 kernel and applicable add-on",
+      "sources": ["GATE-7", "GATE-8"],
+      "expected": {
+        "compiler_exit": "nonzero",
+        "diagnostic_count": 1,
+        "diagnostic_code": null,
+        "diagnostic_location": null,
+        "valid_twin_exit": 0
+      },
+      "observed_status": "not_run"
+    },
+    {
+      "id": "K3",
+      "invalid_program": "domain-program handle acquired without effect capability",
+      "owner": "T1 kernel and applicable add-on",
+      "sources": ["GATE-7", "GATE-8"],
+      "expected": {
+        "compiler_exit": "nonzero",
+        "diagnostic_count": 1,
+        "diagnostic_code": null,
+        "diagnostic_location": null,
+        "valid_twin_exit": 0
+      },
+      "observed_status": "not_run"
+    },
+    {
+      "id": "K4",
+      "invalid_program": "undeclared effect identifier",
+      "owner": "T1 kernel and applicable add-on",
+      "sources": ["GATE-7", "GATE-8"],
+      "expected": {
+        "compiler_exit": "nonzero",
+        "diagnostic_count": 1,
+        "diagnostic_code": null,
+        "diagnostic_location": null,
+        "valid_twin_exit": 0
+      },
+      "observed_status": "not_run"
+    },
+    {
+      "id": "K5",
+      "invalid_program": "literal naming ifNoResult rather than state-owned value",
+      "owner": "T1 kernel and applicable add-on",
+      "sources": ["GATE-7", "GATE-8"],
+      "expected": {
+        "compiler_exit": "nonzero",
+        "diagnostic_count": 1,
+        "diagnostic_code": null,
+        "diagnostic_location": null,
+        "valid_twin_exit": 0
+      },
+      "observed_status": "not_run"
+    },
+    {
+      "id": "K6",
+      "invalid_program": "inspect opens transaction",
+      "owner": "T1 kernel and applicable add-on",
+      "sources": ["GATE-7", "GATE-8"],
+      "expected": {
+        "compiler_exit": "nonzero",
+        "diagnostic_count": 1,
+        "diagnostic_code": null,
+        "diagnostic_location": null,
+        "valid_twin_exit": 0
+      },
+      "observed_status": "not_run"
+    },
+    {
+      "id": "S1",
+      "invalid_program": "command step names undeclared identity",
+      "owner": "T1 kernel and applicable add-on",
+      "sources": ["GATE-7", "GATE-8"],
+      "expected": {
+        "compiler_exit": "nonzero",
+        "diagnostic_count": 1,
+        "diagnostic_code": null,
+        "diagnostic_location": null,
+        "valid_twin_exit": 0
+      },
+      "observed_status": "not_run"
+    },
+    {
+      "id": "S2",
+      "invalid_program": "handler edits declared station next step",
+      "owner": "T1 kernel and applicable add-on",
+      "sources": ["GATE-7", "GATE-8"],
+      "expected": {
+        "compiler_exit": "nonzero",
+        "diagnostic_count": 1,
+        "diagnostic_code": null,
+        "diagnostic_location": null,
+        "valid_twin_exit": 0
+      },
+      "observed_status": "not_run"
+    },
+    {
+      "id": "S3",
+      "invalid_program": "handler emits undeclared cause",
+      "owner": "T1 kernel and applicable add-on",
+      "sources": ["GATE-7", "GATE-8"],
+      "expected": {
+        "compiler_exit": "nonzero",
+        "diagnostic_count": 1,
+        "diagnostic_code": null,
+        "diagnostic_location": null,
+        "valid_twin_exit": 0
+      },
+      "observed_status": "not_run"
+    },
+    {
+      "id": "S4",
+      "invalid_program": "handler emits another command identity",
+      "owner": "T1 kernel and applicable add-on",
+      "sources": ["GATE-7", "GATE-8"],
+      "expected": {
+        "compiler_exit": "nonzero",
+        "diagnostic_count": 1,
+        "diagnostic_code": null,
+        "diagnostic_location": null,
+        "valid_twin_exit": 0
+      },
+      "observed_status": "not_run"
+    },
+    {
+      "id": "S5",
+      "invalid_program": "retry step on nonretryable station",
+      "owner": "T1 kernel and applicable add-on",
+      "sources": ["GATE-7", "GATE-8"],
+      "expected": {
+        "compiler_exit": "nonzero",
+        "diagnostic_count": 1,
+        "diagnostic_code": null,
+        "diagnostic_location": null,
+        "valid_twin_exit": 0
+      },
+      "observed_status": "not_run"
+    },
+    {
+      "id": "S6",
+      "invalid_program": "done step on nonsuccess station",
+      "owner": "T1 kernel and applicable add-on",
+      "sources": ["GATE-7", "GATE-8"],
+      "expected": {
+        "compiler_exit": "nonzero",
+        "diagnostic_count": 1,
+        "diagnostic_code": null,
+        "diagnostic_location": null,
+        "valid_twin_exit": 0
+      },
+      "observed_status": "not_run"
+    },
+    {
+      "id": "S7",
+      "invalid_program": "handoff inspection names changing command",
+      "owner": "T1 kernel and applicable add-on",
+      "sources": ["GATE-7", "GATE-8"],
+      "expected": {
+        "compiler_exit": "nonzero",
+        "diagnostic_count": 1,
+        "diagnostic_code": null,
+        "diagnostic_location": null,
+        "valid_twin_exit": 0
+      },
+      "observed_status": "not_run"
+    },
+    {
+      "id": "W1",
+      "invalid_program": "wire type assigned to typed result",
+      "owner": "T1 kernel and applicable add-on",
+      "sources": ["GATE-7", "GATE-8"],
+      "expected": {
+        "compiler_exit": "nonzero",
+        "diagnostic_count": 1,
+        "diagnostic_code": null,
+        "diagnostic_location": null,
+        "valid_twin_exit": 0
+      },
+      "observed_status": "not_run"
+    }
+  ],
+  "lock_protocol": {
+    "sources": ["GATE-5", "GATE-6", "GATE-7", "GATE-8", "GATE-13"],
+    "accepted_compiler": "native TypeScript 7.0.2",
+    "lint_comparison": "TypeScript 6.0.2",
+    "rules": [
+      "One invalid program per marker, one guarded line.",
+      "Remove markers independently; assert nonzero exit, exactly one diagnostic, code and location.",
+      "Do not assert diagnostic prose or one compiler failure exit value.",
+      "Each independently authored valid twin compiles.",
+      "Markers only in lock folder; withdrawn locks retained with decision reason.",
+      "P1 through P3 remain exemplar correlations, not common causes.",
+      "TypeScript cannot revoke a captured effect handle; V-21 proves runtime lifetime."
+    ],
+    "binding_status": "Exact fixture paths, numeric diagnostic codes and locations remain null until independently frozen against admitted fixtures."
+  },
+  "version_matrix": {
+    "sources": [
+      "VER-1",
+      "VER-2a",
+      "VER-3",
+      "VER-4",
+      "VER-5",
+      "VER-6",
+      "VER-6a",
+      "VER-7",
+      "VER-9",
+      "VER-10",
+      "VER-11",
+      "VER-13",
+      "VER-15"
+    ],
+    "owner": "T1 final proof; T6 checker",
+    "layer": "process",
+    "cases": [
+      {
+        "input": "missing/non-string/3.0/3.0.1/leading-zero/suffix/whitespace",
+        "cause": "SCHEMA_INVALID_INPUT",
+        "exit": 4,
+        "expected": "Refused unchanged; contractVersion violated; safe bounded observed value or null.",
+        "observed_status": "not_run"
+      },
+      {
+        "input": "well-formed other major including 2.0.0 and 4.1.2",
+        "cause": "SCHEMA_UNSUPPORTED_CONTRACT",
+        "exit": 4,
+        "expected": "Refused unchanged; exact observed version; use matching major reader; 2.0 checker route named; no adaptation.",
+        "observed_status": "not_run"
+      },
+      {
+        "input": "3.n.0 where n exceeds reader minor",
+        "cause": "SCHEMA_UNSUPPORTED_CONTRACT",
+        "exit": 4,
+        "expected": "Refused unchanged; observed and reader versions; upgrade reader.",
+        "observed_status": "not_run"
+      },
+      {
+        "input": "accepted minor with broken shape or correlation",
+        "cause": "SCHEMA_INVALID_INPUT",
+        "exit": 4,
+        "expected": "Refused unchanged; observed version and violated key/correlation.",
+        "observed_status": "not_run"
+      },
+      {
+        "input": "valid older or equal minor",
+        "cause": null,
+        "exit": 0,
+        "expected": "Success inspect unchanged, accepted without adaptation. Exact success cause belongs to admitted reader declaration.",
+        "observed_status": "not_run"
+      },
+      {
+        "input": "3.0 carrying a key added only by test-only 3.1",
+        "cause": "SCHEMA_INVALID_INPUT",
+        "exit": 4,
+        "expected": "Judge declared minor shape, not reader newest shape.",
+        "observed_status": "not_run"
+      },
+      {
+        "input": "unknown host cause with legal declared row",
+        "cause": null,
+        "exit": null,
+        "expected": "Do not reject solely because another CLI cause is unknown; judge outcome/failureClass.",
+        "observed_status": "not_run"
+      }
+    ],
+    "controls": [
+      "Version classification precedes other key interpretation.",
+      "Envelope/discovery version copies agree.",
+      "Older absent new key retains older meaning.",
+      "Test-only minor cannot remove/rename/make required/change meaning/add common cause.",
+      "Every released fallback stays 3.0.0.",
+      "Malformed or unsupported executed target never replayed."
+    ],
+    "unbound_codes": "Null means the accepted contract does not prescribe that code; it does not mean expected success automatically.",
+    "observed_status": "not_run"
+  },
+  "lifecycle_matrix": {
+    "sources": [
+      "LIFE-1",
+      "LIFE-2",
+      "LIFE-2a",
+      "LIFE-3",
+      "LIFE-4",
+      "LIFE-5",
+      "LIFE-6",
+      "LIFE-6a",
+      "LIFE-7",
+      "LIFE-8",
+      "LIFE-9",
+      "LIFE-10",
+      "LIFE-11",
+      "LIFE-12",
+      "LIFE-13",
+      "LIFE-14"
+    ],
+    "owner": "T2 kernel/programs; T6 checker; independent process reviewer",
+    "layer": "process",
+    "cases": [
+      {
+        "scenario": "normal result",
+        "expected_exit": "result exit",
+        "expected": "One validated UTF-8 JSON object plus newline; empty stderr; awaited drain; include >=1MiB and slow-consumer variants.",
+        "negative_control": "Exit before drain or emit duplicate envelope.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "human refusal/failure",
+        "expected_exit": "result exit",
+        "expected": "One stderr line; no prompt.",
+        "negative_control": "Multiline dump or refusal on stdout.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "human help/discovery",
+        "expected_exit": "0",
+        "expected": "Stdout, no prompt.",
+        "negative_control": "Stderr output or unavailable-provider failure.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "stdin closed",
+        "expected_exit": "result exit",
+        "expected": "No read/prompt dependency.",
+        "negative_control": "Block on stdin.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "stdin held open nonterminal",
+        "expected_exit": "result exit",
+        "expected": "No read/prompt dependency.",
+        "negative_control": "Wait for EOF.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "first SIGINT before emission",
+        "expected_exit": "130",
+        "expected": "No envelope starts; stop new work; diagnostic flush and owned-program shutdown attempts within 500ms.",
+        "negative_control": "Write envelope after stop.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "first SIGTERM before emission",
+        "expected_exit": "143",
+        "expected": "Same stopping and bound as first SIGINT.",
+        "negative_control": "Inherit default termination without owned cleanup.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "first SIGINT during drain",
+        "expected_exit": "130",
+        "expected": "No second envelope; partial stream allowed; same 500ms maximum grace.",
+        "negative_control": "Start replacement envelope.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "first SIGTERM during drain",
+        "expected_exit": "143",
+        "expected": "No second envelope; partial stream proves neither unchanged nor failure.",
+        "negative_control": "Infer absence of effects from partial output.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "first SIGINT after drain before exit",
+        "expected_exit": "130",
+        "expected": "Emitted envelope stands; signal exit out-of-band.",
+        "negative_control": "Rewrite envelope exit to 130.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "first SIGTERM after drain before exit",
+        "expected_exit": "143",
+        "expected": "Emitted envelope stands; signal exit out-of-band.",
+        "negative_control": "Replay because envelope and signal exit differ.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "repeated SIGINT during shutdown",
+        "expected_exit": "130",
+        "expected": "Synchronous owned-group SIGKILL attempt then immediate exit; no wait, new envelope or flush promise.",
+        "negative_control": "Add confirmation/flush wait.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "repeated SIGTERM during shutdown",
+        "expected_exit": "143",
+        "expected": "Synchronous owned-group SIGKILL attempt then immediate exit; repeated signal selects exit.",
+        "negative_control": "Use first signal exit or add wait.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "uncaught exception",
+        "expected_exit": "1",
+        "expected": "No new envelope or exception stderr; forced-kill attempt; at most one bounded-data synchronous emergency write; no async disposal/wait.",
+        "negative_control": "Multiple emergency writes, stack dump or async disposal.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "unhandled rejection",
+        "expected_exit": "1",
+        "expected": "Same crash rules.",
+        "negative_control": "New fallback/envelope or async waiting.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "SIGKILL/abort/hook-install failure/power loss",
+        "expected_exit": "host/runtime dependent",
+        "expected": "No envelope/flush/final-record/child-cleanup guarantee.",
+        "negative_control": "Claim cleanup or unchanged from missing result.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "emergency write failure",
+        "expected_exit": "host/runtime dependent",
+        "expected": "Outside guaranteed closed result exits; recovery tolerates missing final record.",
+        "negative_control": "Invent guaranteed exit or final record.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "deadline before dispatch",
+        "expected_exit": "3",
+        "expected": "DOMAIN_DEADLINE_BEFORE_START; refused unchanged; no effect; explicit new-run decision.",
+        "negative_control": "Dispatch after expiration.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "deadline after dispatch confirmed unchanged",
+        "expected_exit": "3",
+        "expected": "DOMAIN_DEADLINE_UNCHANGED; failed unchanged; no automatic retry.",
+        "negative_control": "Emit retryable transient.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "deadline after dispatch completed",
+        "expected_exit": "3",
+        "expected": "DOMAIN_DEADLINE_COMPLETED; failed completed; handoff.",
+        "negative_control": "Repeat completed effect.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "deadline after dispatch partial",
+        "expected_exit": "3",
+        "expected": "DOMAIN_DEADLINE_PARTIAL; failed partially-completed; handoff.",
+        "negative_control": "Replace confirmed partial facts with completed or unknown.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "deadline after dispatch uncertain",
+        "expected_exit": "3",
+        "expected": "DOMAIN_DEADLINE_UNKNOWN; failed unknown; handoff after at most 500ms cancellation/observation.",
+        "negative_control": "Wait indefinitely or claim certainty without observation.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "EPIPE before full drain",
+        "expected_exit": "1",
+        "expected": "Empty/partial stdout; empty stderr; no replacement envelope.",
+        "negative_control": "Retry write/fallback or retain result exit despite incomplete drain.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "EPIPE after confirmed drain",
+        "expected_exit": "result exit",
+        "expected": "Emitted envelope and its exit stand.",
+        "negative_control": "Change exit to 1.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "invalid domain result before stdout",
+        "expected_exit": "1",
+        "expected": "Exactly one bounded fallback attempt, version 3.0.0.",
+        "negative_control": "Print invalid original.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "fallback itself fails",
+        "expected_exit": "1",
+        "expected": "No recursive envelope; empty stderr.",
+        "negative_control": "Recursively fall back.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "writer failure after output began",
+        "expected_exit": "1",
+        "expected": "No further envelope; empty stderr.",
+        "negative_control": "Append fallback.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "executed target prints malformed output",
+        "expected_exit": "reader refusal exit",
+        "expected": "Target independent counter remains exactly one; reader unchanged refusal requires separate inspection.",
+        "negative_control": "Execute target again.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "repeated deterministic input",
+        "expected_exit": "result exit",
+        "expected": "Canonical envelopes equal except run identity/time.",
+        "negative_control": "Normalise domain or recovery discrepancy.",
+        "observed_status": "not_run"
+      }
+    ],
+    "timing_rules": [
+      "Install stdout error, signal and crash hooks before dispatch.",
+      "Every timing row requires observable startup/phase synchronisation, not a hopeful delay.",
+      "Signal exits never occur inside an envelope.",
+      "Deadline covers dispatch/work, excludes bounded diagnostic flush and stdout drain.",
+      "No hard drain bound for connected slow consumer.",
+      "Emergency synchronous write has no wall-clock guarantee on a stalled filesystem.",
+      "Indistinguishable EPIPE timing remains unproved and returns to owner; invent no exit rule.",
+      "Original effect never replayed during cleanup."
+    ],
+    "observed_status": "not_run"
+  },
+  "program_matrix": {
+    "sources": ["CMD-14", "LIFE-11", "GATE-7"],
+    "owner": "T2 programs/state/kernel",
+    "layer": "process",
+    "cases": [
+      {
+        "scenario": "normal completion/refusal/failure",
+        "expected": "Observe exit or TERM then KILL within declared finite shutdown budget; surviving uncertainty handed off.",
+        "independent_observation": "Separate process exits, signal attempts and survivors.",
+        "negative_control": "Omit forced KILL after child ignores TERM.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "deadline",
+        "expected": "Termination request within cancellation/observation bound; unconfirmed effects unknown.",
+        "independent_observation": "Read resource and process independently.",
+        "negative_control": "Claim certainty from signal request alone.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "first signal",
+        "expected": "TERM owned groups then KILL survivors within same 500ms.",
+        "independent_observation": "Observe attempts and elapsed time.",
+        "negative_control": "Add second cleanup grace period.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "repeated signal",
+        "expected": "Synchronous KILL attempt then immediate exit, without confirmation wait.",
+        "independent_observation": "Observe parent exit and signal attempts.",
+        "negative_control": "Wait for child exit before parent termination.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "catchable crash",
+        "expected": "Synchronous KILL attempt, one emergency write, no asynchronous wait.",
+        "independent_observation": "Observe parent exit, attempts and journal.",
+        "negative_control": "Async disposal delays crash termination.",
+        "observed_status": "not_run"
+      }
+    ],
+    "additional_cases": [
+      "Valid in-effect start succeeds.",
+      "Retained handle after effect completion starts no child and causes no domain effect.",
+      "Wrong-run and wrong-effect capability starts no child.",
+      "Race deferred start against effect closure; only admission while active may start under journal.",
+      "Independent process-start and resource observations detect disabled lifetime check.",
+      "Every child has timeout/process group, closed stdin, bounded captured stdout/stderr.",
+      "Caller-supplied program disclosed in command summary.",
+      "Track ownership from creation; never signal unrelated processes.",
+      "Detached/remote survivors and parent SIGKILL remain explicit limits.",
+      "Successful kill request never proves stopped-owner qualification."
+    ],
+    "observed_status": "not_run"
+  },
+  "recovery_matrix": {
+    "sources": [
+      "REC-1",
+      "REC-2",
+      "REC-3",
+      "REC-4",
+      "REC-5",
+      "REC-6",
+      "REC-7",
+      "REC-7a",
+      "REC-7b",
+      "REC-8",
+      "REC-9",
+      "REC-10"
+    ],
+    "owner": "T3 state/approval/host; independent process/storage/authority reviewer",
+    "layer": "real process and independent resource observation",
+    "cases": [
+      {
+        "scenario": "kill after effect before record; recovery; two later changes",
+        "expected": "Original effect count one; valid closure removes only affected unfinished case; both later authorised changes proceed.",
+        "negative_control": "Replay original or retain permanent global barrier.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "live run paused after intent",
+        "expected": "List intent; refuse overlap/closure/reclaim; proven-independent work proceeds.",
+        "negative_control": "Hide intent or close/reclaim active writer.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "message sent then deleted",
+        "expected": "No not-applied inference; no resend.",
+        "negative_control": "Treat current absence as exclusion of earlier effect.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "unobservable or irreversible effect",
+        "expected": "Qualified authorised unknown closure retains facts and ends case without replay.",
+        "negative_control": "Caller asserts unchanged or closure rewrites effects.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "caller-provided closure authority",
+        "expected": "Reject forged authority; no closure.",
+        "negative_control": "Accept writable grant, caller boolean or brand.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "recovery records closure",
+        "expected": "Its own changing effect, stations, input and read-only lost-response route.",
+        "negative_control": "Expose closure as inspect/ifNoResult.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "two reclaimers, PID reuse, ambiguous namespace",
+        "expected": "At most one owner; uncertainty handoff and no takeover write.",
+        "negative_control": "Age or restricted PID absence sufficient.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "later legitimate resource change",
+        "expected": "Historical case remains closed; no renewed barrier or replay.",
+        "negative_control": "Reopen because resource differs from closure-time evidence.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "torn intent/closure; crash around grant consumption",
+        "expected": "Uncertainty retained; no false closure, refund or duplicate effect.",
+        "negative_control": "Parse torn state as completed or refund grant.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "diagnostics deletion; alias to same resource",
+        "expected": "Same recovery truth and conflict scope.",
+        "negative_control": "Derive admission from logs or raw path spelling.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "unknown/incomplete scope",
+        "expected": "Refuse any operation whose independence is unproved.",
+        "negative_control": "Treat missing scope as disjoint.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "crash during takeover",
+        "expected": "Exclusivity retained across old/replacement/concurrent owners; safe refusal or qualified recovery only.",
+        "negative_control": "Stale snapshot unlinks replacement owner.",
+        "observed_status": "not_run"
+      },
+      {
+        "scenario": "dead parent with surviving writer",
+        "expected": "No automatic reclaim; reject attestation contradicted by known live writer.",
+        "negative_control": "Parent death proves stopped operation.",
+        "observed_status": "not_run"
+      }
+    ],
+    "closure_cases": [
+      "Intent bound before effects to operation/command/run/effects/scope/revisions/approval reference without secrets.",
+      "Closure append-only completed/not-applied/outcome-unknown metadata, separate from transactionState.",
+      "Completed closure independently confirms every intended effect.",
+      "Not-applied closure excludes every attempted effect; absent current resource/report is insufficient.",
+      "Unknown closure retains known partial/completed/remaining/uncertain facts.",
+      "Closure re-read and atomic publication under exclusive coordination; torn closure invalid.",
+      "Same closure identity returns prior disposition without domain replay; conflicting content refused.",
+      "Only valid closure removes recovery-needed case from unfinished; history retained.",
+      "Closure cannot release a live writer exclusion."
+    ],
+    "stop_attestation_cases": [
+      "Valid exact-owner attestation from qualified authority source may satisfy stopped-owner condition.",
+      "Reject forged, stale, consumed, wrong-owner, wrong-scope and known-live-conflicting attestation.",
+      "Valid attestation without qualified exclusive takeover still refuses.",
+      "Preflight without consumption; acquire takeover coordination; reread/revalidate exact incarnation/writers/scope; durable atomic consumption; replacement.",
+      "Coordination refusal preserves still-valid attestation.",
+      "Crash after consumption never refunds or claims replacement succeeded.",
+      "Race replacement owner and two claimants; at most one acquisition.",
+      "Takeover grant does not authorise closure or original effect replay.",
+      "Actual caller credentials cannot create or alter a valid human grant."
+    ],
+    "qualification_fields": [
+      "exact OS",
+      "filesystem",
+      "locking primitive",
+      "process/boot/incarnation identity",
+      "namespace",
+      "delegated writers",
+      "failure cases",
+      "independent evidence"
+    ],
+    "observed_status": "not_run"
+  },
+  "diagnostics_matrix": {
+    "sources": [
+      "DIAG-1",
+      "DIAG-2",
+      "DIAG-3",
+      "DIAG-4",
+      "DIAG-5",
+      "DIAG-6",
+      "DIAG-7",
+      "DIAG-8",
+      "DIAG-9",
+      "DIAG-10",
+      "DIAG-11",
+      "DIAG-12",
+      "DIAG-12a",
+      "DIAG-12b",
+      "DIAG-13",
+      "DIAG-14",
+      "DIAG-15",
+      "DIAG-16",
+      "DIAG-17"
+    ],
+    "owner": "T5 diagnostics",
+    "layer": "process; hostile filesystem",
+    "limits": {
+      "aggregate_bytes_including_active": 10000000,
+      "per_run_bytes": 1000000,
+      "file_count": 50,
+      "buffer_bytes": 1000000,
+      "buffer_records": 256,
+      "record_bytes": 64000,
+      "flush_ms": 500,
+      "prune_confirmed_closed_older_than_days": 7
+    },
+    "custody": {
+      "file_mode": "0600",
+      "directory_mode": "0700",
+      "location": "$XDG_STATE_HOME/<cli>/diagnostics or ~/.local/state/<cli>/diagnostics",
+      "location_override": "forbidden",
+      "creation": "exclusive",
+      "handle": "securely opened descriptor or equivalent containment",
+      "dependency_owner": "diagnostics add-on only",
+      "logtape_pin": "2.4.2"
+    },
+    "cases": [
+      "Absent add-on emits no diagnostics key; requested/triggered diagnostics cannot disappear silently.",
+      "Available and unavailable variants strict; first sinkFailure retained while later known loss counted.",
+      "Dropped/unflushed disjoint; truncated may overlap unflushed; counters count records not bytes.",
+      "Unknown trusted fields omitted instead of fabricated; invalid accounting retains trustworthy path/lower bounds.",
+      "Unset home, permission, no space, throwing sink, stuck flush and close failure leave domain result/exit/recovery unchanged.",
+      "Existing final file, symlink, FIFO, missing directory, target override, untrusted ancestor and ancestor race refused or contained.",
+      "Checked descriptor followed by path reopen fails custody.",
+      "Each individual capacity bound includes queue/serialization overhead; overlarge record visibly truncated.",
+      "Active, ambiguous and timed-out logs never pruned merely by age.",
+      "Concurrent pruning and reservation/allocation preserve aggregate cap.",
+      "Synthetic secret absent from stdout/stderr/logs/promoted receipts; encoded/free-text/traversal limits disclosed.",
+      "Per-run identity, command, monotonic sequence and duration retained with bounded logger self-reporting.",
+      "Late sink completion changes neither frozen counts nor result; no second output.",
+      "No diagnostic activity after normal status freeze, including EPIPE logging.",
+      "Intact/deleted/corrupt/throwing diagnostics preserve message, domain result, exit, effects and recovery."
+    ],
+    "negative_control": "Remove each corresponding guard independently; its own test fails even when domain outcome remains correct.",
+    "normalisation_allowed": ["diagnostics", "run identity", "genuine time"],
+    "normalisation_forbidden": [
+      "message changed solely due diagnostics fault",
+      "domain data",
+      "effects",
+      "recovery"
+    ],
+    "observed_status": "not_run"
+  },
+  "runtime_input_matrix": {
+    "sources": [
+      "WIRE-1",
+      "WIRE-2",
+      "WIRE-3",
+      "WIRE-4",
+      "WIRE-5",
+      "WIRE-6",
+      "WIRE-7",
+      "WIRE-8",
+      "WIRE-9",
+      "WIRE-10",
+      "WIRE-12",
+      "WIRE-13",
+      "WIRE-15",
+      "WIRE-16",
+      "WIRE-17",
+      "STEP-3",
+      "STEP-4",
+      "STEP-5",
+      "STEP-6",
+      "STEP-7",
+      "STEP-9",
+      "STEP-9a",
+      "STEP-10",
+      "STEP-12",
+      "STEP-13",
+      "STEP-14",
+      "STEP-15",
+      "STEP-16",
+      "INPUT-1",
+      "INPUT-2",
+      "INPUT-3",
+      "INPUT-4",
+      "INPUT-5",
+      "CMD-9",
+      "CMD-9a",
+      "LIFE-7",
+      "DISC-6"
+    ],
+    "owner": "T1 kernel/host; T6 checker",
+    "layers": ["runtime", "process", "meaning review"],
+    "wire_and_writer": [
+      "Strict unknown-key rejection at every object; required/nullable/conditional/optional presence rules.",
+      "Undefined at every depth; nonempty trimmed metadata; safe integer bounds.",
+      "Plain acyclic JSON; maximum depth 64 and over-depth 65; functions/bigint/Date/NaN/Infinity rejected.",
+      "Exactly next or handoff; nonempty handoff inspections; retry iff retryable; done only success.",
+      "Inspection entries exclude retry/done/changing targets.",
+      "Station fixed fields revalidated immediately before serialization.",
+      "Legacy envelopeVersion/nextAction/profile/generationConventionVersion rejected."
+    ],
+    "bindings": [
+      "Exactly named binding keys; no bindings key when unused; names match ^[a-z][A-Za-z0-9]*$.",
+      "Whole args element or whole resource.id only; forbidden in repair/instruction/reason/resource.kind.",
+      "Empty, whitespace-only, 1025-byte, leading-dash and Cc/Cf/Zl/Zp values rejected; valid 1024-byte boundary accepted.",
+      "Rendered arg cannot equal any declared route token; router uses exact token matches.",
+      "idempotencyKey --force rejected as input when destined for args/resource.id.",
+      "Fixed command/kind never templated; substitutions never split/join tokens or invoke shell.",
+      "Target input syntax checked after substitution before output and again before target effects.",
+      "Caller future binding validated against STEP-10 and target slot before current guard/effect.",
+      "Generated binding validated at creation boundary before dependent effect."
+    ],
+    "grammar": [
+      "Required positional declarations before optional; no implicit rest.",
+      "Unique slots/options/aliases; no global shadowing.",
+      "Required omission/extra operand/unknown option are USAGE_INVALID_INVOCATION exit 2 before guards/effects.",
+      "Exact option tokens; no abbreviation, bundles or --name=value.",
+      "Presence flags cannot repeat or accept truthy value tokens; value repeats retain occurrence order.",
+      "String bounds measured in Unicode code points; finite choices unique and within bounds; Unicode full-string nonstateful patterns.",
+      "Integer tokens match ^-?(0|[1-9][0-9]*)$ and safe inclusive bounds; negative option value allowed; no float/coercion/unsafe integer.",
+      "Requires/exclusive references resolve; contradictory required combinations rejected.",
+      "No hidden defaults, custom grammar escapes or undeclared special keywords.",
+      "Dash-prefixed operands require --; later tokens stay operands including --json.",
+      "Global --json recognised before -- in any argv position; command-step args exclude it.",
+      "Deadline option only where supported; positive integer; no declaration for unbounded uninterruptible effect.",
+      "Untrusted regex syntax/input/size/time budget enforced in terminable boundary; budget refusal SCHEMA_INVALID_INPUT; no target replay.",
+      "Decoded file/JSON/environment/network/state validation starts unknown and remains mandatory independently of argv grammar."
+    ],
+    "review_only": [
+      "Instruction next addresses agent, never requests person action.",
+      "Binding is nonsecret; shape cannot prove secrecy.",
+      "Instruction inspection is read-only observation.",
+      "Inspection command reports the state named by handoff.",
+      "Static syntax never proves current resource/authority or safe execution."
+    ],
+    "negative_control": "Individually disable each rule; its independently authored invalid case must be rejected. Also mutate schema and parser together to the same wrong rule; independent cases still fail.",
+    "observed_status": "not_run"
+  },
+  "navigation_matrix": {
+    "sources": [
+      "DISC-1",
+      "DISC-2",
+      "DISC-2a",
+      "DISC-3",
+      "DISC-4",
+      "DISC-5",
+      "DISC-6",
+      "DISC-7",
+      "DISC-8",
+      "DISC-9",
+      "DISC-10",
+      "DISC-11",
+      "DISC-11b",
+      "DISC-12",
+      "DISC-13",
+      "DISC-14",
+      "DISC-14a",
+      "INPUT-5"
+    ],
+    "owner": "T1 kernel; T8 host integration",
+    "layer": "process",
+    "builtins": [
+      {
+        "suffix": ".help",
+        "route": ["--help"],
+        "effectClass": "inspect"
+      },
+      {
+        "suffix": ".discovery",
+        "route": ["--discover"],
+        "effectClass": "inspect"
+      },
+      {
+        "suffix": ".command-discovery",
+        "route": ["--discover-command"],
+        "effectClass": "inspect"
+      },
+      {
+        "suffix": ".dispatch",
+        "route": [],
+        "effectClass": "inspect"
+      }
+    ],
+    "cases": [
+      "Help and discovery human exit 0 on stdout; JSON success unchanged inspect.",
+      "Unknown selected identity: command-discovery USAGE_UNKNOWN_COMMAND exit 2.",
+      "Missing selector/incompatible builtin options/no arguments: dispatch USAGE_INVALID_INVOCATION exit 2.",
+      "All four built-ins individually discoverable; help commands list host commands and help options describe built-ins.",
+      "No request dumps every command station.",
+      "At most one root host operation; requires option/operand, preserving no-argument dispatch.",
+      "Add/remove executable command or station changes matching discovery.",
+      "Required stations reached; unreachable rationale proves impossible, not untested.",
+      "Station tuple identity is JSON serialization of commandIdentity/outcome/causeCode; no extra wire station identifier.",
+      "Changing ifNoResult literal args <=16, encoded step <=2048 UTF-8 bytes, no brace token/Cc/Cf/Zl/Zp; identity <=128 UTF-8 bytes.",
+      "Reserved INTERNAL_PREPARATION/INTERNAL_RESULT_* tuples cannot be host-declared.",
+      "Command-owned words for other base-produced tuples retained.",
+      "Lost-response route reads only and explicitly describes further inspection; corrupt report never succeeds empty."
+    ],
+    "negative_control": "Omit builtin/station; stale projection; wrong dispatch exit; eager provider; invalid fallback declaration; all-stations dump.",
+    "observed_status": "not_run"
+  },
+  "false_positive_controls": [
+    "Consistent exit-1 fallback cannot satisfy independent expected exit-3 refusal.",
+    "Matching wrong catalogue and wrong implementation cannot satisfy independent cause/input expectations.",
+    "Empty station collection cannot satisfy per-row iteration.",
+    "Discovery visibility cannot establish actual dispatch, including cached registries.",
+    "Compiler pass cannot establish authority, serialization, process exit or captured capability lifetime.",
+    "Kill attempt cannot establish termination or stopped-owner proof.",
+    "Empty/corrupt report or absent resource cannot establish non-application.",
+    "Fixture grant cannot qualify production human authority.",
+    "Correct domain result cannot hide diagnostics privacy/capacity failure.",
+    "Illustrative snippet cannot count as compiled proof.",
+    "Unreachable label cannot replace missing process row.",
+    "Source tests cannot establish wrapper/runtime checker choice.",
+    "Acceptance, scaffold qualification, implementation and activation are distinct observations."
+  ],
+  "exclusions": {
+    "deferred_disabled": [
+      {
+        "capability": "raw-stream retention",
+        "reason": "Custody and effect classification deferred.",
+        "status": "not_applicable_while_disabled"
+      },
+      {
+        "capability": "arbitrary template-code execution during installation",
+        "reason": "Execution and recovery policy deferred.",
+        "status": "not_applicable_while_disabled"
+      },
+      {
+        "capability": "post-vault planning relocation",
+        "reason": "Ownership remains open.",
+        "status": "excluded"
+      },
+      {
+        "capability": "existing CLI migration/retirement",
+        "reason": "Separate accepted scopes required.",
+        "status": "excluded"
+      }
+    ],
+    "qualification_gated": [
+      {
+        "capability": "human unknown closure",
+        "requirement": "Verifier fixtures plus actual host nonforgeability qualification.",
+        "while_unqualified": "disabled_or_incomplete_not_passed"
+      },
+      {
+        "capability": "automatic reclaim",
+        "requirement": "Stopped-owner proof and exclusive protocol qualified for named environment.",
+        "while_unqualified": "unavailable_with_handoff"
+      },
+      {
+        "capability": "human-assisted takeover",
+        "requirement": "Qualified authority plus qualified mechanical exclusivity.",
+        "while_unqualified": "unavailable_with_handoff"
+      }
+    ],
+    "other_excluded": [
+      "Contract 2.0 adapter or dual-major reader",
+      "second application CLI",
+      "universal caller key or safe-to-repeat flag",
+      "dependency upgrades",
+      "new remote",
+      "merge, installation, activation or release",
+      "network/shared filesystems and ambiguous process namespaces unless separately qualified"
+    ],
+    "sources": ["VER-12", "ROLL-2", "CMD-19", "REC-5", "REC-7b"]
+  },
+  "unresolved_bindings": [
+    {
+      "owner": "T0 coordinator",
+      "binding": "Exact accepted-source, template/scaffold and kept 2.0 checker/validator/wrapper/runtime/consumer identities and actual arguments.",
+      "boundary": "Required before production implementation; this fixture does not perform inventory."
+    },
+    {
+      "owner": "T0 coordinator",
+      "binding": "Actual planning/execution identity, evidence retention route, scaffold qualification, dated CI attribution and independent oracle review.",
+      "boundary": "Required T0 admission evidence; no task IDs or passing runs inferred here."
+    },
+    {
+      "owner": "T0 coordinator and T1/T6 expectation reviewer",
+      "binding": "Concrete command/station/input fixtures, lifecycle commands/barriers, reviewed reachability, compiler diagnostic numbers/locations and checker finding-code interface.",
+      "boundary": "T0 freezes independent semantic expectations and identifies unresolved applicability. Fixture-specific compiler codes/locations bind independently before the corresponding implementation proof; their absence before interfaces exist is not by itself a T0 blocker. Checker expected rows/codes must be frozen independently before checker implementation under ROLL-8."
+    },
+    {
+      "owner": "T1 host/kernel and independent expectation reviewer",
+      "binding": "Command identities/routes/domain causes/fixed guidance; per-command common-cause applicability; exact lock fixture paths and diagnostics.",
+      "boundary": "Bind applicability and host meanings before their implementation. Exact lock diagnostic metadata binds before the corresponding implementation proof; no common cause added; null compiler codes are unbound, not passing."
+    },
+    {
+      "owner": "T2 independent process reviewer",
+      "binding": "Deterministic pre-drain versus confirmed-post-drain EPIPE evidence; commands, startup barriers and unspecified harness bounds.",
+      "boundary": "Unobserved phase remains unproved; no invented exit rule."
+    },
+    {
+      "owner": "T3/T4/T8 state/approval/host reviewers",
+      "binding": "Named local OS/filesystem/lock/process identity and actual-credential authority integration.",
+      "boundary": "Capability stays unavailable/incomplete until qualified; fixtures do not enable production."
+    },
+    {
+      "owner": "T6 checker and independent expectation reviewer",
+      "binding": "Checker report row/finding-code interface and finite untrusted-pattern budgets.",
+      "boundary": "VER-14 leaves report schema checker-owned; freeze independently before checker implementation, never derive expected codes from checker output."
+    },
+    {
+      "owner": "T8 coordinator",
+      "binding": "V-37 exact run-count interpretation: Three passing runs of three [P].",
+      "boundary": "Retain accepted wording; do not silently reduce or infer nine fresh agents."
+    }
+  ]
+}

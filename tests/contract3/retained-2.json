@@ -1,0 +1,2175 @@
+{
+  "schemaVersion": 1,
+  "kind": "independent-retained-contract-2-preservation-expectations",
+  "status": "expectations-only-not-execution-proof",
+  "scope": {
+    "criterion": "C3-FND-1",
+    "ticket": "T0",
+    "downstreamTickets": ["T6", "T8"],
+    "sourcePacket": "projects/cli-design-skill/specs/contract-3-foundation.md",
+    "contractVersion": "2.0.0",
+    "scopeBoundary": "Read-only inventory of the two named repositories; no existing CLI migration or installed-cache qualification."
+  },
+  "oraclePolicy": "Pinned retained baseline objects and independently inspected consumers supply expectations. New Contract 3 implementation output cannot redefine this fixture. No row below claims a process ran.",
+  "repositories": {
+    "dotfiles": {
+      "acceptedCommit": "29bf4bb0f307f96d396aa087472a4dbed849c920",
+      "observedHead": "29bf4bb0f307f96d396aa087472a4dbed849c920",
+      "pluginWorkingTreeDiff": "none at inventory; unrelated changes preserved"
+    },
+    "bun-typescript-template": {
+      "acceptedCommit": "7cb52b781850403120f2f0c2aa7e31c1e3fec1ec",
+      "observedHead": "7f6d95017e051c23e978f5d7f7542732b799dfdc",
+      "observation": "Checkout is stale; accepted objects are locally available. Use acceptedCommit, not observedHead."
+    }
+  },
+  "archive": {
+    "identity": "dotfiles-retained-2.tar",
+    "sha256": "de3c6fb8f586299c3f128c9f8cefa3a2b0ebfb3d0142b0f8678ef67b0f16f8ae",
+    "expectedBlobCount": 186,
+    "status": "foreground archive identity; independent fixture author verified constituent Git objects, not archive custody or execution",
+    "retention": "Retain while any qualification or reuse claim depends on this evidence; no automatic deletion policy is introduced."
+  },
+  "packageTrees": [
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-check",
+      "tree": "30a1c69bae5702d395a95623fc8ea74baea0d5b3"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar",
+      "tree": "b95d84d499bdf11ed5744dba1cfe9c88b619b525"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward",
+      "tree": "6b85ff1caa037d97d472e5a34be15855b9461721"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/agent-router",
+      "tree": "da5d6103f899e73c404ffb1f6c301ea15beac772"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-classify",
+      "tree": "c2968594252af62f865df08cb629258c9b6c8a72"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-dispatch",
+      "tree": "a3a4c7c625bf3099af9d0d3d644a98578ffb6983"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/closeout-packet",
+      "tree": "464b20aafa51719b3c8c660c5c5941883e5415a6"
+    }
+  ],
+  "dotfilesBlobs": [
+    {
+      "path": ".fallowrc.json",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "fa8ea3a356da03aea15e7e9746ae2256a94b2d0b"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/bin/agent-router",
+      "mode": "100755",
+      "kind": "blob",
+      "blob": "ff9307b25203bdb6256d0bf0351349ca726a7743"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/bin/cli-design-check",
+      "mode": "100755",
+      "kind": "blob",
+      "blob": "7bdc6dd22b4097076801188979e5a686fc124e48"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/bin/closeout-packet",
+      "mode": "100755",
+      "kind": "blob",
+      "blob": "b28dae64f3b02f28653dc3c37df955ee7f8fb984"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/bin/source-intake-classify",
+      "mode": "100755",
+      "kind": "blob",
+      "blob": "10006a2f28ace5d5b2a109126b0f5cd1dc311ae9"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/bin/source-intake-dispatch",
+      "mode": "100755",
+      "kind": "blob",
+      "blob": "a9d3208f5379aea610b48197d43ac05d9c0adade"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/bin/vault-steward",
+      "mode": "100755",
+      "kind": "blob",
+      "blob": "87b133883efec881150d426dd704723d9ef684af"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/bun.lock",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "79c08b4e98634ed38dc8a8b4fe91065c14787b00"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/package.json",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "f1de8b02572aa01c8ebe0512259ee72c4aa582cf"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/agent-router/.cli-design-template.json",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "16ec5e644a5f48bb377a7a53fa418f9f10cbb7fb"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/agent-router/README.md",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "e4337c4f02262bf9939d6d42f54ef65cb97e7f1a"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/agent-router/package.json",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "1ab965c019d42373362e1a53882fffbd0996778e"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/agent-router/src/card.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "a54805711b0b9c8f63979a30b4b284149ddee975"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/agent-router/src/cli.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "5f8366670a33b79efd4518f485dc14deecd06115"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/agent-router/src/contract.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "d937cf79f20c471445cbec49f8b6c454a2d8aba1"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/agent-router/src/declarations.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "faa2111b723c9c9335299adc02eaa86a5ab3e59a"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/agent-router/src/evidence.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "6bac13f25e5eff536405b2778b39c0f42c00ee5d"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/agent-router/src/freshness.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "7890af3cd99121680c3a3674cd3f94d300af26c0"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/agent-router/src/render.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "2321a52dd673bb1084c7a8418cd1e7302c13707e"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/agent-router/tests/contract.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "3f25900b0acba11168875134505d0d73b7deeee4"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/agent-router/tests/dry-run.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "166d5d1b2e20921658ff47014765ed68d3df3f7e"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/agent-router/tests/fixtures/harness.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "cc169aa0f928391d48ffc8231ece6d9f3629ed27"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/agent-router/tests/freshness.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "33edd7f4fb54a9619cd69e70d58ba2870b0332c7"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-check/fixtures/successor-broken/package.json",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "2cda2eab9ba6099761387936d1a44aaeb72e1586"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-check/fixtures/successor-broken/src/cli.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "34489cccceea9af75798fb6ce2faf84448b4f972"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-check/fixtures/successor-conformant/package.json",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "eb58f03dd8fc7ff6be342a09c24d81758973fb7a"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-check/fixtures/successor-conformant/src/cli.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "7630b3588fa763c672b63e75b304c5bfef902f7b"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-check/fixtures/successor-specimens/package.json",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "c27c4c0e36434d8a13633be566cf43f372511a0e"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-check/fixtures/successor-specimens/src/cli.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "b1192972fa137de94bd89170cd8346aedf162ca7"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-check/package.json",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "9a07136ad708d099a308d3f616bba6111c40bb42"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-check/src/successor/command-contract.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "5b7409290f30cdd1e8fdea1e012446451627084e"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-check/src/successor/contract.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "0bf1a98a8673e914992b58b7a23b535ac7420d21"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-check/src/successor/lifecycle-observation.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "54cc8ad7f7b688feb7e894bb451b70283cd5f9fe"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-check/src/successor/lifecycle-observation.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "e999905d415b823cdfb3d62bf7cba9943ebba0fd"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-check/src/successor/main.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "86560bda366e51908544a62b838dde8d929d2d76"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-check/src/successor/main.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "d3731656fb9fbb2a6b7c761a122ac6f998b3776c"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-check/src/successor/render.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "49636ef247642f76d650a2db65f1ff199a786ec2"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-check/src/successor/runner.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "f0d15a06cb01495346096255351499f64e1a8423"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-check/src/successor/scenario-rules.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "3b74e7ca037c1ace1fd46cf41bc68f5b468889e0"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-check/src/successor/specimen-manifest.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "da25048d643485a0210853e5fd25efd923b7ecae"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/package.json",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "e2932f4d50561e4d2ef2db22dfe20e00698c4701"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/src/branch-station-catalog.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "1e967072bee7a49f92b8956ec647cf8ff189d0b3"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/src/cli.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "19e617531111ed89b3870fd5ef8a2b1561f81152"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/src/command-contract.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "1bde68211d2e1942232c937e7831e42888ece4a7"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/src/diagnostics-custody.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "2e07ef634b4c864709538a490e05ad9dc6123924"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/src/diagnostics.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "f4ab17f853a8a4dca31b446a43deb02e6d1fa350"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/src/engine.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "2b1274edc3f1a7f4889e1b92e42989ea6e7b95b4"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/src/journal-lock.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "386df7f4fd7d9a81c8564c49dee7ab7804a2a2d1"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/src/main.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "bec3b5591ac95d1653f0aa536c48ecbce98297a0"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/src/model.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "fb6c638696d18a8f6695793415a1f8499bae0fd3"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/src/operation-deadline.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "a9629023c7122298a4c2c1953a182283226b0903"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/src/process-lifecycle.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "766f9b6980f6a2b9ba3f997b5b5b69ff01df7b0a"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/src/runtime.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "e58966004dec3bd21290eecda0841f137c643dff"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/src/station-catalogue.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "0188f1d208764205cc6fccd9c6966d089842dd9b"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/src/station-rows.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "534491e291757174472ba7f909bedeb75a0fcc3b"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/tests/c1/contract-v2.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "d957f9f2d8628a737258c7ccdeaacc597481278d"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/tests/c1/type-contract.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "0397a5e661a0e99ae5a5a63b803f8399fc615f8e"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/tests/c1/type-contract.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "959be470e1fd1c44c6d96b539de313b692308af2"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/tests/catalog/branch-station-catalogue.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "57aafb805d54bea28a75a5ab0c468b24a5bc297d"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/tests/catalog/checker-run.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "d5b2f48c7f344dfacca3c0c3330f5341f6357f31"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/tests/catalog/command-discovery.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "e8583da16e94ab52d7f8d607ab545c58851f9642"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/tests/catalog/companions.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "608e6c26b07ab9a9bffdbf2d8ac538e6b4af11a4"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/tests/catalog/companions/a.patch",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "08b8e5ceeba9366c609d82a0d36c6d70775ff68d"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/tests/catalog/companions/b.patch",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "1c1df1c87e079b80a6ad15263b4acf106d893d06"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/tests/catalog/companions/c.patch",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "09cb68f5e7ddb75700d1fed7015d07a4de70604b"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/tests/catalog/companions/index.json",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "dd3dacf3b0cdb48f4a8f2136d1f77de5e358c152"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/tests/catalog/expected-station-semantics.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "f85b9bff40f9af86f67359ff721bc82286f989e8"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/tests/catalog/station-id-type.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "dfb464eaf92cad1295d3a96c113d5d10fc3e3652"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/tests/catalog/station-id-type.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "f7dbdea00ea53314dfe979aa4cf22198f4222fe2"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/tests/catalog/station-map.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "74633c97d9c79062666c4d4f44b40c5195d3beda"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/tests/helpers/command-identity-oracle.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "92150e48894f3d49346eb742bbd043c45e2c6b29"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/tests/helpers/diagnostics-preload.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "31262adf66092c46ffef451974dd1dff079dc9d2"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/tests/helpers/harness.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "71c5190b3d13b75442928765b08aeb054c9956a2"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/tests/helpers/process-lifecycle-preload.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "e7155348a31fa3ae2529ad094ceaadcf8edbf58c"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/tests/integration/diagnostics-custody.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "1dd41cc534635fb25f12075ed826354bc54e5e01"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/tests/integration/journal-lock.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "bdd03115f179dfb35154599ab79767452f4fb6ac"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/tests/integration/process-lifecycle.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "bff3282c25ea579db24d10caeab3be91a0d847df"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/tests/integration/scenarios.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "4a6e16ae0dbd709c44083737e7d3fc189333a8b1"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/tests/unit/checker-run.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "e6c2ec82932e24848a09dc29a3a558b6e4ab01cd"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/tests/unit/contract.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "93fda51c32c30d24c8701af90ebdb9fa529c4473"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/tests/unit/diagnostics-emergency.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "581a9b80db29251029a94489a6f10d49a8133a55"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/tests/unit/diagnostics.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "9882bb223e67c9b2b6974935c890ef2278045741"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/tests/unit/engine.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "4e408f3837a87cfb19a0d57fc4627092504ecd7f"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/tests/unit/process-lifecycle.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "860626b8026e1d0cc16c49017ac010e0def906f9"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/tsconfig.json",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "05450e20a2cf71fd37a593137494dba0ffa62d47"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/closeout-packet/.cli-design-template.json",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "6daf333e5e671f9f423a1d186f84ed2360af7572"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/closeout-packet/README.md",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "4fcbd97fc132cc6418aef2a38aa9830db46029fc"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/closeout-packet/package.json",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "d53152c49b75155a425f1ed8f3a8823f4a8a4eee"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/closeout-packet/src/cli.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "cbc7f9dc5f492a2aaa4b0411803cb12dffda17b1"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/closeout-packet/src/envelope.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "6c49dcdf86420d3fb638b475f06936cfbc391226"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/closeout-packet/src/packet.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "dc1eba5f32d07ce84feb3b2652168663dfb39ae3"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/closeout-packet/tests/check.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "99d40525d0b7d2373b7f8ab9b23896c29f108744"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/closeout-packet/tests/cli.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "b4f2f1e121bf859989cd54608983f5a7d981f5a2"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/closeout-packet/tests/fixtures/checker-adapter.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "eb655f32489f58f9b223a2f33505261e79fb2271"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/closeout-packet/tests/fixtures/expected-guidance.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "ebaa2bcf5c14e96f29082060d3ef9a7ddc2ef6b1"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/closeout-packet/tests/fixtures/fault-preload.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "3e04c88608287ccfd9504c5679c2d04c7ffa9345"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/closeout-packet/tests/fixtures/faults.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "faef12e2b49c3d32b8be6b3bab97bc3a139150d2"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/closeout-packet/tests/fixtures/packets.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "a25e919037092b99c76974e7ac5fdc6c802bd5a8"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/closeout-packet/tests/fixtures/public-bin.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "062c0ba508193723e48b42fabb79e01ba21dd280"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-classify/README.md",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "fad7ce8fa30152f0ac29e3d3600f67d7bae65f4c"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-classify/package.json",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "f9df45103d7499d4fadb342718c4dd377048e128"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-classify/src/assets.d.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "303f68e9fe2807716c5debe3eb7d79fb095d4f59"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-classify/src/classification.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "012cfada728b8b082a8b308e508f4505cb7e18eb"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-classify/src/contract.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "916b96deb02a01b36d5f1ed267dabd8aa83976a8"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-classify/src/input.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "ada85499db130242dc4b6551e1c2156690df4f60"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-classify/src/lane-instructions.md",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "faf893f986c57cbcb274cd14d0ec23806c03e546"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-classify/src/lane.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "b8594ca1a69f5133b63255ab37ced29bbdec6ea6"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-classify/src/main.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "b79230c29697efe2975a34c58f635ddb5a5e1b32"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-classify/src/preflight.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "97dc252956fdcec70f6d4648f1f6d527fc5f4f13"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-classify/src/run.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "f485e6ac868f29cb37f41f79b3202868d1298124"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-classify/tests/auth-link.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "3f9a53e4ae020c25cb6c7f266394aa19b70d5de0"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-classify/tests/contract.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "0e7eabf14593e04ebfc5ee6160ef490906beb7d8"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-classify/tests/enforcement.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "54af508f8167cb10652416e8b8e0498bf7367e57"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-classify/tests/fixtures/fake-codex.pl",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "51f72e74f45458ce27e05d137c71c9e421e96141"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-classify/tests/fixtures/harness.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "ba8276c1f623742373d92a72d15485003b6f4535"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-classify/tests/fixtures/lane-adapter.sh",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "e95eb68030e243f36e07cc7fb7b3788ae39d5ee4"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-classify/tests/fixtures/spawn-recorder.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "8615f3a1de291215f918f455f77958dbeb575fcf"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-classify/tests/lane.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "33c1d1f7f0ad9bd81909744a0e524c55c12ae19c"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-classify/tests/preflight.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "886a6438f1e3e82bbd42b33cfe9be7e3380dc1d5"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-dispatch/README.md",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "4b239e71a77773e8a31973b6e33e8510afac5bc4"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-dispatch/package.json",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "b6f7f601d90f7b946b9d4a59f99b9646752a5045"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-dispatch/src/choose.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "557eea7e1473d6889e17d25442023447baceb973"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-dispatch/src/contract.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "4a1b616929330cc8caf1e67451bad747026933ec"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-dispatch/src/gate.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "7a651459d64973ff6b6713e6b79aa3bc69e434eb"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-dispatch/src/main.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "ee35ffb34a44d72b65f86266fe9135d4dad3c4c2"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-dispatch/tests/choose.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "a42110fea9b9ebbd69d5fc2e1333448ba97dd8a1"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-dispatch/tests/contract.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "0aedcd0af452ee0488cee9ceb40e11d8fb0c1697"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-dispatch/tests/fixtures/chooser-redirect.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "9641b2411a1cd19756714b72ecffb746ee17a237"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-dispatch/tests/fixtures/descriptor-limit.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "fd4221a5091d0fbdcd9d5e1c9b590afc336f9072"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-dispatch/tests/fixtures/fake-osascript.sh",
+      "mode": "100755",
+      "kind": "blob",
+      "blob": "e1a884b32b5d1c4972252c03f21e676a3936b110"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-dispatch/tests/fixtures/harness.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "8f61b346ea98f433a4b61f159bdd6f2bde03dfc1"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-dispatch/tests/fixtures/pin-pause.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "33b46c673757fd8f88cdba28de14d785e972a22b"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-dispatch/tests/fixtures/stdin-adapter.sh",
+      "mode": "100755",
+      "kind": "blob",
+      "blob": "add00d8a269895ecfdda3580d3dd99810c165278"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-dispatch/tests/fixtures/stdout-hold.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "0b99a2678e26aac3403807e0ad524e1388b84c75"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-dispatch/tests/oracle.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "0270ceed7c17fbb24f0878f0ff877f249a4534fd"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-dispatch/tests/projection.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "02cdb4e29b7a056b7a2d08d04e77a5c280d1c25b"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-dispatch/tests/receipt-race.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "68ce4e612f00cc8812bb794a940638dfc56c2fb0"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/.cli-design-template.json",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "d363b9c5a11122b746bb6634e119689d6241bc0b"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/package.json",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "2635c9852e1fca1e955ecf783ee00214e8651a1d"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/src/branch-station-catalog.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "76f3015b8160ad668af0e23eae9add591965617f"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/src/cli.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "301d9740f5efe57a19f36f893361431efb671baf"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/src/command-contract.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "bbdd480b1115bd4837f424b4040b288f39719583"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/src/diagnostics-custody.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "5adede1ba43b5b38a462e2654a8a43f04b68a932"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/src/diagnostics.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "d030191f2b1df7baabcc25d2693506c6557b9d3b"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/src/engine.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "0bbecbffc240c64e171a1c259709545f2437419b"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/src/faults.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "66aefa0e6026237833f66f79bdfada4b622d3130"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/src/guard.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "939dc37f1e843032c0f6c5d1500bbe104b6fc4d5"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/src/integration-lock.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "31e08f628532271472415ebd6731c6423165f7ab"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/src/main.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "3cc645bc4e936d59ad88d10243c5a4e9e0ab1686"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/src/model.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "993d58bf7c54e49ea43d8d24790affddca79858f"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/src/process-lifecycle.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "a27fd644aaa8f869ce5d2be0242b2cc201629afc"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/src/runtime.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "651350f5fbbc39a26dde6975eb76c490b837e5ae"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/src/station-catalogue.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "18589cc246bc84f9963ed813fdfa9caf079e8554"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/src/station-rows.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "dd46be9e890593477bb70eb7046ac2525c5548a9"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/tests/catalog/checker-run.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "1b934b54a496c89a32f3746e8561e24edc33700f"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/tests/catalog/checker.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "00d4192dff9dc515381e8340354b61c7f2969cd4"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/tests/catalog/command-discovery.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "77dc885b8eed95423960a8ec775010b912f2638e"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/tests/catalog/expected-station-semantics.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "aecfb01609189343aef1691e1985ffe6ac2ecf91"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/tests/catalog/station-map.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "1c90680e4f0b71f4f07601dbdc0c8211f0c11106"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/tests/guard/bypass.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "9cb83d6091787df69cb5f5d669194962f7040619"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/tests/guard/concurrency.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "9af8595ea01003d1245d0a6a2cb6e01d9bce7e8a"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/tests/guard/hook-text.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "87395a17c9242ca5f747e7a6fa7df8b635f818bd"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/tests/guard/hook-text.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "7e85fd2e0123ae6984a1c6ad3a952cea96dff56f"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/tests/guard/hookspath.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "152c0e7caea8742c33ca730c6908175f554f2c74"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/tests/guard/lock-reclaim.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "982c55db0998806a383f6f26063c210137c2b3e0"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/tests/guard/sprawl.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "d71be29f86c04c12ea31eee28d739f288ef2f6b1"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/tests/guard/steward-guard.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "e3ca212d2847e2667dfd62bbb5076b400f1ebc6e"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/tests/helpers/harness.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "21b91e3c9e889377af7c229aefdb95afa0a51177"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/tests/helpers/steward.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "886f73b4aa5e39d9735db5a6877e36d4dc1feaf3"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/tests/integration/checker-seam.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "1d8b2f9581c76b390e0d49e78ec5e5a7c174b814"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/tests/integration/concurrency.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "1a88271a617be02f5e95652448284c2623708e3e"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/tests/integration/fast-forward-recovery.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "5688b69651d4d1ca85cfccc9655e085f327c366d"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/tests/integration/overlap.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "cb54760690f297b25778c7ece1b85f5ce85485aa"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/tests/integration/process-lifecycle.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "11fdf3eec3d036f2dccfeecacf4ca342166c85be"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/tests/integration/steward-journeys.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "61abd879493e471b801de2508b2027589a79364b"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/tests/unit/contract.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "69846e223f406fd928b92e574ae577776d539a86"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/tests/unit/diagnostics.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "c89f22a28e4b3ded56bd1fcb1cf8c01f458b7efb"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/tests/unit/guard-classification.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "9e06f8e2b3eadeb8cd3e312dbf490391591ae031"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/tests/unit/integration-lock.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "915b16573507c20a3992560f323c7e9c5611d813"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/tests/unit/policy.test.ts",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "7796c13ca51e44e1e48c4270b1e924a1309a5983"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/runtime/agent-router.js",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "86ebc9bb88ac5c74ea96b175d215f39dd3fd9d19"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/runtime/cli-design-check.js",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "4a60ccbd5d4ccf3409fa53194d862afdc07883d1"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/runtime/closeout-packet.js",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "a0d79330e63b8da44cd54f1c3e806d91bb55bc89"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/runtime/source-intake-classify.js",
+      "mode": "100755",
+      "kind": "blob",
+      "blob": "c639e5d1466f8e2b3184092df34962c895569bd7"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/runtime/source-intake-dispatch.js",
+      "mode": "100755",
+      "kind": "blob",
+      "blob": "bdb48d7928af5db805a525ed942a53a1c99cbb0b"
+    },
+    {
+      "path": "config/agents/plugins/my-second-brain-playground/runtime/vault-steward.js",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "33104895336a98982211a45aa87e5816f3d742f0"
+    }
+  ],
+  "wrapperRoute": {
+    "source": {
+      "repository": "dotfiles",
+      "commit": "29bf4bb0f307f96d396aa087472a4dbed849c920",
+      "path": "config/agents/plugins/my-second-brain-playground/bin/cli-design-check",
+      "blob": "7bdc6dd22b4097076801188979e5a686fc124e48",
+      "line": 4,
+      "endLine": 5
+    },
+    "argv": [
+      "bun",
+      "${plugin_root}/runtime/cli-design-check.js",
+      "${forwarded_argv...}"
+    ],
+    "placeholders": {
+      "plugin_root": "Physical parent of the retained launcher directory, resolved by the shell wrapper.",
+      "forwarded_argv": "Original argument vector forwarded unchanged with \"$@\"."
+    }
+  },
+  "scripts": {
+    "source": {
+      "repository": "dotfiles",
+      "commit": "29bf4bb0f307f96d396aa087472a4dbed849c920",
+      "path": "config/agents/plugins/my-second-brain-playground/package.json",
+      "blob": "f1de8b02572aa01c8ebe0512259ee72c4aa582cf",
+      "line": 9,
+      "endLine": 23
+    },
+    "checkerBuild": "bun build packages/cli-design-check/src/successor/main.ts --target=bun --outfile=runtime/cli-design-check.js",
+    "checkerSourceEntry": "packages/cli-design-check/src/successor/main.ts",
+    "testRegistration": "Plugin test script includes checker main/lifecycle tests and all six consumer packages. Preserve its exact blob and explicit entries.",
+    "runtimeRootSource": {
+      "path": ".fallowrc.json",
+      "blob": "fa8ea3a356da03aea15e7e9746ae2256a94b2d0b"
+    }
+  },
+  "processConsumers": [
+    {
+      "id": "agent-router",
+      "proofStatus": "not-run",
+      "driver": {
+        "repository": "dotfiles",
+        "commit": "29bf4bb0f307f96d396aa087472a4dbed849c920",
+        "path": "config/agents/plugins/my-second-brain-playground/packages/agent-router/tests/contract.test.ts",
+        "blob": "3f25900b0acba11168875134505d0d73b7deeee4",
+        "line": 214,
+        "endLine": 257
+      },
+      "argvTemplate": [
+        "${CHECKER}",
+        "--cwd",
+        "${checked.root}",
+        "--command",
+        "${process.execPath} ${CLI}",
+        "--success-args",
+        "routes",
+        "--missing-args",
+        "run hpr-f5n.3 --dry-run --routes-file ${absent}",
+        "--internal-args",
+        "run hpr-f5n.3 --dry-run --routes-file ${unreadable}",
+        "--schema-args",
+        "run hpr-f5n.3 --dry-run --routes-file ${invalid}",
+        "--transient-args",
+        "routes --probe-timeout-ms 50",
+        "--effect-args",
+        "run hpr-f5n.3",
+        "--malformed-args",
+        "run NOT_A_TASK --dry-run",
+        "--secret-args",
+        "routes",
+        "--secret-marker",
+        "AGENT_ROUTER_FIXTURE_SECRET_MARKER",
+        "--timeout-ms",
+        "30000",
+        "--json"
+      ],
+      "placeholderSourceRefs": [
+        {
+          "names": ["CHECKER"],
+          "source": {
+            "repository": "dotfiles",
+            "commit": "29bf4bb0f307f96d396aa087472a4dbed849c920",
+            "path": "config/agents/plugins/my-second-brain-playground/packages/agent-router/tests/contract.test.ts",
+            "blob": "3f25900b0acba11168875134505d0d73b7deeee4",
+            "line": 9
+          }
+        },
+        {
+          "names": ["checked.root", "absent", "unreadable", "invalid"],
+          "source": {
+            "repository": "dotfiles",
+            "commit": "29bf4bb0f307f96d396aa087472a4dbed849c920",
+            "path": "config/agents/plugins/my-second-brain-playground/packages/agent-router/tests/contract.test.ts",
+            "blob": "3f25900b0acba11168875134505d0d73b7deeee4",
+            "line": 215,
+            "endLine": 238
+          },
+          "meaning": "createFixture root; absent.json within root; a-directory; malformed invalid-routes.json."
+        },
+        {
+          "names": ["CLI", "process.execPath"],
+          "source": {
+            "repository": "dotfiles",
+            "commit": "29bf4bb0f307f96d396aa087472a4dbed849c920",
+            "path": "config/agents/plugins/my-second-brain-playground/packages/agent-router/tests/fixtures/harness.ts",
+            "blob": "cc169aa0f928391d48ffc8231ece6d9f3629ed27",
+            "line": 12,
+            "endLine": 13
+          },
+          "meaning": "Retained source CLI path and the actual executing Bun binary."
+        }
+      ],
+      "expected": {
+        "exit": 0,
+        "passedCount": 18,
+        "failedCount": 0,
+        "targetUnchanged": true,
+        "changedPaths": [],
+        "skippedRows": ["large-envelope"]
+      },
+      "processObservationRequired": [
+        "exact resolved argv",
+        "source revisions",
+        "stdout",
+        "stderr",
+        "real exit",
+        "before/after state",
+        "skipped row reasons"
+      ]
+    },
+    {
+      "id": "vault-steward",
+      "proofStatus": "not-run",
+      "driver": {
+        "repository": "dotfiles",
+        "commit": "29bf4bb0f307f96d396aa087472a4dbed849c920",
+        "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/tests/catalog/checker-run.ts",
+        "blob": "1b934b54a496c89a32f3746e8561e24edc33700f",
+        "line": 28,
+        "endLine": 85
+      },
+      "argvTemplate": [
+        "${CHECKER}",
+        "--cwd",
+        "${f.vault}",
+        "--command",
+        "${process.execPath} ${MAIN}",
+        "--success-args",
+        "inspect --worktree ${candidate}",
+        "--missing-args",
+        "finish --preview --worktree ${absentCandidate} --message x",
+        "--internal-args",
+        "finish --preview --worktree ${orphan} --message x",
+        "--schema-args",
+        "finish --preview --worktree ${corrupt} --message x",
+        "--transient-args",
+        "finish --apply --preview-id ${lockedPreview} --worktree ${locked}",
+        "--malformed-args",
+        "finish --preview --worktree relative/path --message x",
+        "--effect-args",
+        "finish --apply --preview-id ${consumedPreview} --worktree ${consumed}",
+        "--timeout-ms",
+        "60000",
+        "--json"
+      ],
+      "placeholderSourceRefs": [
+        {
+          "names": ["CHECKER", "MAIN"],
+          "source": {
+            "repository": "dotfiles",
+            "commit": "29bf4bb0f307f96d396aa087472a4dbed849c920",
+            "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/tests/catalog/checker-run.ts",
+            "blob": "1b934b54a496c89a32f3746e8561e24edc33700f",
+            "line": 12,
+            "endLine": 13
+          }
+        },
+        {
+          "names": [
+            "f.vault",
+            "candidate",
+            "absentCandidate",
+            "orphan",
+            "corrupt",
+            "lockedPreview",
+            "locked",
+            "consumedPreview",
+            "consumed",
+            "process.execPath"
+          ],
+          "source": {
+            "repository": "dotfiles",
+            "commit": "29bf4bb0f307f96d396aa087472a4dbed849c920",
+            "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/tests/catalog/checker-run.ts",
+            "blob": "1b934b54a496c89a32f3746e8561e24edc33700f",
+            "line": 28,
+            "endLine": 72
+          },
+          "meaning": "Frozen driver creates independent vault/candidate state, corrupts manifest, moves a vault, holds integration lock and consumes a preview. absentCandidate is join(f.root, \"absent-candidate\"); process.execPath is executing Bun."
+        }
+      ],
+      "expected": {
+        "exit": 0,
+        "skippedRows": {
+          "secret-redaction": "No public secret-bearing input; sink unit tests own redaction proof.",
+          "large-envelope": "No public path emits a large envelope by design."
+        },
+        "expectedReportSource": {
+          "repository": "dotfiles",
+          "commit": "29bf4bb0f307f96d396aa087472a4dbed849c920",
+          "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/tests/catalog/checker.test.ts",
+          "blob": "00d4192dff9dc515381e8340354b61c7f2969cd4",
+          "line": 1
+        }
+      },
+      "processObservationRequired": [
+        "exact resolved argv",
+        "source revisions",
+        "stdout",
+        "stderr",
+        "real exit",
+        "before/after state",
+        "skipped row reasons"
+      ]
+    },
+    {
+      "id": "source-intake-classify",
+      "proofStatus": "not-run",
+      "driver": {
+        "repository": "dotfiles",
+        "commit": "29bf4bb0f307f96d396aa087472a4dbed849c920",
+        "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-classify/tests/contract.test.ts",
+        "blob": "0e7eabf14593e04ebfc5ee6160ef490906beb7d8",
+        "line": 271,
+        "endLine": 306
+      },
+      "argvTemplate": [
+        "${CHECKER}",
+        "--cwd",
+        "${checkerCwd}",
+        "--command",
+        "/bin/sh ${LANE_ADAPTER} ${process.execPath} ${RUNTIME}",
+        "--success-args",
+        "stdin=${validPath} classify",
+        "--missing-args",
+        "lane=/var/empty stdin=${validPath} classify",
+        "--internal-args",
+        "stdin=${directory} classify",
+        "--schema-args",
+        "stdin=${invalidPath} classify",
+        "--transient-args",
+        "stdin-busy=${validPath} classify",
+        "--effect-args",
+        "lane=${fixture.openFakeRoot}/bin stdin=${validPath} classify",
+        "--malformed-args",
+        "stdin=${malformedPath} classify",
+        "--secret-args",
+        "stdin=${validPath} classify",
+        "--secret-marker",
+        "${SENTINEL}",
+        "--timeout-ms",
+        "60000",
+        "--json"
+      ],
+      "placeholderSourceRefs": [
+        {
+          "names": [
+            "CHECKER",
+            "RUNTIME",
+            "LANE_ADAPTER",
+            "SENTINEL",
+            "fixture.root",
+            "fixture.openFakeRoot",
+            "process.execPath"
+          ],
+          "source": {
+            "repository": "dotfiles",
+            "commit": "29bf4bb0f307f96d396aa087472a4dbed849c920",
+            "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-classify/tests/fixtures/harness.ts",
+            "blob": "ba8276c1f623742373d92a72d15485003b6f4535",
+            "line": 8,
+            "endLine": 31
+          },
+          "meaning": "Retained public checker and packaged target runtime; fixture-owned shell adapter, synthetic marker and temporary fixture paths; actual executing Bun."
+        },
+        {
+          "names": [
+            "validPath",
+            "invalidPath",
+            "directory",
+            "malformedPath",
+            "mismatchedPath",
+            "missingPath",
+            "checkerCwd"
+          ],
+          "source": {
+            "repository": "dotfiles",
+            "commit": "29bf4bb0f307f96d396aa087472a4dbed849c920",
+            "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-classify/tests/contract.test.ts",
+            "blob": "0e7eabf14593e04ebfc5ee6160ef490906beb7d8",
+            "line": 39,
+            "endLine": 49
+          },
+          "invocationSource": {
+            "repository": "dotfiles",
+            "commit": "29bf4bb0f307f96d396aa087472a4dbed849c920",
+            "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-classify/tests/contract.test.ts",
+            "blob": "0e7eabf14593e04ebfc5ee6160ef490906beb7d8",
+            "line": 271,
+            "endLine": 294
+          },
+          "meaning": "Only names present in argv apply. Setup plus invocation constructs exact fixture inputs; classify uses a separate empty watched directory while its lane writes fixture state."
+        }
+      ],
+      "expected": {
+        "exit": 0,
+        "passedCount": 18,
+        "failedCount": 0,
+        "targetUnchanged": true,
+        "changedPaths": [],
+        "skippedRows": ["large-envelope"]
+      },
+      "processObservationRequired": [
+        "exact resolved argv",
+        "source revisions",
+        "stdout",
+        "stderr",
+        "real exit",
+        "before/after state",
+        "skipped row reasons"
+      ]
+    },
+    {
+      "id": "source-intake-dispatch",
+      "proofStatus": "not-run",
+      "driver": {
+        "repository": "dotfiles",
+        "commit": "29bf4bb0f307f96d396aa087472a4dbed849c920",
+        "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-dispatch/tests/contract.test.ts",
+        "blob": "0aedcd0af452ee0488cee9ceb40e11d8fb0c1697",
+        "line": 274,
+        "endLine": 307
+      },
+      "argvTemplate": [
+        "${CHECKER}",
+        "--cwd",
+        "${fixture.root}",
+        "--command",
+        "/bin/sh ${STDIN_ADAPTER} ${process.execPath} ${RUNTIME}",
+        "--success-args",
+        "stdin=${validPath} project",
+        "--missing-args",
+        "stdin=${missingPath} project",
+        "--internal-args",
+        "stdin=${directory} project",
+        "--schema-args",
+        "stdin=${invalidPath} project",
+        "--transient-args",
+        "stdin-busy=${validPath} project",
+        "--effect-args",
+        "stdin=${mismatchedPath} project",
+        "--malformed-args",
+        "stdin=${malformedPath} project",
+        "--secret-args",
+        "stdin=${validPath} project",
+        "--secret-marker",
+        "${SENTINEL}",
+        "--timeout-ms",
+        "30000",
+        "--json"
+      ],
+      "placeholderSourceRefs": [
+        {
+          "names": [
+            "CHECKER",
+            "RUNTIME",
+            "STDIN_ADAPTER",
+            "SENTINEL",
+            "fixture.root",
+            "fixture.openFakeRoot",
+            "process.execPath"
+          ],
+          "source": {
+            "repository": "dotfiles",
+            "commit": "29bf4bb0f307f96d396aa087472a4dbed849c920",
+            "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-dispatch/tests/fixtures/harness.ts",
+            "blob": "8f61b346ea98f433a4b61f159bdd6f2bde03dfc1",
+            "line": 8,
+            "endLine": 31
+          },
+          "meaning": "Retained public checker and packaged target runtime; fixture-owned shell adapter, synthetic marker and temporary fixture paths; actual executing Bun."
+        },
+        {
+          "names": [
+            "validPath",
+            "invalidPath",
+            "directory",
+            "malformedPath",
+            "mismatchedPath",
+            "missingPath",
+            "checkerCwd"
+          ],
+          "source": {
+            "repository": "dotfiles",
+            "commit": "29bf4bb0f307f96d396aa087472a4dbed849c920",
+            "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-dispatch/tests/contract.test.ts",
+            "blob": "0aedcd0af452ee0488cee9ceb40e11d8fb0c1697",
+            "line": 37,
+            "endLine": 49
+          },
+          "invocationSource": {
+            "repository": "dotfiles",
+            "commit": "29bf4bb0f307f96d396aa087472a4dbed849c920",
+            "path": "config/agents/plugins/my-second-brain-playground/packages/source-intake-dispatch/tests/contract.test.ts",
+            "blob": "0aedcd0af452ee0488cee9ceb40e11d8fb0c1697",
+            "line": 274,
+            "endLine": 294
+          },
+          "meaning": "Only names present in argv apply. Setup plus invocation constructs exact fixture inputs; classify uses a separate empty watched directory while its lane writes fixture state."
+        }
+      ],
+      "expected": {
+        "exit": 0,
+        "passedCount": 18,
+        "failedCount": 0,
+        "targetUnchanged": true,
+        "changedPaths": [],
+        "skippedRows": ["large-envelope"]
+      },
+      "processObservationRequired": [
+        "exact resolved argv",
+        "source revisions",
+        "stdout",
+        "stderr",
+        "real exit",
+        "before/after state",
+        "skipped row reasons"
+      ]
+    },
+    {
+      "id": "cli-design-exemplar",
+      "proofStatus": "not-run",
+      "driver": {
+        "repository": "dotfiles",
+        "commit": "29bf4bb0f307f96d396aa087472a4dbed849c920",
+        "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/tests/catalog/checker-run.ts",
+        "blob": "d5b2f48c7f344dfacca3c0c3330f5341f6357f31",
+        "line": 97,
+        "endLine": 153
+      },
+      "argvTemplate": [
+        "bun",
+        "run",
+        "${checkerMain}",
+        "--cwd",
+        "${cwdDir}",
+        "--command",
+        "bun ${adapter}",
+        "--success-args",
+        "status",
+        "--missing-args",
+        "inspect --state state/missing.json",
+        "--internal-args",
+        "status --checker-fault=throw-internal",
+        "--schema-args",
+        "inspect --state state/schema-invalid.json --checker-state=schema-invalid",
+        "--transient-args",
+        "apply --preview-id preview-healthy-revision-4 --authorize fixture-authority --checker-fault=one-transient-lock",
+        "--retain-streams-dir",
+        "${runRoot}/retained-streams",
+        "--effect-args",
+        "apply --automation",
+        "--secret-args",
+        "inspect --include-diagnostics",
+        "--secret-marker",
+        "CDS_QI_SECRET_MARKER_REPAIR_LAB",
+        "--malformed-args",
+        "inspect --state state/malformed.json",
+        "--large-args",
+        "inspect --state state/large.json",
+        "--json"
+      ],
+      "placeholderSourceRefs": [
+        {
+          "names": ["checkerMain", "runRoot", "cwdDir", "adapter"],
+          "source": {
+            "repository": "dotfiles",
+            "commit": "29bf4bb0f307f96d396aa087472a4dbed849c920",
+            "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/tests/catalog/checker-run.ts",
+            "blob": "d5b2f48c7f344dfacca3c0c3330f5341f6357f31",
+            "line": 306,
+            "endLine": 324
+          },
+          "meaning": "Environment REPAIR_LAB_CHECKER_MAIN and REPAIR_LAB_RUN_ROOT; driver creates checker-cwd and its disposable adapter."
+        },
+        {
+          "names": ["checkerMain"],
+          "source": {
+            "repository": "dotfiles",
+            "commit": "29bf4bb0f307f96d396aa087472a4dbed849c920",
+            "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/tests/unit/checker-run.test.ts",
+            "blob": "e6c2ec82932e24848a09dc29a3a558b6e4ab01cd",
+            "line": 141,
+            "endLine": 142
+          },
+          "meaning": "Actual retained cli-design-check/src/successor/main.ts; fake-checker controls remain separately owned."
+        },
+        {
+          "names": ["SECRET_MARKER", "MAIN"],
+          "source": {
+            "repository": "dotfiles",
+            "commit": "29bf4bb0f307f96d396aa087472a4dbed849c920",
+            "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/tests/helpers/harness.ts",
+            "blob": "71c5190b3d13b75442928765b08aeb054c9956a2",
+            "line": 10,
+            "endLine": 11
+          }
+        }
+      ],
+      "expected": {
+        "driverExit": 0,
+        "driverStdout": "checker-run: ok\n",
+        "outerTimeoutMilliseconds": 180000,
+        "retained2RawStreams": "required by existing invocation; do not apply the new Contract 3 retention prohibition to retained 2.0",
+        "judgementSource": {
+          "repository": "dotfiles",
+          "commit": "29bf4bb0f307f96d396aa087472a4dbed849c920",
+          "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/tests/catalog/checker-run.ts",
+          "blob": "d5b2f48c7f344dfacca3c0c3330f5341f6357f31",
+          "line": 155,
+          "endLine": 255
+        }
+      },
+      "processObservationRequired": [
+        "exact resolved argv",
+        "source revisions",
+        "stdout",
+        "stderr",
+        "real exit",
+        "before/after state",
+        "skipped row reasons"
+      ]
+    }
+  ],
+  "additionalConsumers": [
+    {
+      "id": "closeout-packet-validator",
+      "source": {
+        "repository": "dotfiles",
+        "commit": "29bf4bb0f307f96d396aa087472a4dbed849c920",
+        "path": "config/agents/plugins/my-second-brain-playground/packages/closeout-packet/tests/cli.test.ts",
+        "blob": "b4f2f1e121bf859989cd54608983f5a7d981f5a2",
+        "line": 7
+      },
+      "imports": ["causeRuleFor", "CauseCode", "validateTargetEnvelope"],
+      "callSites": [
+        {
+          "repository": "dotfiles",
+          "commit": "29bf4bb0f307f96d396aa087472a4dbed849c920",
+          "path": "config/agents/plugins/my-second-brain-playground/packages/closeout-packet/tests/cli.test.ts",
+          "blob": "b4f2f1e121bf859989cd54608983f5a7d981f5a2",
+          "line": 37,
+          "endLine": 42
+        },
+        {
+          "repository": "dotfiles",
+          "commit": "29bf4bb0f307f96d396aa087472a4dbed849c920",
+          "path": "config/agents/plugins/my-second-brain-playground/packages/closeout-packet/tests/cli.test.ts",
+          "blob": "b4f2f1e121bf859989cd54608983f5a7d981f5a2",
+          "line": 126,
+          "endLine": 146
+        }
+      ],
+      "proofStatus": "not-run"
+    },
+    {
+      "id": "exemplar-lifecycle-oracle",
+      "source": {
+        "repository": "dotfiles",
+        "commit": "29bf4bb0f307f96d396aa087472a4dbed849c920",
+        "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/tests/integration/process-lifecycle.test.ts",
+        "blob": "bff3282c25ea579db24d10caeab3be91a0d847df",
+        "line": 5
+      },
+      "imports": ["analyzeLifecycleObservation", "LifecycleObservation"],
+      "copyConsumer": {
+        "repository": "dotfiles",
+        "commit": "29bf4bb0f307f96d396aa087472a4dbed849c920",
+        "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-exemplar/tests/catalog/companions.test.ts",
+        "blob": "608e6c26b07ab9a9bffdbf2d8ac538e6b4af11a4",
+        "line": 17
+      },
+      "copyAndIdentityChecks": [103, 266, 290, 302],
+      "proofStatus": "not-run"
+    },
+    {
+      "id": "vault-steward-driver-test",
+      "source": {
+        "repository": "dotfiles",
+        "commit": "29bf4bb0f307f96d396aa087472a4dbed849c920",
+        "path": "config/agents/plugins/my-second-brain-playground/packages/vault-steward/tests/catalog/checker.test.ts",
+        "blob": "00d4192dff9dc515381e8340354b61c7f2969cd4",
+        "line": 1
+      },
+      "proofStatus": "not-run"
+    },
+    {
+      "id": "checker-self-validation",
+      "source": {
+        "repository": "dotfiles",
+        "commit": "29bf4bb0f307f96d396aa087472a4dbed849c920",
+        "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-check/src/successor/main.test.ts",
+        "blob": "86560bda366e51908544a62b838dde8d929d2d76",
+        "line": 5
+      },
+      "proofStatus": "not-run"
+    }
+  ],
+  "immutableNegatives": {
+    "ownerTree": "30a1c69bae5702d395a95623fc8ea74baea0d5b3",
+    "expectedFixtureDirectories": [
+      "successor-conformant",
+      "successor-broken",
+      "successor-specimens"
+    ],
+    "independentManifest": {
+      "repository": "dotfiles",
+      "commit": "29bf4bb0f307f96d396aa087472a4dbed849c920",
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-check/src/successor/specimen-manifest.ts",
+      "blob": "da25048d643485a0210853e5fd25efd923b7ecae",
+      "line": 1,
+      "endLine": 151
+    },
+    "expectedFormatCaseCount": 10,
+    "expectedSemanticCaseCount": 26,
+    "expectedSemanticMutationCount": 27,
+    "expectedProcessExits": [1, 4, 75],
+    "formatCases": [
+      "format-valid-v2",
+      "format-broken-v2",
+      "format-v1-short",
+      "format-v1-full",
+      "format-v1-later",
+      "format-v0",
+      "format-missing",
+      "format-malformed",
+      "format-unrecognized",
+      "format-newer"
+    ],
+    "semanticMutations": [
+      "stdout-prose",
+      "machine-stderr",
+      "field-missing",
+      "field-undeclared",
+      "field-invalid",
+      "json-depth",
+      "available-paths",
+      "command-undeclared",
+      "cause-correlation",
+      "exit-mismatch",
+      "both-guidance",
+      "neither-guidance",
+      "wrong-guidance",
+      "blank-next-action",
+      "blank-repair-action",
+      "success-repair-action",
+      "invalid-handoff",
+      "retry-delay-missing",
+      "nonretry-delay",
+      "unresolved-retryable",
+      "failure-data",
+      "effects-invalid",
+      "effect-state",
+      "inspect-effects",
+      "success-remains",
+      "attempted-effect",
+      "diagnostics-invalid"
+    ],
+    "matrixDriver": {
+      "repository": "dotfiles",
+      "commit": "29bf4bb0f307f96d396aa087472a4dbed849c920",
+      "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-check/src/successor/main.test.ts",
+      "blob": "86560bda366e51908544a62b838dde8d929d2d76",
+      "line": 85,
+      "endLine": 133
+    },
+    "matrixArgvTemplate": [
+      "${source_or_bundle_entry...}",
+      "--cwd",
+      "${fixturesRoot}/${fixture}",
+      "--command",
+      "${targetCommand}",
+      "--success-args",
+      "success",
+      "--missing-args",
+      "missing",
+      "--internal-args",
+      "internal",
+      "--schema-args",
+      "schema",
+      "--transient-args",
+      "transient",
+      "${optional_retention_pair...}",
+      "${optional_json_flag...}"
+    ],
+    "placeholderDefinitions": {
+      "source_or_bundle_entry": ["bun run ${sourceEntry}", "${publicLauncher}"],
+      "targetCommand": [
+        "bun run src/cli.ts",
+        "env CLI_DESIGN_SUCCESSOR_MUTATION=${mutation} bun run src/cli.ts"
+      ],
+      "optional_retention_pair": [
+        "--retain-streams-dir",
+        "${retainStreamsDirectory}"
+      ],
+      "optional_json_flag": ["--json"],
+      "sourceRefs": [
+        {
+          "repository": "dotfiles",
+          "commit": "29bf4bb0f307f96d396aa087472a4dbed849c920",
+          "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-check/src/successor/main.test.ts",
+          "blob": "86560bda366e51908544a62b838dde8d929d2d76",
+          "line": 54,
+          "endLine": 58
+        },
+        {
+          "repository": "dotfiles",
+          "commit": "29bf4bb0f307f96d396aa087472a4dbed849c920",
+          "path": "config/agents/plugins/my-second-brain-playground/packages/cli-design-check/src/successor/main.test.ts",
+          "blob": "86560bda366e51908544a62b838dde8d929d2d76",
+          "line": 85,
+          "endLine": 133
+        }
+      ]
+    },
+    "additionalControls": [
+      "human discovery empty/json/stderr",
+      "private retention directory, unsafe destination, post-target failure and unconfirmed cleanup custody",
+      "source versus packaged launcher",
+      "closeout handoff extra-key/resource-missing-kind/resource-blank-id/resource-extra-key and valid resource twin",
+      "exemplar wrong-checker and FIFO controls",
+      "lifecycle observation negative controls"
+    ],
+    "proofStatus": "archived definitions, not fresh process results"
+  },
+  "templatePreservation": {
+    "directCheckerImports": [],
+    "finding": "No direct cli-design-check, validateTargetEnvelope or successor validator imports in the accepted template; standalone Contract 2.0 producers are separate preservation targets.",
+    "acceptedCommit": "7cb52b781850403120f2f0c2aa7e31c1e3fec1ec",
+    "paths": ["starters", "src", "tests", "package.json"],
+    "blobs": [
+      {
+        "path": "package.json",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "12f9036137de10677f1357bdd0eeba42fbd057b5"
+      },
+      {
+        "path": "src/bootstrap.ts",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "fd0c9e8634176e7b32f9a4ae559b25e38985a376"
+      },
+      {
+        "path": "src/cli-inventory.ts",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "fcb09999f55fa07c9b259f6dec1f649b37ca38ba"
+      },
+      {
+        "path": "src/static-admission.ts",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "627ec81181b36bddc0b60af3a11ecab277168c85"
+      },
+      {
+        "path": "src/toolchain-resolution.ts",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "6f846d05e8cd97ed030c13e7fc2e8cd1f7c42a0a"
+      },
+      {
+        "path": "starters/complex/.github/workflows/ci.yml",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "678529de00dfbf693ee9405593e0340a521b49f0"
+      },
+      {
+        "path": "starters/complex/README.md",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "0b401f2dc64de352b0e85fdeee42098a51cb5843"
+      },
+      {
+        "path": "starters/complex/composition-tests/commands.test.ts",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "4404962aba1db6d56ab8629b18ff4fe907232ea6"
+      },
+      {
+        "path": "starters/complex/src/branch-station-catalog.ts",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "f45036f3d8b8d795554549113df00358d20e3207"
+      },
+      {
+        "path": "starters/complex/src/cli.ts",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "a44578ebe485e835d886ada082c878a8d8b25cd2"
+      },
+      {
+        "path": "starters/complex/src/command-contract.ts",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "ad9b31275c940065a9da3e1acf8ab6ee2cc4932d"
+      },
+      {
+        "path": "starters/complex/src/commands.ts",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "859e7f14c71f33a5eb09cc9084ff9caba13dbc13"
+      },
+      {
+        "path": "starters/complex/src/diagnostics-custody.ts",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "6acf42dbc14f1d025f053b22e3fbd4ef685b4480"
+      },
+      {
+        "path": "starters/complex/src/diagnostics.ts",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "26319e2befd1b4ddb919be2cd37ce2204d2f9794"
+      },
+      {
+        "path": "starters/complex/src/domains/state.ts",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "78aec3f074a63f0d75cfcadd128ff44588f99035"
+      },
+      {
+        "path": "starters/complex/src/engine.ts",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "3a3fd713371a254ff222d78261ea410867f0079b"
+      },
+      {
+        "path": "starters/complex/src/journal.ts",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "eb570bde6338fb83566df92ba42e4bc371f526c2"
+      },
+      {
+        "path": "starters/complex/src/model.ts",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "2aa7601be90676e31557783fe5c62046667ed067"
+      },
+      {
+        "path": "starters/complex/src/process-lifecycle.ts",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "865d50c537bf24234f9038f52392eac787ca2943"
+      },
+      {
+        "path": "starters/complex/src/runtime.ts",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "a09ca1242de32d9abd70cf64bd9055658381ef99"
+      },
+      {
+        "path": "starters/complex/tests/catalog/catalog.test.ts",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "b0f53066fc777cdd3acb4ac71ca45dd2f9a3616b"
+      },
+      {
+        "path": "starters/complex/tests/integration/diagnostics.test.ts",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "ab30528704d08ae315f808ec10b14ee697ac651a"
+      },
+      {
+        "path": "starters/complex/tests/integration/integration.test.ts",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "cf9bb05661e353b76cc7982a3ced9082b4b8995d"
+      },
+      {
+        "path": "starters/complex/tests/unit/unit.test.ts",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "d78339e61686913a5c2cf6ed3f0602f5555b99cf"
+      },
+      {
+        "path": "starters/shared/src/commands-contract.ts",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "24d8222785809bb0f28b0a5d3a7c4b9e0b840147"
+      },
+      {
+        "path": "starters/simple/.github/workflows/ci.yml",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "678529de00dfbf693ee9405593e0340a521b49f0"
+      },
+      {
+        "path": "starters/simple/README.md",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "8213a3cf01c437cf0d69b0243e56b199560ea7ef"
+      },
+      {
+        "path": "starters/simple/composition-tests/commands.test.ts",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "3edb0aacc00f173bc9dd243c8f0dc9225638ff03"
+      },
+      {
+        "path": "starters/simple/src/cli.ts",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "cd65d11fb30c84d1b7dfb7fef959592c5f8becbc"
+      },
+      {
+        "path": "starters/simple/src/commands.ts",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "91f207a81ef1a682302858a3af4d17dcf0e13e67"
+      },
+      {
+        "path": "starters/simple/src/domains/result.ts",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "7e5781dd6fc00169b261914809179717e6b0060a"
+      },
+      {
+        "path": "starters/simple/src/domains/status.ts",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "544c4c39c2232d86682341eb79e11ea32f50b5ce"
+      },
+      {
+        "path": "starters/simple/src/domains/template.ts",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "3dc361292a945b0699d5be4d04482f9d06342d64"
+      },
+      {
+        "path": "starters/simple/tests/cli.test.ts",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "c6f5c0e04e2c080e756ec73e5c769d925ebcdc1f"
+      },
+      {
+        "path": "tests/bootstrap-cli.test.ts",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "18a1b4caeec0c00fb6ddc799df1ef19242e46270"
+      },
+      {
+        "path": "tests/static-admission.test.ts",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "41e569c392f1eef5c9acdc5bfdf94dc0f6d9860c"
+      }
+    ],
+    "productionRoutes": [
+      "bun run src/bootstrap.ts",
+      "bun run src/static-admission.ts",
+      "bun run src/cli-inventory.ts"
+    ],
+    "proofStatus": "source inventory only; generated specimens and their checks have not run in this fixture"
+  },
+  "preservationObligations": [
+    "Keep all 186 declared dotfiles blobs at their exact source commit and retain archive identity.",
+    "Keep every declared package tree, direct validator import and lifecycle-oracle import/copy consumer; omission fails admission.",
+    "Preserve wrapper argument forwarding and packaged checker selection; building source alone is insufficient.",
+    "Rerun actual consumers with the frozen drivers, record expanded argv and environment boundaries, both streams, real exits and before/after resource state.",
+    "Preserve retained Contract 2.0 --retain-streams-dir behavior. Contract 3 raw retention remains disabled independently.",
+    "Keep immutable negative fixtures and independent expected counts/codes; changing production and its catalogue together cannot redefine expected results.",
+    "Run deliberate broken controls and valid twins; removing a rule or consumer must produce RED before restoring GREEN.",
+    "Keep failed, timed-out, skipped, missing and proven-unreachable distinct; reasons are mandatory and skips never count as passes.",
+    "Use the accepted template commit, not its stale observed HEAD; qualify generated copies outside the template checkout.",
+    "Do not claim merge, installation, activation, release, CI freshness, packaged/source equivalence or wider platform qualification from this fixture."
+  ],
+  "unproved": [
+    "Fresh consumer processes and sensitivity checks",
+    "Archive custody verification by this fixture author",
+    "Current CI and actual live task adoption",
+    "Installed plugin and harness state",
+    "Existing consumers outside the two assigned repositories"
+  ]
+}
