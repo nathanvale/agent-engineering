@@ -18,7 +18,10 @@ import {
   PRODUCTION_MINORS,
 } from "../../../../src/domains/contract3-check/minors.ts";
 import { judgementOutcome } from "../../../../src/domains/contract3-check/outcome.ts";
-import { ruleSpec } from "../../../../src/domains/contract3-check/rules.ts";
+import {
+  EXPECTATION_RULES,
+  ruleSpec,
+} from "../../../../src/domains/contract3-check/rules.ts";
 import type {
   AdmittedCase,
   Json,
@@ -36,6 +39,13 @@ describe("catalogue and kept route agree with frozen oracles", () => {
         ruleSpec(rule.id)?.proofLayer,
       ]).toEqual([rule.id, rule.findingCode, rule.proofLayer]);
     expect(ruleSpec("not-a-frozen-rule")).toBeUndefined();
+  });
+
+  test("every expectation rule is a frozen catalogue rule (F-3)", () => {
+    const frozen = new Set(checkerOracle.rules.map((rule) => rule.id));
+    expect(EXPECTATION_RULES.size).toBeGreaterThan(0);
+    for (const id of EXPECTATION_RULES)
+      expect([id, frozen.has(id)]).toEqual([id, true]);
   });
 
   test("the kept 2.0 checker route names retained-2.json's wrapper, commit and runtime", () => {

@@ -23,7 +23,7 @@ export interface RuleSpec {
   group: RuleGroup;
 }
 
-const TABLE: readonly (readonly [string, string, ProofLayer, RuleGroup])[] = [
+const TABLE = [
   ["version-malformed", "VERSION_MALFORMED", "version", "version"],
   ["version-major", "VERSION_UNSUPPORTED_MAJOR", "version", "version"],
   ["version-newer", "VERSION_UNSUPPORTED_MINOR", "version", "version"],
@@ -142,7 +142,15 @@ const TABLE: readonly (readonly [string, string, ProofLayer, RuleGroup])[] = [
   ["observer-exclusions", "OBSERVATION_EXCLUSION_HIDDEN", "process", "harness"],
   ["retained-tooling", "RETAINED_2_ROUTE_CHANGED", "static", "static"],
   ["raw-retention", "RAW_RETENTION_ENABLED", "process", "harness"],
-];
+] as const satisfies readonly (readonly [
+  string,
+  string,
+  ProofLayer,
+  RuleGroup,
+])[];
+
+/** A rule id of the catalogue: misspelt ids do not compile (review F-3). */
+type RuleId = (typeof TABLE)[number][0];
 
 const RULES: readonly RuleSpec[] = TABLE.map(
   ([id, findingCode, proofLayer, group]) => ({
@@ -170,7 +178,7 @@ export const NOT_COMMAND_JUDGED: Readonly<Record<string, string>> = {
  * contract shape (S1 option (i)): judged only when admitted. A refusal whose
  * findings all come from these does not call the envelope broken.
  */
-export const EXPECTATION_RULES: ReadonlySet<string> = new Set([
+export const EXPECTATION_RULES: ReadonlySet<string> = new Set<RuleId>([
   "exit-expected",
   "cause-expected",
   "station-required",
