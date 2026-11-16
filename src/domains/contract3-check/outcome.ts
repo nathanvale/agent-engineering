@@ -68,6 +68,8 @@ function refusalMessage(refusal: Refusal, readerVersion: string): string {
     case "newer-minor":
       return `${where} observed contractVersion ${echo(refusal.observedVersion)} is newer than this reader's ${readerVersion}. Upgrade the reader; nothing was adapted.${tail}`;
     case "broken":
+      if (refusal.expectationOnly)
+        return `${where} observed contractVersion ${echo(refusal.observedVersion)} is accepted by reader ${readerVersion} but fails an admitted independent expectation. ${refusal.details.join(" ")}${tail}`;
       return refusal.observedVersion === undefined
         ? `${where} the observed output is broken and no contract version was read (reader ${readerVersion}). ${refusal.details.join(" ")}${tail}`
         : `${where} observed contractVersion ${echo(refusal.observedVersion)} is broken (reader ${readerVersion}). ${refusal.details.join(" ")}${tail}`;

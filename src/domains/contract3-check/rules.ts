@@ -164,3 +164,32 @@ export const NOT_COMMAND_JUDGED: Readonly<Record<string, string>> = {
   harness: "the checker's process test harness",
   static: "the repository static tests",
 };
+
+/**
+ * Rules that judge an admitted independent expectation rather than the
+ * contract shape (S1 option (i)): judged only when admitted. A refusal whose
+ * findings all come from these does not call the envelope broken.
+ */
+export const EXPECTATION_RULES: ReadonlySet<string> = new Set([
+  "exit-expected",
+  "cause-expected",
+  "station-required",
+  "deterministic-fields",
+  "global-mode",
+  "input-case",
+  "input-required",
+  "input-option",
+  "input-presence",
+  "input-repeat",
+  "input-string",
+  "input-integer",
+  "input-constraints",
+  "input-hidden",
+  "input-dash",
+  "input-deadline",
+  "navigation-effects",
+  "provider-loading",
+  "input-future-binding",
+  "input-generated-binding",
+  "input-runtime",
+]);

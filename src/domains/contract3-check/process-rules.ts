@@ -27,7 +27,9 @@ function expectedExit(
   item: AdmittedCase,
   observation: Observation,
 ): void {
-  if (item.expect === undefined) return;
+  // S1 option (i): an expectation rule is judged only when admitted.
+  if (item.expect === undefined || !item.rules.includes("exit-expected"))
+    return;
   const expected = item.expect.exitCode;
   c.check(
     "exit-expected",
@@ -121,21 +123,29 @@ export function machineProcessRules(
   );
   expectedExit(c, item, observation);
   const expect = item.expect;
-  if (expect?.causeCode !== undefined)
+  // S1 option (i): cause, outcome and identity expectations are judged only
+  // when their owning rule is admitted; a valid envelope is never refused
+  // because an unadmitted expectation differs.
+  const causeAdmitted = item.rules.includes("cause-expected");
+  const identityRule = identityOwner(item);
+  if (causeAdmitted && expect?.causeCode !== undefined)
     c.check(
       "cause-expected",
       result.causeCode === expect.causeCode,
       () =>
         `Observed causeCode ${JSON.stringify(result.causeCode)} differs from the independently expected ${expect.causeCode}.`,
     );
-  if (expect?.commandIdentity !== undefined)
+  if (
+    item.rules.includes(identityRule) &&
+    expect?.commandIdentity !== undefined
+  )
     c.check(
-      identityOwner(item),
+      identityRule,
       result.commandIdentity === expect.commandIdentity,
       () =>
         `Observed commandIdentity ${JSON.stringify(result.commandIdentity)} differs from the expected ${expect.commandIdentity}.`,
     );
-  if (expect?.outcome !== undefined)
+  if (causeAdmitted && expect?.outcome !== undefined)
     c.check(
       "cause-expected",
       result.outcome === expect.outcome,

@@ -10,6 +10,7 @@ import { BUDGETS } from "./budgets.ts";
 import { Book, observationEvidence, type ReportRow } from "./book.ts";
 import { Collector, isObject, type ShapeContext } from "./collector.ts";
 import { judgeAcrossCases, type ParsedCase } from "./cross-rules.ts";
+import { EXPECTATION_RULES } from "./rules.ts";
 import { validateEnvelope } from "./envelope-rules.ts";
 import { readEnvelope } from "./json-ingress.ts";
 import type { MinorTable } from "./minors.ts";
@@ -45,6 +46,8 @@ export interface Refusal {
   observedVersion: Json | undefined;
   details: string[];
   targetExecuted: boolean;
+  /** Every finding came from an admitted expectation rule; the envelope itself was not broken. */
+  expectationOnly: boolean;
 }
 
 export interface Judgement {
@@ -89,6 +92,7 @@ function refusalOf(
     observedVersion,
     details,
     targetExecuted: observation.source === "run",
+    expectationOnly: false,
   };
 }
 
@@ -351,7 +355,12 @@ export async function judgeObservations(
   }
   return {
     rows: book.rows(admission.cases),
-    refusal: firstRefusal(admission, refusals),
+    refusal: withCause(
+      firstRefusal(admission, refusals),
+      book.failures.every(({ finding }) =>
+        EXPECTATION_RULES.has(finding.ruleId),
+      ),
+    ),
     readerVersion: minors.readerVersion,
     observedVersions: [
       ...new Set(
@@ -361,6 +370,18 @@ export async function judgeObservations(
       ),
     ],
   };
+}
+
+function withCause(
+  refusal: Refusal | null,
+  expectationOnly: boolean,
+): Refusal | null {
+  return refusal === null
+    ? null
+    : {
+        ...refusal,
+        expectationOnly: refusal.kind === "broken" && expectationOnly,
+      };
 }
 
 /** The first refused case in admission order sets the cause; every case's detail stays visible. */

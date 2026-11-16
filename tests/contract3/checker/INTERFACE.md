@@ -215,21 +215,41 @@ Two layers with one invariant.
   no other key of a refused version is interpreted.
 - **Command outcome**: maps the judgement to one envelope.
 
-Invariant: exit 0 if and only if no admitted row is `failed` and no
-observation is refused. A broken, wrong or unsupported target never produces a
-success result. Unproved rows (`not_run`, `skipped`, `timed_out`, `missing`,
-`declared_unreachable`) may appear in a success report with their reasons.
+Two kinds of rule (repair round 1, S1 option (i), coordinator decision):
+
+- **Contract rules** judge the observation against the contract itself
+  (framing, version, envelope and declaration shape, cross-observation
+  agreement, envelope exits, empty machine stderr, navigation). They are
+  judged whenever their input exists, admitted or not: a broken observation of
+  an accepted minor is always refused (VER-10).
+- **Expectation rules** judge an admitted independent expectation: `exit-expected`,
+  `cause-expected` (also `expect.outcome`), the identity a rule owns
+  (`expect.commandIdentity`, G17), `station-required`, `deterministic-fields`,
+  the argv-agreement family (`global-mode`, `input-*`) and the probe-judged
+  rules. Each is judged only when its rule is admitted. A valid envelope is
+  never refused because an unadmitted expectation differs.
+
+Invariant: exit 0 if and only if no observation is refused, which holds
+exactly when no admitted expectation row and no contract rule fails. A broken,
+wrong or unsupported target never produces a success result. Unproved rows
+(`not_run`, `skipped`, `timed_out`, `missing`, `declared_unreachable`) may
+appear in a success report with their reasons.
 
 Consequence for proof layers:
 
-- Process layer: a single-rule negative shows exit 4, its cause, `data: null`,
-  the violated key or correlation in `message`, and an unchanged counter. Its
-  restored valid twin shows exit 0 with every admitted row `passed`.
-  Disabling the rule makes the negative exit 0, so the sensitivity test fails.
 - Component layer: the exact finding code and "unrelated evaluable rows stay
-  passed" are asserted on the domain judgement, as the `broken-supported`
-  format case's internal test expectation describes. This is component
+  passed" are asserted on the domain judgement (`judgeObservations`). Disabling
+  a rule alone makes its negative stop matching here. This is component
   evidence and never substitutes for a required process row.
+- Process layer: a single-rule negative shows exit 4, its cause, `data: null`,
+  the violated key or correlation in `message`, and unchanged counters. Its
+  restored valid twin shows exit 0 with every admitted row `passed`.
+  Disabling the target rule makes the negative exit 0 only when no other
+  contract rule also refuses that observation. Where another always-judged
+  rule refuses too (for example a deleted key that the declared station also
+  contradicts), the process refusal is over-determined: the test harness
+  reports it as such, never as a pass, and the component layer carries the
+  per-rule proof.
 
 Refusal report transport stays intentionally unbound: no row report, finding
 code field, sidecar file or stderr format accompanies a refusal.
@@ -263,8 +283,12 @@ admission order. Admission and precondition refusals precede every target run.
   packaged `runtime/cli-design-check.js`. The checker never invokes it.
 - Newer minor: the observed string and the reader's own version; "upgrade the
   reader".
-- Broken or failing rule: the case id, observed version, and each violated
-  key or correlation, up to the message budget.
+- Broken output (a contract rule fails): the case id, the observed version
+  ("is broken"), the reader version, and each violated key or correlation, up
+  to the message budget.
+- Admitted expectation only: the case id, the observed version, "is accepted
+  by reader 3.0.0 but fails an admitted independent expectation", and each
+  differing value. The envelope is not called broken.
 - Any refusal after a target executed: that the target already ran, that its
   effects need separate inspection, and that the checker's `unchanged` says
   nothing about the target.
