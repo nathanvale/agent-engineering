@@ -48,7 +48,7 @@ const HOST_STATIONS: Readonly<Record<CheckerStation, HostStationWords>> = {
     exitCode: 2,
     nextAction: "Run {cli} --help and correct the invocation.",
     repairAction: "Pass --admission followed by one path, and nothing else.",
-    trigger: "The invocation does not name exactly one admission path.",
+    trigger: "The invocation does not name exactly one admission file path.",
   },
   precondition: {
     causeCode: "DOMAIN_PRECONDITION_UNMET",
@@ -58,7 +58,7 @@ const HOST_STATIONS: Readonly<Record<CheckerStation, HostStationWords>> = {
     nextAction: "Make the named file readable, then run the check again.",
     repairAction: "Make the file or directory named in message available.",
     trigger:
-      "An admission, captured stream, program or working directory is missing or unreadable.",
+      "An admission file, captured stream, program or working directory is missing or unreadable.",
   },
   "invalid-input": {
     causeCode: "SCHEMA_INVALID_INPUT",
@@ -68,7 +68,7 @@ const HOST_STATIONS: Readonly<Record<CheckerStation, HostStationWords>> = {
     nextAction:
       "Correct the input shape named in message. Inspect target effects separately; the checker never reruns a target.",
     repairAction:
-      "Correct the admission or target output named in message; message names the observed version and the violated key or correlation.",
+      "Correct the admission file or target output named in message; message names the observed version and the violated key or correlation.",
     trigger:
       "The admission file is invalid, or target output is malformed, broken, over budget or fails a listed rule.",
   },

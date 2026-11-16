@@ -71,14 +71,14 @@ describe("single execution", () => {
   test("truncated output is refused after exactly one execution, with no inherited stdin or environment", async () => {
     const root = await workspace();
     process.env.C3_SUPPORTING_SENTINEL = "must-not-leak";
-    const outcome = await runCheck([
+    const checked = await runCheck([
       "--admission",
       await admit(root, '{"contractVersion":"3.0.0"'),
     ]);
     delete process.env.C3_SUPPORTING_SENTINEL;
-    expect(outcome.station).toBe("invalid-input");
-    expect(outcome.data).toBeNull();
-    expect(outcome.message).toContain("did not and will not rerun");
+    expect(checked.station).toBe("invalid-input");
+    expect(checked.data).toBeNull();
+    expect(checked.message).toContain("did not and will not rerun");
     expect(await readFile(join(root, "counter"), "utf8")).toBe("x");
     const seen = JSON.parse(
       await readFile(join(root, "seen.json"), "utf8"),
@@ -90,11 +90,11 @@ describe("single execution", () => {
 
   test("a 2.0.0 envelope is refused as unsupported after one execution", async () => {
     const root = await workspace();
-    const outcome = await runCheck([
+    const checked = await runCheck([
       "--admission",
       await admit(root, '{"contractVersion":"2.0.0","envelopeVersion":2}\n'),
     ]);
-    expect(outcome.station).toBe("unsupported-contract");
+    expect(checked.station).toBe("unsupported-contract");
     expect(await readFile(join(root, "counter"), "utf8")).toBe("x");
   });
 });
@@ -103,26 +103,26 @@ describe("admission refusals run no target", () => {
   test("an unknown rule is invalid input", async () => {
     const root = await workspace();
     const path = await admit(root, "", { rules: ["not-a-rule"] });
-    const outcome = await runCheck(["--admission", path]);
-    expect(outcome.station).toBe("invalid-input");
-    expect(outcome.message).toContain("not-a-rule");
+    const checked = await runCheck(["--admission", path]);
+    expect(checked.station).toBe("invalid-input");
+    expect(checked.message).toContain("not-a-rule");
     expect(await Bun.file(join(root, "counter")).exists()).toBe(false);
   });
 
   test("a harness-owned rule is refused with its owner named", async () => {
     const root = await workspace();
-    const outcome = await runCheck([
+    const checked = await runCheck([
       "--admission",
       await admit(root, "", { rules: ["no-replay"] }),
     ]);
-    expect(outcome.station).toBe("invalid-input");
-    expect(outcome.message).toContain("process test harness");
+    expect(checked.station).toBe("invalid-input");
+    expect(checked.message).toContain("process test harness");
   });
 
   test("a missing admission file is an unmet precondition", async () => {
     const root = await workspace();
-    const outcome = await runCheck(["--admission", join(root, "absent.json")]);
-    expect(outcome.station).toBe("precondition");
+    const checked = await runCheck(["--admission", join(root, "absent.json")]);
+    expect(checked.station).toBe("precondition");
   });
 
   test("anything but one --admission value is usage", async () => {

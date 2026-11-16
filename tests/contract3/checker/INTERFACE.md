@@ -43,7 +43,7 @@ not, stop and report rather than add it.
 **D2. Independent effect observation for five process rules.**
 `navigation-effects`, `provider-loading`, `input-future-binding`,
 `input-generated-binding` and `input-runtime` need to know whether a target
-changed state, which its stdout cannot prove. Proposal: an admitted read-only
+changed state, which its stdout cannot prove. Proposal: a listed read-only
 probe program (section 4) that the checker runs exactly once after its case.
 Alternative: the test harness reads state itself and those rows become
 harness-judged (group H below). The binder chooses; without a probe these rows
@@ -89,7 +89,7 @@ admission document or through target runs it declares.
 ## 3. Admission document (the checker's input)
 
 The admission is the test-owned binding of exact case identities, applicable
-rules and independent expectations. The checker emits exactly the admitted
+rules and independent expectations. The checker emits exactly the listed
 (`ruleId`, `caseId`) pairs, no more and no fewer. The checker never invents a
 case or a rule.
 
@@ -154,7 +154,7 @@ stays valid. Input rules need `argvOffset` to find the target CLI's argv;
 binder's review: one pure judgement entry point `judgeObservations(admission,
 observations, minors)` returning schema rows with failed rows included (G1);
 the G2 prerequisite model; the G15 probe mapping, which also covers input
-rules when a probe is admitted (G9); identity ownership (G17); human-mode
+rules when a probe is listed (G9); identity ownership (G17); human-mode
 criteria (G18); compact `{kind, command, args}` encoding for the `ifNoResult`
 size limit (G19). `diagnostics-absent`, the `fallback-version` negative and
 `minor-meaning` stay stopped: they report `not_run` with a reason.
@@ -171,19 +171,19 @@ The checker is aligned to the bound cases' attribution and prerequisite model
 ## 4. Target execution protocol
 
 1. **Count fixed in advance.** The number of target executions equals the
-   number of admitted `run` cases (plus admitted probes). It is fixed before
+   number of listed `run` cases (plus listed probes). It is fixed before
    the first execution and never depends on any observed output.
 2. **At most once.** Each run case executes at most once per checker
    invocation. No retry after malformed, broken, unsupported, hostile,
    oversize or timed-out output, spawn failure, nonzero exit or signal.
-   `sameAs` pairs are two separately admitted executions, not a retry.
+   `sameAs` pairs are two separately listed executions, not a retry.
 3. **Sequential, admission order.** One target process at a time.
 4. **No shell.** `program` and `args` pass verbatim as an argument vector. No
    PATH lookup, globbing or expansion. `bun-runtime` means the checker's own
    Bun executable.
 5. **No inherited stdin.** Target stdin is the null device. The checker's
    stdin is never forwarded.
-6. **No inherited environment.** The target sees only the admitted `env` map.
+6. **No inherited environment.** The target sees only the listed `env` map.
    The checker's credentials and variables never pass through. Phase 2 must
    prove Bun runs a specimen under this rule on macOS and `ubuntu-latest`; a
    missing precondition fails, never passes silently.
@@ -213,24 +213,24 @@ Two layers with one invariant.
   their findings. Version classification of each machine observation comes
   first (VER-10 order: malformed, other major, newer minor, broken, accepted);
   no other key of a refused version is interpreted.
-- **Command outcome**: maps the judgement to one envelope.
+- **Command result**: maps the judgement to one envelope.
 
 Two kinds of rule (repair round 1, S1 option (i), coordinator decision):
 
 - **Contract rules** judge the observation against the contract itself
   (framing, version, envelope and declaration shape, cross-observation
   agreement, envelope exits, empty machine stderr, navigation). They are
-  judged whenever their input exists, admitted or not: a broken observation of
+  judged whenever their input exists, listed or not: a broken observation of
   an accepted minor is always refused (VER-10).
-- **Expectation rules** judge an admitted independent expectation: `exit-expected`,
+- **Expectation rules** judge a listed independent expectation: `exit-expected`,
   `cause-expected` (also `expect.outcome`), the identity a rule owns
   (`expect.commandIdentity`, G17), `station-required`, `deterministic-fields`,
   the argv-agreement family (`global-mode`, `input-*`) and the probe-judged
-  rules. Each is judged only when its rule is admitted. A valid envelope is
-  never refused because an unadmitted expectation differs.
+  rules. Each is judged only when its rule is listed. A valid envelope is
+  never refused because an unlisted expectation differs.
 
 Invariant: exit 0 if and only if no observation is refused, which holds
-exactly when no admitted expectation row and no contract rule fails. A broken,
+exactly when no listed expectation row and no contract rule fails. A broken,
 wrong or unsupported target never produces a success result. Unproved rows
 (`not_run`, `skipped`, `timed_out`, `missing`, `declared_unreachable`) may
 appear in a success report with their reasons.
@@ -243,7 +243,7 @@ Consequence for proof layers:
   evidence and never substitutes for a required process row.
 - Process layer: a single-rule negative shows exit 4, its cause, `data: null`,
   the violated key or correlation in `message`, and unchanged counters. Its
-  restored valid twin shows exit 0 with every admitted row `passed`.
+  restored valid twin shows exit 0 with every listed row `passed`.
   Disabling the target rule makes the negative exit 0 only when no other
   contract rule also refuses that observation. Where another always-judged
   rule refuses too (for example a deleted key that the declared station also
@@ -259,14 +259,14 @@ code field, sidecar file or stderr format accompanies a refusal.
 All rows: effect class `inspect`, state `unchanged`. Words are proposals for
 the binder; each tuple keeps one set of words.
 
-| Station (outcome, cause)               | Class, exit | When                                                                                                                                                                               | Guidance                                                                                                                |
-| -------------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| success, `SUCCESS_UNCHANGED`           | null, 0     | Every observation accepted; no admitted row failed                                                                                                                                 | next: instruction "Read data.rows; any row other than passed is unproved."                                              |
-| refused, `USAGE_INVALID_INVOCATION`    | usage, 2    | Section 2 violations                                                                                                                                                               | next: "Run example --help and correct the invocation."                                                                  |
-| refused, `DOMAIN_PRECONDITION_UNMET`   | domain, 3   | Admission or captured file missing or unreadable                                                                                                                                   | next: "Make the named file readable, then run the check again."                                                         |
-| refused, `SCHEMA_INVALID_INPUT`        | schema, 4   | Admission invalid; or a target observation malformed (VER-1, including missing version and `3.0.1`), broken at an accepted minor, failing any admitted rule, or exceeding a budget | next: "Correct the input shape named in message. Inspect target effects separately; the checker never reruns a target." |
-| refused, `SCHEMA_UNSUPPORTED_CONTRACT` | schema, 4   | Well-formed other major, or a newer minor than the reader                                                                                                                          | next: "Use a reader that accepts the version named in message. No adaptation."                                          |
-| failed, `INTERNAL_RESULT_UNCHANGED`    | internal, 1 | The checker's own result could not be produced                                                                                                                                     | The host's existing internal handoff.                                                                                   |
+| Station (outcome, cause)               | Class, exit | When                                                                                                                                                                                    | Guidance                                                                                                                |
+| -------------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| success, `SUCCESS_UNCHANGED`           | null, 0     | Every observation accepted; no listed row failed                                                                                                                                        | next: instruction "Read data.rows; any row other than passed is unproved."                                              |
+| refused, `USAGE_INVALID_INVOCATION`    | usage, 2    | Section 2 violations                                                                                                                                                                    | next: "Run example --help and correct the invocation."                                                                  |
+| refused, `DOMAIN_PRECONDITION_UNMET`   | domain, 3   | Admission or captured file missing or unreadable                                                                                                                                        | next: "Make the named file readable, then run the check again."                                                         |
+| refused, `SCHEMA_INVALID_INPUT`        | schema, 4   | Admission file invalid; or a target observation malformed (VER-1, including missing version and `3.0.1`), broken at an accepted minor, failing any admitted rule, or exceeding a budget | next: "Correct the input shape named in message. Inspect target effects separately; the checker never reruns a target." |
+| refused, `SCHEMA_UNSUPPORTED_CONTRACT` | schema, 4   | Well-formed other major, or a newer minor than the reader                                                                                                                               | next: "Use a reader that accepts the version named in message. No adaptation."                                          |
+| failed, `INTERNAL_RESULT_UNCHANGED`    | internal, 1 | The checker's own result could not be produced                                                                                                                                          | The host's existing internal handoff.                                                                                   |
 
 The cause of a refused invocation comes from the first refused observation in
 admission order. Admission and precondition refusals precede every target run.
@@ -286,7 +286,7 @@ admission order. Admission and precondition refusals precede every target run.
 - Broken output (a contract rule fails): the case id, the observed version
   ("is broken"), the reader version, and each violated key or correlation, up
   to the message budget.
-- Admitted expectation only: the case id, the observed version, "is accepted
+- Listed expectation only: the case id, the observed version, "is accepted
   by reader 3.0.0 but fails a listed independent expectation", and each
   differing value. The envelope is not called broken.
 - Any refusal after a target executed: that the target already ran, that its
@@ -302,7 +302,7 @@ outcome and failure class (VER-7, WIRE-20); no closed cross-CLI cause list.
 `data` validates against [checker-report.schema.json](../checker-report.schema.json),
 `reportVersion: 1`.
 
-- Rows: exactly the admitted pairs, ordered by case in admission order, then
+- Rows: exactly the listed pairs, ordered by case in admission order, then
   by rule in that case's `rules` order. Identity is (`ruleId`, `caseId`).
 - `passed` carries `evidence` at the rule's proof layer; never findings.
 - `failed` rows never reach `data` (section 5).
@@ -324,15 +324,15 @@ release (its route is a D1 consequence):
 Usage: example contract3 check --admission PATH [--json]
 
 Reads PATH, a JSON admission naming cases, rules and independent expected
-values. Runs each admitted target once, in order, with no shell, no inherited
+values. Runs each listed target once, in order, with no shell, no inherited
 stdin and no inherited environment, or reads captured stdout, stderr and exit.
 Never reruns a target. Accepts contract 3.0.0 output only.
 
-Exit 0: every observation accepted and no admitted row failed; data holds the
+Exit 0: every observation accepted and no listed row failed; data holds the
 row report. Unproved rows carry reasons.
 Exit 2: invalid invocation. Exit 3: admission or captured file unreadable.
 Exit 4: invalid admission, or target output malformed, broken, failing an
-admitted rule, over budget, or of an unsupported version. data is null.
+listed rule, over budget, or of an unsupported version. data is null.
 For contract 2.0.0 output use the kept 2.0 checker named in the refusal.
 Does not judge instruction meaning, secrecy, authority, recovery truth,
 diagnostics custody or values that cannot cross JSON.
@@ -356,7 +356,7 @@ All 93 rules, grouped by who judges them.
 
 Cross-observation rules (X, and D rules that need a command's stations)
 resolve against the `discovery` and `command-discovery` cases of the same
-admission. If a needed case is not admitted, the row is `not_run` with that
+admission. If a needed case is not listed, the row is `not_run` with that
 reason. Expected exits and causes for `exit-expected` and `cause-expected`
 come only from `expect`, never from the target's catalogue.
 
@@ -397,7 +397,7 @@ reported `passed`:
   T3 and T8. The checker resolves routes and syntax only.
 - DIAG-4, DIAG-7 to DIAG-11, DIAG-14, V-24 diagnostics custody, caps and
   retention: T5 and T8. Shape checking certifies no custody.
-- Whether a target's effects happened, except through an admitted probe (D2).
+- Whether a target's effects happened, except through a listed probe (D2).
   The checker's `unchanged` is about the checker only.
 - Host authority, reclaim, takeover, OS or filesystem qualification, live
   providers, and Contract 2.0 output (refused, never adapted).
@@ -407,7 +407,7 @@ reported `passed`:
 - Specimen targets are small programs under
   `tests/contract3/checker/specimens/`, run by Bun through a `run` case. They
   print fixed bytes, exit with fixed codes and, for no-replay cases, increment
-  a counter file whose path arrives through the admitted `env`.
+  a counter file whose path arrives through the listed `env`.
 - Tests write admissions into a fresh temporary directory, run the real CLI
   (`bun run src/cli.ts contract3 check --admission <file> --json`), capture
   its stdout, stderr and exit, then read the counter separately.

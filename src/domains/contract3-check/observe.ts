@@ -1,15 +1,15 @@
 // The one observation loop (review SF-3), shared by runCheck and the test
-// harness's component layer: each admitted case observed once, in admission
+// harness's component layer: each listed case observed once, in admission
 // order, starting no further target after a refused observation.
 
 import { BUDGETS } from "./budgets.ts";
 import { refusesAlone } from "./judge.ts";
 import type { MinorTable } from "./minors.ts";
 import { readCaptured, runProgram } from "./runner.ts";
-import type { Admission, AdmittedCase, Observation } from "./types.ts";
+import type { Admission, ListedCase, Observation } from "./types.ts";
 
-/** Observe one admitted case: one execution, or one read of captured files. */
-async function observeCase(item: AdmittedCase): Promise<Observation> {
+/** Observe one listed case: one execution, or one read of captured files. */
+async function observeCase(item: ListedCase): Promise<Observation> {
   const target = item.target;
   if (target.kind === "captured") {
     const [stdout, stderr] = await Promise.all([
@@ -36,7 +36,7 @@ async function observeCase(item: AdmittedCase): Promise<Observation> {
   return observation;
 }
 
-/** Observe every admitted case in order, stopping after a refused observation. */
+/** Observe every listed case in order, stopping after a refused observation. */
 export async function observeAdmission(
   admission: Admission,
   minors: MinorTable,

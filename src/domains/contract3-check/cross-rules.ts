@@ -19,10 +19,10 @@ import {
   stationBindingNames,
   substitution,
 } from "./templates.ts";
-import type { AdmittedCase, Json, JsonObject, Observation } from "./types.ts";
+import type { ListedCase, Json, JsonObject, Observation } from "./types.ts";
 
 export interface ParsedCase {
-  item: AdmittedCase;
+  item: ListedCase;
   observation: Observation;
   envelope: JsonObject | null;
   result: JsonObject | null;
@@ -521,7 +521,7 @@ async function judgeInput(
 ): Promise<void> {
   const { item, result } = parsed;
   // The three-way argv agreement is judged only where an input rule is
-  // admitted: an expected refusal may come from runtime or run-value checks
+  // listed: an expected refusal may come from runtime or run-value checks
   // the projected schema cannot show (INPUT-4, STEP-10).
   const ruleIds = item.rules.filter((rule) => INPUT_RULES.includes(rule));
   const budgetOnly = item.rules.includes("pattern-budget");
@@ -727,8 +727,8 @@ function judgeProbe(world: World, c: Collector, parsed: ParsedCase): void {
   }
 }
 
-/** The selector of a command-discovery case: admitted, or the argv token after --discover-command. */
-function selectorOf(item: AdmittedCase): string | undefined {
+/** The selector of a command-discovery case: listed, or the argv token after --discover-command. */
+function selectorOf(item: ListedCase): string | undefined {
   if (item.selector !== undefined) return item.selector;
   if (item.target.kind !== "run") return undefined;
   const argv = item.target.args.slice(item.target.argvOffset);

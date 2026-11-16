@@ -174,8 +174,8 @@ export const NOT_COMMAND_JUDGED: Readonly<Record<string, string>> = {
 };
 
 /**
- * Rules that judge an admitted independent expectation rather than the
- * contract shape (S1 option (i)): judged only when admitted. A refusal whose
+ * Rules that judge a listed independent expectation rather than the
+ * contract shape (S1 option (i)): judged only when listed. A refusal whose
  * findings all come from these does not call the envelope broken.
  */
 export const EXPECTATION_RULES: ReadonlySet<string> = new Set<RuleId>([
