@@ -29,7 +29,7 @@ export const commands: CommandDefinition[] = [
     effectClass: "inspect",
     route: ["contract3", "check"],
     summary:
-      "Judge a Contract 3 CLI's output against an admitted case set without rerunning it.",
+      "Judge a Contract 3 CLI's output against the cases in an admission file without rerunning it.",
     acceptsArguments: true,
     execute: (args) => executeCheck(CHECKER_IDENTITY, args),
     stations: () => checkerStations(CHECKER_IDENTITY),

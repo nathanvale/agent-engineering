@@ -1,6 +1,6 @@
 // SUPPORTING TESTS (T6 Phase 2a). Component evidence written by the checker
 // implementer. These are not bound cases and prove no V row; the independent
-// binder's admissions and the Phase 2b harness own that proof. Envelopes here
+// binder's admissions and the Phase 2b test harness own that proof. Envelopes here
 // are minimal test-owned literals, never stand-ins for bound specimens.
 
 import { describe, expect, test } from "bun:test";
@@ -17,7 +17,7 @@ import {
   createMinorTable,
   PRODUCTION_MINORS,
 } from "../../../../src/domains/contract3-check/minors.ts";
-import { judgementOutcome } from "../../../../src/domains/contract3-check/outcome.ts";
+import { judgementResult } from "../../../../src/domains/contract3-check/outcome.ts";
 import {
   EXPECTATION_RULES,
   ruleSpec,
@@ -215,7 +215,7 @@ describe("in-process judgement (component layer only)", () => {
     expect(judgement.rows.map((row) => [row.ruleId, row.status])).toEqual(
       RULE_SET.map((ruleId) => [ruleId, "passed"]),
     );
-    expect(judgementOutcome(judgement).station).toBe("success");
+    expect(judgementResult(judgement).station).toBe("success");
   });
 
   test("one legacy key fails strict-keys alone and refuses as invalid input", async () => {
@@ -227,7 +227,7 @@ describe("in-process judgement (component layer only)", () => {
         .filter((row) => row.status === "failed")
         .map((row) => [row.ruleId, row.findings[0]?.code]),
     ).toEqual([["strict-keys", "UNLISTED_KEY"]]);
-    const outcome = judgementOutcome(judgement);
+    const outcome = judgementResult(judgement);
     expect(outcome.station).toBe("invalid-input");
     expect(outcome.data).toBeNull();
     expect(outcome.message).toContain("3.0.0");
@@ -249,7 +249,7 @@ describe("in-process judgement (component layer only)", () => {
       contractVersion: "2.0.0",
       envelopeVersion: 2,
     };
-    const outcome = judgementOutcome(await judgeOne(envelope));
+    const outcome = judgementResult(await judgeOne(envelope));
     expect(outcome.station).toBe("unsupported-contract");
     expect(outcome.data).toBeNull();
     expect(outcome.message).toContain('"2.0.0"');
@@ -259,7 +259,7 @@ describe("in-process judgement (component layer only)", () => {
 
   test("3.0.1 is refused as malformed and names contractVersion", async () => {
     const envelope = { ...validEnvelope(), contractVersion: "3.0.1" };
-    const outcome = judgementOutcome(await judgeOne(envelope));
+    const outcome = judgementResult(await judgeOne(envelope));
     expect(outcome.station).toBe("invalid-input");
     expect(outcome.message).toContain("contractVersion");
     expect(outcome.message).toContain('"3.0.1"');

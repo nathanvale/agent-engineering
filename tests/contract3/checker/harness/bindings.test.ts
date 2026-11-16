@@ -1,4 +1,4 @@
-// T6 Phase 2b harness: the independently bound cases, unmodified.
+// T6 Phase 2b test harness: the independently bound cases, unmodified.
 // Proof here is the bound expectation matched at BOTH layers (process
 // through the real application CLI, component through the one pure
 // judgement). Provisional bindings are reported as provisional, stopped

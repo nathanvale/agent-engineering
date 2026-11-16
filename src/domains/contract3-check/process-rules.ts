@@ -154,7 +154,7 @@ export function machineProcessRules(
     );
   c.unproved(
     "diagnostics-absent",
-    "No admitted independent fact says whether the target enables diagnostics (binder G13, stopped).",
+    "No independent fact in the admission file says whether the target enables diagnostics (stopped case G13).",
   );
   if (
     typeof result.causeCode === "string" &&
@@ -166,7 +166,7 @@ export function machineProcessRules(
       "provider-loading",
       code === 0,
       () =>
-        `Navigation under the admitted environment ended with ${exitText(observation)}; it must not need providers or credentials.`,
+        `Navigation under the admission file's environment ended with ${exitText(observation)}; it must not need providers or credentials.`,
     );
   dispatchMachine(c, item, cli, result);
 }

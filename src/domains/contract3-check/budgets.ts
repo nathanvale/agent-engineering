@@ -15,7 +15,7 @@ export const BUDGETS = {
   PATTERN_MAX_SUBJECT_BYTES: 4_096,
   // Below JavaScriptCore's own backtracking cutoff (about 400 ms on the
   // implementer's Mac), which reports a false non-match rather than failing.
-  // Linux must show the same ordering (see the Phase 2b handoff).
+  // Linux must show the same ordering (see the Phase 2b implementer's handback).
   PATTERN_MAX_MS: 250,
   MESSAGE_MAX_BYTES: 2_048,
   FINDING_MESSAGE_MAX_BYTES: 512,

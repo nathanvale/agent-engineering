@@ -1,4 +1,4 @@
-// Phase 2b harness for the independently bound cases (BINDINGS.md, binder
+// Phase 2b test harness for the independently bound cases (BINDINGS.md, binder
 // handoff "What the harness must do"). It never edits a binding. Expected
 // values come only from bindings/cases/<id>/expected.json; the checker's
 // own output is the thing being judged, never a source of expectations.

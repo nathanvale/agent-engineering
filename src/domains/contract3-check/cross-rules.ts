@@ -279,7 +279,7 @@ function stationAgreement(
       world.book.unproved(
         parsed.item.caseId,
         ruleId,
-        `No admitted, unrefused command-discovery case describes ${identity}.`,
+        `No listed, unrefused command-discovery case describes ${identity}.`,
       );
     return;
   }
@@ -365,7 +365,7 @@ async function judgeEnvelopeCase(
     world.book.unproved(
       parsed.item.caseId,
       "available-target",
-      "No admitted, unrefused discovery case lists the declared identities.",
+      "No listed, unrefused discovery case lists the declared identities.",
     );
   if (result === null) return c;
   resolveSteps(world, c, commandSteps(result), where);
@@ -410,7 +410,7 @@ function judgeDiscovery(
   c.check(
     "root-routes",
     roots.length <= 1,
-    () => "Discovery admits more than one host root operation.",
+    () => "Discovery declares more than one host root operation.",
   );
 }
 
@@ -473,7 +473,7 @@ function judgeSelection(
     world.book.unproved(
       parsed.item.caseId,
       "lost-result-target",
-      "No admitted, unrefused discovery case lists the declared commands.",
+      "No listed, unrefused discovery case lists the declared commands.",
     );
   if (parsed.item.rules.includes("station-required")) {
     const observed = new Set(
@@ -499,7 +499,7 @@ function judgeSelection(
             ]),
           ),
           () =>
-            `Required station (${show(station.commandIdentity)}, ${show(station.outcome)}, ${show(station.causeCode)}) was not reached by any admitted case.`,
+            `Required station (${show(station.commandIdentity)}, ${show(station.outcome)}, ${show(station.causeCode)}) was not reached by any listed case.`,
         );
   }
   if (
@@ -543,7 +543,7 @@ async function judgeInput(
       world.book.unproved(
         item.caseId,
         ruleId,
-        "Needs a run case with an expected exit and an admitted command-discovery case for its command.",
+        "Needs a run case with an expected exit and a listed command-discovery case for its command.",
       );
     return;
   }
@@ -669,7 +669,7 @@ function judgeProbe(world: World, c: Collector, parsed: ParsedCase): void {
       world.book.unproved(
         item.caseId,
         ruleId,
-        "No admitted read-only probe observed the target's effects.",
+        "No listed read-only probe observed the target's effects.",
       );
     return;
   }

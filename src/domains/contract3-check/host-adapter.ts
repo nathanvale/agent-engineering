@@ -1,5 +1,10 @@
-// The host envelope adapter: inside the checker, the only module that knows
-// the host CLI's envelope major.
+// The host envelope Adapter (Adapter in the codebase-design sense: a concrete
+// module satisfying an Interface at a Seam). It is not a VER-12 version
+// adapter. Inside the checker, it is the only module that knows the host CLI's
+// envelope major.
+// STOPGAP, removed at T7 (accepted decision of 16 November 2026, 13:43): the
+// host CLI moves to a Contract 3.0 front door at composition and no translator
+// between envelope majors remains after that.
 // PROVISIONAL (D1, open with Nathan): the host CLI is Contract 2.0, so the
 // checker's own result and stations use the host's 2.0 shape. VER-14 "an
 // envelope at the checker's minor" stays an open, disclosed obligation until
@@ -14,7 +19,7 @@
 
 import type { OperationResult } from "../../commands-contract.ts";
 import type { MinorTable } from "./minors.ts";
-import type { CheckerOutcome, CheckerStation } from "./outcome.ts";
+import type { CheckerResult, CheckerStation } from "./outcome.ts";
 
 interface HostStationWords {
   causeCode: string;
@@ -34,8 +39,7 @@ const HOST_STATIONS: Readonly<Record<CheckerStation, HostStationWords>> = {
     exitCode: 0,
     nextAction: "Read data.rows; any row other than passed is unproved.",
     repairAction: null,
-    trigger:
-      "Every admitted observation is accepted and no admitted row failed.",
+    trigger: "Every listed observation is accepted and no row failed.",
   },
   usage: {
     causeCode: "USAGE_INVALID_INVOCATION",
@@ -66,7 +70,7 @@ const HOST_STATIONS: Readonly<Record<CheckerStation, HostStationWords>> = {
     repairAction:
       "Correct the admission or target output named in message; message names the observed version and the violated key or correlation.",
     trigger:
-      "The admission is invalid, or target output is malformed, broken, over budget or fails an admitted rule.",
+      "The admission file is invalid, or target output is malformed, broken, over budget or fails a listed rule.",
   },
   "unsupported-contract": {
     causeCode: "SCHEMA_UNSUPPORTED_CONTRACT",
@@ -130,13 +134,13 @@ export function checkerStations(commandIdentity: string): HostStation[] {
 
 function toHostResult(
   commandIdentity: string,
-  outcome: CheckerOutcome,
+  checked: CheckerResult,
 ): OperationResult {
-  const words = HOST_STATIONS[outcome.station];
+  const words = HOST_STATIONS[checked.station];
   return {
     causeCode: words.causeCode,
     commandIdentity,
-    data: outcome.data,
+    data: checked.data,
     effectClass: "inspect",
     effects: {
       completed: [],
@@ -146,7 +150,7 @@ function toHostResult(
     },
     exitCode: words.exitCode,
     failureClass: words.failureClass,
-    message: outcome.message,
+    message: checked.message,
     nextAction: hostWords(words.nextAction, commandIdentity),
     outcome: words.outcome,
     repairAction: words.repairAction,

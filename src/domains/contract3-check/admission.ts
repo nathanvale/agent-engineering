@@ -16,7 +16,7 @@ import type {
   JsonObject,
   Mode,
   Probe,
-  Role,
+  CaseRole,
   RunTarget,
 } from "./types.ts";
 
@@ -25,7 +25,7 @@ export type AdmissionLoad =
   | { kind: "invalid"; problems: string[] }
   | { kind: "unreadable"; problem: string };
 
-const ROLES: readonly Role[] = [
+const CASE_ROLES: readonly CaseRole[] = [
   "help",
   "discovery",
   "command-discovery",
@@ -50,7 +50,7 @@ const RUN_KEYS = ["kind", "program", "args", "cwd", "env", "argvOffset"];
 const CAPTURED_KEYS = ["kind", "stdout", "stderr", "exit"];
 const EXPECT_KEYS = ["exitCode", "causeCode", "commandIdentity", "outcome"];
 const PROBE_KEYS = ["program", "args", "cwd", "env", "expectedStdout"];
-const RECOVERY_POINTERS = /^\/result\/data(\/|$)/;
+const NORMALIZABLE_POINTER = /^\/result\/data(\/|$)/;
 
 class Problems {
   readonly list: string[] = [];
@@ -254,7 +254,7 @@ function readNormalize(
   if (value === undefined) return [];
   if (
     !isStringArray(value) ||
-    !value.every((pointer) => RECOVERY_POINTERS.test(pointer))
+    !value.every((pointer) => NORMALIZABLE_POINTER.test(pointer))
   ) {
     problems.add(
       `${path} may name only JSON Pointers under /result/data; domain recovery and guidance fields are never normalized (got ${JSON.stringify(value)}).`,
@@ -282,10 +282,10 @@ function readCase(
     problems.add(`${path}/caseId must be a nonempty string.`);
   else if (earlier.some((item) => item.caseId === caseId))
     problems.add(`${path}/caseId ${caseId} repeats.`);
-  const role = ROLES.find((item) => item === value.role);
+  const role = CASE_ROLES.find((item) => item === value.role);
   const mode = MODES.find((item) => item === value.mode);
   if (role === undefined)
-    problems.add(`${path}/role must be one of ${ROLES.join(", ")}.`);
+    problems.add(`${path}/role must be one of ${CASE_ROLES.join(", ")}.`);
   if (mode === undefined)
     problems.add(`${path}/mode must be machine or human.`);
   const target = readTarget(value.target, base, `${path}/target`, problems);

@@ -360,7 +360,7 @@ function checkSatisfiable(
   if (clash !== undefined)
     fail(
       ctx,
-      `${path} admits no satisfiable combination: required slots ${clash.join(" and ")} are exclusive.`,
+      `${path} has no satisfiable combination: required slots ${clash.join(" and ")} are exclusive.`,
     );
 }
 

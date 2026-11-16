@@ -13,7 +13,7 @@ Sources, in authority order: the frozen contract under
 [checker-report.schema.json](../checker-report.schema.json),
 [CHECKER_EXPECTATIONS.md](../CHECKER_EXPECTATIONS.md),
 [expectations.json](../expectations.json), [retained-2.json](../retained-2.json),
-the foundation spec section T6 and the 16 November binding decisions (B1 to
+the foundation spec section T6 and the 16 November accepted decisions (B1 to
 B3, F01). Nothing here reads, imports or copies the Contract 3 kernel.
 
 ## Decisions needed before Phase 2
@@ -287,7 +287,7 @@ admission order. Admission and precondition refusals precede every target run.
   ("is broken"), the reader version, and each violated key or correlation, up
   to the message budget.
 - Admitted expectation only: the case id, the observed version, "is accepted
-  by reader 3.0.0 but fails an admitted independent expectation", and each
+  by reader 3.0.0 but fails a listed independent expectation", and each
   differing value. The envelope is not called broken.
 - Any refusal after a target executed: that the target already ran, that its
   effects need separate inspection, and that the checker's `unchanged` says
@@ -316,8 +316,8 @@ outcome and failure class (VER-7, WIRE-20); no closed cross-CLI cause list.
 ## 8. Help
 
 Host `--help` lists the command with this summary: "Judge a Contract 3 CLI's
-output against an admitted case set without rerunning it."
-Proposed full help text, which must match the final admitted interface before
+output against the cases in an admission file without rerunning it."
+Proposed full help text, which must match the final accepted interface before
 release (its route is a D1 consequence):
 
 ```text

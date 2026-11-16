@@ -11,7 +11,7 @@ export type Json =
 
 export type JsonObject = { [key: string]: Json };
 
-export type Role =
+export type CaseRole =
   | "help"
   | "discovery"
   | "command-discovery"
@@ -55,7 +55,7 @@ export interface Probe extends ProgramSpec {
 export interface AdmittedCase {
   caseId: string;
   rules: string[];
-  role: Role;
+  role: CaseRole;
   mode: Mode;
   target: RunTarget | CapturedTarget;
   expect?: Expected;

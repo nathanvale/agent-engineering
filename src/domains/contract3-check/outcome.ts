@@ -15,7 +15,7 @@ export type CheckerStation =
   | "invalid-input"
   | "unsupported-contract";
 
-export interface CheckerOutcome {
+export interface CheckerResult {
   station: CheckerStation;
   message: string;
   data: { reportVersion: 1; rows: ReportRow[] } | null;
@@ -69,7 +69,7 @@ function refusalMessage(refusal: Refusal, readerVersion: string): string {
       return `${where} observed contractVersion ${echo(refusal.observedVersion)} is newer than this reader's ${readerVersion}. Upgrade the reader; nothing was adapted.${tail}`;
     case "broken":
       if (refusal.expectationOnly)
-        return `${where} observed contractVersion ${echo(refusal.observedVersion)} is accepted by reader ${readerVersion} but fails an admitted independent expectation. ${refusal.details.join(" ")}${tail}`;
+        return `${where} observed contractVersion ${echo(refusal.observedVersion)} is accepted by reader ${readerVersion} but fails a listed independent expectation. ${refusal.details.join(" ")}${tail}`;
       return refusal.observedVersion === undefined
         ? `${where} the observed output is broken and no contract version was read (reader ${readerVersion}). ${refusal.details.join(" ")}${tail}`
         : `${where} observed contractVersion ${echo(refusal.observedVersion)} is broken (reader ${readerVersion}). ${refusal.details.join(" ")}${tail}`;
@@ -91,10 +91,10 @@ function summary(
     observedVersions.length > 0
       ? `observed contractVersion ${observedVersions.join(", ")}`
       : "no machine envelope observed";
-  return `Accepted every observation without adaptation as reader ${readerVersion} (${observed}); ${rows.length} admitted rows: ${parts.join(", ")}. Rows other than passed are unproved.`;
+  return `Accepted every observation without adaptation as reader ${readerVersion} (${observed}); ${rows.length} listed rows: ${parts.join(", ")}. Rows other than passed are unproved.`;
 }
 
-export function judgementOutcome(judgement: Judgement): CheckerOutcome {
+export function judgementResult(judgement: Judgement): CheckerResult {
   const { refusal } = judgement;
   if (refusal === null)
     return {
@@ -118,9 +118,9 @@ export function judgementOutcome(judgement: Judgement): CheckerOutcome {
   };
 }
 
-export function admissionOutcome(
+export function admissionResult(
   station: "usage" | "precondition" | "invalid-input",
   message: string,
-): CheckerOutcome {
+): CheckerResult {
   return { station, message: bounded(message), data: null };
 }
