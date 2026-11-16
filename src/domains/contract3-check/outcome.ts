@@ -69,19 +69,27 @@ function refusalMessage(refusal: Refusal, readerVersion: string): string {
       return `${where} observed contractVersion ${echo(refusal.observedVersion)} is newer than this reader's ${readerVersion}. Upgrade the reader; nothing was adapted.${tail}`;
     case "broken":
       return refusal.observedVersion === undefined
-        ? `${where} the observed output is broken and no contract version was read: ${refusal.details.join(" ")}${tail}`
-        : `${where} observed contractVersion ${echo(refusal.observedVersion)} is broken. ${refusal.details.join(" ")}${tail}`;
+        ? `${where} the observed output is broken and no contract version was read (reader ${readerVersion}). ${refusal.details.join(" ")}${tail}`
+        : `${where} observed contractVersion ${echo(refusal.observedVersion)} is broken (reader ${readerVersion}). ${refusal.details.join(" ")}${tail}`;
   }
 }
 
-function summary(rows: readonly ReportRow[], readerVersion: string): string {
+function summary(
+  rows: readonly ReportRow[],
+  readerVersion: string,
+  observedVersions: readonly string[],
+): string {
   const counts = new Map<string, number>();
   for (const row of rows)
     counts.set(row.status, (counts.get(row.status) ?? 0) + 1);
   const parts = [...counts.entries()].map(
     ([status, count]) => `${count} ${status}`,
   );
-  return `Accepted every observation without adaptation as reader ${readerVersion}; ${rows.length} admitted rows: ${parts.join(", ")}. Rows other than passed are unproved.`;
+  const observed =
+    observedVersions.length > 0
+      ? `observed contractVersion ${observedVersions.join(", ")}`
+      : "no machine envelope observed";
+  return `Accepted every observation without adaptation as reader ${readerVersion} (${observed}); ${rows.length} admitted rows: ${parts.join(", ")}. Rows other than passed are unproved.`;
 }
 
 export function judgementOutcome(judgement: Judgement): CheckerOutcome {
@@ -89,7 +97,13 @@ export function judgementOutcome(judgement: Judgement): CheckerOutcome {
   if (refusal === null)
     return {
       station: "success",
-      message: bounded(summary(judgement.rows, judgement.readerVersion)),
+      message: bounded(
+        summary(
+          judgement.rows,
+          judgement.readerVersion,
+          judgement.observedVersions,
+        ),
+      ),
       data: { reportVersion: 1, rows: judgement.rows },
     };
   return {

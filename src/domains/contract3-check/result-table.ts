@@ -128,7 +128,7 @@ function failureProblems(row: ResultRow, failureClass: string): string[] {
   if (row.outcome === "refused" && changed)
     problems.push("a refusal is always unchanged");
   if (row.outcome === "failed" && failureClass === "usage")
-    problems.push("failed with usage is invalid");
+    problems.push("outcome failed with failureClass usage is invalid");
   if (failureClass === "transient" && changed)
     problems.push("transient never reports changed or uncertain effects");
   const retryable = failureClass === "transient" && !changed;
@@ -157,9 +157,11 @@ export function rowProblems(row: ResultRow, cause: string): string[] {
     fixed.transactionState !== row.transactionState
   )
     problems.push(
-      `common cause ${cause} is fixed to ${fixed.outcome}, ${fixed.transactionState}, ${String(fixed.failureClass)}`,
+      `causeCode ${cause} is a common cause fixed to outcome ${fixed.outcome}, transactionState ${fixed.transactionState}, failureClass ${String(fixed.failureClass)}`,
     );
   if (row.arm !== null && row.arm !== fixed.arm)
-    problems.push(`common cause ${cause} carries ${fixed.arm}`);
+    problems.push(
+      `causeCode ${cause} is a common cause that carries ${fixed.arm}`,
+    );
   return problems;
 }

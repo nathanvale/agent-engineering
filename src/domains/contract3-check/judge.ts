@@ -50,6 +50,8 @@ export interface Judgement {
   rows: ReportRow[];
   refusal: Refusal | null;
   readerVersion: string;
+  /** Distinct accepted contractVersion values, in admission order (VER-10 message). */
+  observedVersions: string[];
 }
 
 const VERSION_RULES: Record<
@@ -133,10 +135,17 @@ function judgeMachine(
   for (const finding of ingress.findings)
     c.fail(finding.ruleId, finding.message);
   if (!ingress.ok) {
+    // A machine navigation or dispatch invocation must answer with one
+    // envelope (DISC-1), so dispatch is judged even without one.
+    if (item.role !== "command")
+      c.fail(
+        "dispatch",
+        `A machine ${item.role} invocation must print one envelope (DISC-1).`,
+      );
     book.record(item.caseId, c);
     book.block(
       item.caseId,
-      ["json-framing", "machine-stderr"],
+      ["json-framing", "machine-stderr", "dispatch"],
       "Blocked: the output failed json-framing, so no envelope was read (G2.1).",
     );
     return {
@@ -342,6 +351,13 @@ export async function judgeObservations(
     rows: book.rows(admission.cases),
     refusal: firstRefusal(admission, refusals),
     readerVersion: minors.readerVersion,
+    observedVersions: [
+      ...new Set(
+        parsedCases
+          .map((parsed) => parsed.envelope?.contractVersion)
+          .filter((version): version is string => typeof version === "string"),
+      ),
+    ],
   };
 }
 

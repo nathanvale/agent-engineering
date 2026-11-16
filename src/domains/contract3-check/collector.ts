@@ -108,6 +108,8 @@ export function member(
   ruleId = "closed-union",
 ): boolean {
   ctx.c.touch(ruleId);
+  // An absent key is presence's finding alone (binder footprints).
+  if (value === undefined) return false;
   if (typeof value !== "string" && typeof value !== "number") {
     ctx.c.fail(ruleId, `${path} is not a member of the closed ${kind} union.`);
     return false;
@@ -166,6 +168,10 @@ export function nonEmptyString(
   path: string,
   ruleId = "metadata-values",
 ): boolean {
+  if (value === undefined) {
+    ctx.c.touch(ruleId);
+    return false;
+  }
   return ctx.c.check(
     ruleId,
     isNonEmptyString(value),

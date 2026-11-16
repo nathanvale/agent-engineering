@@ -110,7 +110,9 @@ function readTarget(
   if (value.kind === "run") {
     problems.strict(value, RUN_KEYS, path);
     const program = readProgram(value, base, path, problems);
-    const offset = value.argvOffset ?? 0;
+    // Default: with the checker's own Bun, the first arg is the target script.
+    const offset =
+      value.argvOffset ?? (value.program === "bun-runtime" ? 1 : 0);
     if (
       typeof offset !== "number" ||
       !Number.isSafeInteger(offset) ||
@@ -242,7 +244,7 @@ function readNormalize(
     !value.every((pointer) => RECOVERY_POINTERS.test(pointer))
   ) {
     problems.add(
-      `${path} may name only JSON Pointers under /result/data; domain recovery and guidance fields are never normalized.`,
+      `${path} may name only JSON Pointers under /result/data; domain recovery and guidance fields are never normalized (got ${JSON.stringify(value)}).`,
     );
     return [];
   }

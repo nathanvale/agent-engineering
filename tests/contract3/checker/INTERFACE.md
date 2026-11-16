@@ -159,6 +159,15 @@ criteria (G18); compact `{kind, command, args}` encoding for the `ifNoResult`
 size limit (G19). `diagnostics-absent`, the `fallback-version` negative and
 `minor-meaning` stay stopped: they report `not_run` with a reason.
 
+Phase 2b (16 November 2026, implementer): `argvOffset` defaults to 1 when
+`program` is `bun-runtime` (the first arg is the target script) and to 0
+otherwise. The section 10 budgets are bound by the independent binder in
+`bindings/BUDGETS.json` and restated in `src/domains/contract3-check/budgets.ts`.
+The checker is aligned to the bound cases' attribution and prerequisite model
+(`bindings/BINDINGS.md`). The bound cases run through
+`tests/contract3/checker/harness/`; the D3 reader specimen is
+`specimens/reader-3.1/reader.ts`.
+
 ## 4. Target execution protocol
 
 1. **Count fixed in advance.** The number of target executions equals the

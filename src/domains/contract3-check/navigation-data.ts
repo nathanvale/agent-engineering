@@ -50,15 +50,30 @@ const SIGNAL_EXITS: Readonly<Record<string, string>> = {
   "143": "SIGTERM",
 };
 
-function exactMap(
+/** Listed values are discovery-metadata; an unlisted key is strict-keys. */
+function fixedMap(
+  ctx: ShapeContext,
   value: Json | undefined,
   expected: Readonly<Record<string, string>>,
-): boolean {
-  return (
-    isObject(value) &&
-    Object.keys(value).length === Object.keys(expected).length &&
-    Object.entries(expected).every(([key, meaning]) => value[key] === meaning)
+  path: string,
+): void {
+  if (value === undefined) return;
+  if (!isObject(value)) {
+    ctx.c.fail("discovery-metadata", `${path} must be an object.`);
+    return;
+  }
+  ctx.c.check(
+    "discovery-metadata",
+    Object.entries(expected).every(([key, meaning]) => value[key] === meaning),
+    () => `${path} must map ${JSON.stringify(expected)}.`,
   );
+  ctx.c.touch("strict-keys");
+  for (const key of Object.keys(value))
+    if (!Object.hasOwn(expected, key))
+      ctx.c.fail(
+        "strict-keys",
+        `Unlisted key ${path}/${key}; remove that key.`,
+      );
 }
 
 function validateSummary(
@@ -194,20 +209,13 @@ export function validateDiscoveryData(
     () =>
       `${path}/contractVersion must equal the envelope's ${envelopeVersion}.`,
   );
+  fixedMap(ctx, data.exitMeanings, EXIT_MEANINGS, `${path}/exitMeanings`);
+  fixedMap(ctx, data.signalExits, SIGNAL_EXITS, `${path}/signalExits`);
   ctx.c.check(
     "discovery-metadata",
-    exactMap(data.exitMeanings, EXIT_MEANINGS),
-    () => `${path}/exitMeanings must be exactly the six contract exits.`,
-  );
-  ctx.c.check(
-    "discovery-metadata",
-    exactMap(data.signalExits, SIGNAL_EXITS),
-    () => `${path}/signalExits must be exactly 130 SIGINT and 143 SIGTERM.`,
-  );
-  ctx.c.check(
-    "discovery-metadata",
-    isStringArray(data.effectExclusions) &&
-      data.effectExclusions.every(isNonEmptyString),
+    !has(data, "effectExclusions") ||
+      (isStringArray(data.effectExclusions) &&
+        data.effectExclusions.every(isNonEmptyString)),
     () => `${path}/effectExclusions must be an array of nonempty strings.`,
   );
   return summaries(ctx, data.commands, `${path}/commands`);
@@ -249,7 +257,7 @@ function validateRetryPolicy(
       minimum >= 1 &&
       maximum >= minimum,
     () =>
-      `${path} bounded requires retryable true and positive safe bounds with maximum at least minimum.`,
+      `${path} bounded requires retryable true and positive safe minimumMilliseconds and maximumMilliseconds, with maximumMilliseconds at least minimumMilliseconds.`,
   );
 }
 
@@ -283,7 +291,7 @@ function validateTemplates(
         names.length === 1 &&
         item.text === `{binding.${names[0] ?? ""}}`,
       () =>
-        `${where} may hold a binding only as a whole args element or the whole resource.id.`,
+        `${where} (${item.slot}) may hold a binding only as a whole args element or the whole resource.id.`,
     );
   }
 }
@@ -293,6 +301,7 @@ function validateGuidanceTemplate(
   guidance: Json | undefined,
   path: string,
 ): void {
+  if (guidance === undefined) return;
   if (!isObject(guidance)) {
     ctx.c.fail(
       "guidance-arm",
@@ -300,11 +309,10 @@ function validateGuidanceTemplate(
     );
     return;
   }
-  const keys = Object.keys(guidance);
   if (
     !ctx.c.check(
       "guidance-arm",
-      keys.length === 1 && (has(guidance, "next") || has(guidance, "handoff")),
+      has(guidance, "next") !== has(guidance, "handoff"),
       () => `${path} must hold exactly one of next and handoff.`,
     )
   )
@@ -344,6 +352,11 @@ function validateReachability(
   )
     return;
   const rationale = station.unreachableRationale;
+  ctx.c.unproved(
+    "unreachable-review",
+    "Reachability is review-owned: shape never proves a station required or impossible (DISC-8, DISC-12).",
+  );
+  if (!has(station, "unreachableRationale")) return;
   if (station.reachability === "required")
     ctx.c.check(
       "unreachable-review",
@@ -428,9 +441,11 @@ function validateStation(
       ctx.c.fail("result-correlation", `${path}: ${problem}.`);
   ctx.c.check(
     "metadata-values",
-    station.outcome === "success"
-      ? station.repairAction === null
-      : isNonEmptyString(station.repairAction),
+    !has(station, "outcome") ||
+      !has(station, "repairAction") ||
+      (station.outcome === "success"
+        ? station.repairAction === null
+        : isNonEmptyString(station.repairAction)),
     () => `${path}/repairAction is null for success and a template otherwise.`,
   );
   validateRetryPolicy(ctx, station, `${path}/retryDelayPolicy`);
@@ -529,7 +544,7 @@ export function validateCommandDiscovery(
     "station-duplicate",
     new Set(tuples).size === tuples.length,
     () =>
-      `${path}/stations repeats a (commandIdentity, outcome, causeCode) tuple.`,
+      `${path}/stations repeats a (commandIdentity, outcome, causeCode) tuple: ${tuples.filter((tuple, index) => tuples.indexOf(tuple) !== index).join(" ")}.`,
   );
   if (command === null) return null;
   return { command, ifNoResult, input, stations: stationList };

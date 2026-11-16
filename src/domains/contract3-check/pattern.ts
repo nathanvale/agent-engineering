@@ -14,7 +14,7 @@ export function patternSyntaxProblem(source: string): string | null {
   }
 }
 
-export function patternTooLarge(source: string): boolean {
+function patternTooLarge(source: string): boolean {
   return (
     new TextEncoder().encode(source).length > BUDGETS.PATTERN_MAX_SOURCE_BYTES
   );

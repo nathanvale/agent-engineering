@@ -7,6 +7,7 @@
 // discovery never loads it (DISC-2a).
 
 import type { OperationResult } from "../../commands-contract.ts";
+import type { MinorTable } from "./minors.ts";
 import type { CheckerOutcome, CheckerStation } from "./outcome.ts";
 
 interface HostStationWords {
@@ -122,10 +123,16 @@ function toHostResult(
   };
 }
 
+/**
+ * The production entry passes no table, so the reader reads exactly 3.0.0.
+ * Only code (the test-only D3 reader specimen) can pass another table; no
+ * argv token, environment variable or admission key reaches it (D3 condition 1).
+ */
 export async function executeCheck(
   commandIdentity: string,
   args: string[],
+  minors?: MinorTable,
 ): Promise<OperationResult> {
   const { runCheck } = await import("./command.ts");
-  return toHostResult(commandIdentity, await runCheck(args));
+  return toHostResult(commandIdentity, await runCheck(args, minors));
 }

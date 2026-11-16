@@ -47,6 +47,7 @@ function stringList(
   value: Json | undefined,
   path: string,
 ): string[] {
+  if (value === undefined) return [];
   if (!Array.isArray(value)) {
     ctx.c.fail("metadata-values", `${path} must be an array of strings.`);
     return [];
@@ -89,8 +90,9 @@ export function validateStep(
     nonEmptyString(ctx, step.command, `${path}/command`);
     ctx.c.check(
       "metadata-values",
-      Array.isArray(step.args) &&
-        step.args.every((arg) => typeof arg === "string"),
+      !has(step, "args") ||
+        (Array.isArray(step.args) &&
+          step.args.every((arg) => typeof arg === "string")),
       () => `${path}/args must be an array of strings.`,
     );
   }
@@ -161,7 +163,7 @@ function validateEffectLists(
   };
   ctx.c.check(
     "metadata-values",
-    lists.inventoryComplete !== null,
+    lists.inventoryComplete !== null || !has(effects, "inventoryComplete"),
     () => `${path}/inventoryComplete must be a boolean.`,
   );
   ctx.c.touch("effects-sets");
@@ -236,7 +238,7 @@ function validateEffects(ctx: ShapeContext, result: JsonObject): void {
     ctx.c.check(
       "effects-state",
       problem === null,
-      () => `Effects: ${problem ?? ""}.`,
+      () => `/result/effects: ${problem ?? ""}.`,
     );
   }
   if (result.effectClass === "inspect")
@@ -249,7 +251,7 @@ function validateEffects(ctx: ShapeContext, result: JsonObject): void {
           lists.uncertain.length ===
           0,
       () =>
-        "An inspect result requires unchanged state, a complete inventory and three empty effect lists.",
+        "/result/effects: an inspect result requires unchanged state, a complete inventory and three empty effects lists.",
     );
   const attempted = result.attemptedEffect;
   if (typeof attempted === "string") {
@@ -308,24 +310,28 @@ function validateGuidanceArm(ctx: ShapeContext, result: JsonObject): void {
   );
 }
 
+/** Presence of the conditional key is also a presence finding (binder bindings). */
 function validateRetryDelay(ctx: ShapeContext, result: JsonObject): void {
   const present = has(result, "retryDelayMilliseconds");
   const delay = result.retryDelayMilliseconds;
-  if (result.retryable === true)
+  const retryable = result.retryable === true;
+  if (present !== retryable || delay === null) {
+    const message =
+      delay === null
+        ? "retryDelayMilliseconds is null; it is present with a value exactly when retryable is true."
+        : retryable
+          ? "A retryable result is missing retryDelayMilliseconds."
+          : "retryDelayMilliseconds is present on a result that is not retryable.";
+    ctx.c.fail("retry-delay", message);
+    ctx.c.fail("presence", message);
+    return;
+  }
+  ctx.c.touch("retry-delay");
+  if (retryable)
     ctx.c.check(
       "retry-delay",
-      present &&
-        typeof delay === "number" &&
-        Number.isSafeInteger(delay) &&
-        delay >= 1,
-      () =>
-        "A retryable result carries retryDelayMilliseconds, a safe integer of at least 1.",
-    );
-  else
-    ctx.c.check(
-      "retry-delay",
-      !present,
-      () => "retryDelayMilliseconds is present only when retryable is true.",
+      typeof delay === "number" && Number.isSafeInteger(delay) && delay >= 1,
+      () => "retryDelayMilliseconds must be a safe integer of at least 1.",
     );
 }
 
@@ -425,23 +431,26 @@ function validateCorrelation(ctx: ShapeContext, result: JsonObject): void {
   );
   for (const problem of problems)
     ctx.c.fail("result-correlation", `Result row: ${problem}.`);
-  if (outcome === "success")
-    ctx.c.check(
-      "result-correlation",
-      result.repairAction === null,
-      () => "repairAction is null on success.",
-    );
-  else {
+  const repairPresent = has(result, "repairAction");
+  if (outcome === "success") {
+    if (repairPresent)
+      ctx.c.check(
+        "result-correlation",
+        result.repairAction === null,
+        () => "repairAction is null on success.",
+      );
+  } else {
     ctx.c.check(
       "failure-data",
       result.data === null,
       () => `data must be null on ${outcome}.`,
     );
-    ctx.c.check(
-      "result-correlation",
-      isNonEmptyString(result.repairAction),
-      () => `repairAction is required on ${outcome}.`,
-    );
+    if (repairPresent)
+      ctx.c.check(
+        "result-correlation",
+        isNonEmptyString(result.repairAction),
+        () => `repairAction is required on ${outcome}.`,
+      );
   }
   if (isFallbackCause(causeCode)) {
     // Binder G14 (stopped negative): at a later minor an ordinary internal

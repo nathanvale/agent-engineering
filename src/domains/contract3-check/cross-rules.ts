@@ -7,6 +7,7 @@ import { Collector, isObject } from "./collector.ts";
 import {
   commandTokens,
   parseAgainstSchema,
+  TEMPLATE_VALUE,
   type ParseResult,
 } from "./input-grammar.ts";
 import type { CommandDescription, CommandSummary } from "./navigation-data.ts";
@@ -55,6 +56,7 @@ const BUILT_INS: readonly [string, string[]][] = [
 ];
 
 const INPUT_RULES = [
+  "global-mode",
   "input-case",
   "input-required",
   "input-option",
@@ -118,7 +120,7 @@ function resolveSteps(
         "step-target",
         target !== undefined,
         () =>
-          `${where}: next names ${JSON.stringify(step.command)}, which discovery does not declare.`,
+          `${where}: next.command names ${JSON.stringify(step.command)}, which discovery does not declare.`,
       );
   }
 }
@@ -206,6 +208,12 @@ function compareGuidance(
   );
   const declared = stationBindingNames(station);
   const actual = isObject(result.bindings) ? Object.keys(result.bindings) : [];
+  const present = Object.hasOwn(result, "bindings");
+  if (present !== declared.size > 0)
+    c.fail(
+      "presence",
+      `${where}: bindings is ${present ? "present although the station names no binding" : "absent although the station templates name a binding"}.`,
+    );
   c.check(
     "binding-keys",
     actual.length === declared.size &&
@@ -284,10 +292,16 @@ function stationAgreement(
     station === undefined
   )
     return;
+  world.book.unproved(
+    parsed.item.caseId,
+    "unreachable-review",
+    "Reachability is review-owned: an observed declared station proves only that it was reached.",
+  );
   c.check(
     "unreachable-review",
     station.reachability !== "declared-unreachable",
-    () => `${where}: a station declared unreachable was observed.`,
+    () =>
+      `${where}: station (${show(result.commandIdentity)}, ${show(result.outcome)}, ${show(result.causeCode)}) is declared unreachable but was observed.`,
   );
   compareFixed(c, station, result, where);
   compareGuidance(c, station, result, where);
@@ -303,6 +317,13 @@ function bindingRoute(
   const routeTokens = new Set(
     [...world.commands.values()].flatMap((command) => command.route),
   );
+  const names = new Map(
+    Object.entries(result.bindings)
+      .filter(
+        (entry): entry is [string, string] => typeof entry[1] === "string",
+      )
+      .map(([name, value]) => [value, name]),
+  );
   const values = new Set(
     Object.values(result.bindings).filter(
       (value): value is string => typeof value === "string",
@@ -315,7 +336,7 @@ function bindingRoute(
           "binding-route",
           !routeTokens.has(arg),
           () =>
-            `${where}: run value ${JSON.stringify(arg)} equals a declared route token.`,
+            `${where}: binding ${names.get(arg) ?? "value"} renders ${JSON.stringify(arg)} into args, which equals a declared route token.`,
         );
 }
 
@@ -325,8 +346,8 @@ async function judgeEnvelopeCase(
 ): Promise<Collector> {
   const c = new Collector();
   const result = parsed.result;
-  if (result === null) return c;
   const where = `case ${parsed.item.caseId}`;
+  if (parsed.envelope === null) return c;
   if (world.commands !== null) {
     const paths = parsed.envelope?.availablePaths;
     if (Array.isArray(paths))
@@ -343,6 +364,7 @@ async function judgeEnvelopeCase(
       "available-target",
       "No admitted, unrefused discovery case lists the declared identities.",
     );
+  if (result === null) return c;
   resolveSteps(world, c, commandSteps(result), where);
   await stepArguments(world, c, commandSteps(result), where);
   stationAgreement(world, c, parsed, result);
@@ -495,8 +517,12 @@ async function judgeInput(
   parsed: ParsedCase,
 ): Promise<void> {
   const { item, result } = parsed;
-  const admitted = item.rules.filter((rule) => INPUT_RULES.includes(rule));
-  const ruleIds = admitted.length > 0 ? admitted : ["input-case"];
+  // The three-way argv agreement is judged only where an input rule is
+  // admitted: an expected refusal may come from runtime or run-value checks
+  // the projected schema cannot show (INPUT-4, STEP-10).
+  const ruleIds = item.rules.filter((rule) => INPUT_RULES.includes(rule));
+  const budgetOnly = item.rules.includes("pattern-budget");
+  if (ruleIds.length === 0 && !budgetOnly) return;
   const identity =
     item.expect?.commandIdentity ??
     (typeof result?.commandIdentity === "string"
@@ -524,8 +550,26 @@ async function judgeInput(
     tokens === null
       ? { kind: "refused", reason: "argv does not select the command's route" }
       : await parseAgainstSchema(description.input, tokens, world.matcher);
+  if (
+    description.input.arguments.some(
+      (slot) => slot.value.kind === "string" && slot.value.pattern !== null,
+    ) ||
+    description.input.options.some(
+      (slot) => slot.value?.kind === "string" && slot.value.pattern !== null,
+    )
+  )
+    c.touch("pattern-budget");
   if (projection.kind === "budget") {
     c.fail("pattern-budget", `case ${item.caseId}: ${projection.reason}.`);
+    return;
+  }
+  if (ruleIds.length === 0) return;
+  if (projection.kind === "declaration") {
+    for (const ruleId of ruleIds)
+      c.fail(
+        ruleId,
+        `case ${item.caseId}: the command's declaration is invalid: ${projection.reason}.`,
+      );
     return;
   }
   const expectedAccepted = item.expect.exitCode !== 2;
@@ -568,6 +612,19 @@ function strip(value: Json | undefined, pointers: string[]): Json | undefined {
   return copy;
 }
 
+/** JSON Pointers where two values differ, for a bounded message. */
+function differences(
+  left: Json | undefined,
+  right: Json | undefined,
+  path: string,
+): string[] {
+  if (isObject(left) && isObject(right))
+    return [...new Set([...Object.keys(left), ...Object.keys(right)])].flatMap(
+      (key) => differences(left[key], right[key], `${path}/${key}`),
+    );
+  return canonical(left) === canonical(right) ? [] : [path || "/"];
+}
+
 function judgeDeterministic(
   world: World,
   c: Collector,
@@ -577,15 +634,18 @@ function judgeDeterministic(
     (item) => item.item.caseId === parsed.item.sameAs,
   );
   if (twin === undefined) return;
-  const same =
-    canonical(strip(parsed.envelope ?? undefined, parsed.item.normalize)) ===
-      canonical(strip(twin.envelope ?? undefined, parsed.item.normalize)) &&
-    canonical(parsed.observation.exit) === canonical(twin.observation.exit);
+  const differing = differences(
+    strip(parsed.envelope ?? undefined, parsed.item.normalize),
+    strip(twin.envelope ?? undefined, parsed.item.normalize),
+    "",
+  );
+  if (canonical(parsed.observation.exit) !== canonical(twin.observation.exit))
+    differing.push("process exit");
   c.check(
     "deterministic-fields",
-    same,
+    differing.length === 0,
     () =>
-      `case ${parsed.item.caseId}: deterministic output differs from ${twin.item.caseId} beyond run identity and declared time fields.`,
+      `case ${parsed.item.caseId}: deterministic output differs from ${twin.item.caseId} at ${differing.slice(0, 6).join(", ")}; only run identity and declared time fields may differ.`,
   );
 }
 
@@ -664,6 +724,76 @@ function judgeProbe(world: World, c: Collector, parsed: ParsedCase): void {
   }
 }
 
+/** The selector of a command-discovery case: admitted, or the argv token after --discover-command. */
+function selectorOf(item: AdmittedCase): string | undefined {
+  if (item.selector !== undefined) return item.selector;
+  if (item.target.kind !== "run") return undefined;
+  const argv = item.target.args.slice(item.target.argvOffset);
+  const at = argv.indexOf("--discover-command");
+  return at < 0 ? undefined : argv[at + 1];
+}
+
+/** DISC-5: each built-in answers --discover-command with its own success. */
+function judgeBuiltinSelection(
+  world: World,
+  c: Collector,
+  parsed: ParsedCase,
+): void {
+  const selector = selectorOf(parsed.item);
+  const builtIns = BUILT_INS.map(([suffix]) => `${world.cli}.${suffix}`);
+  if (
+    selector === undefined ||
+    !builtIns.includes(selector) ||
+    parsed.result === null
+  )
+    return;
+  c.check(
+    "builtins",
+    parsed.result.outcome === "success" &&
+      parsed.description?.command.commandIdentity === selector,
+    () =>
+      `Built-in ${selector} must be command-discoverable with its own stations.`,
+  );
+}
+
+/**
+ * F01 (reject at declaration): a station's command-step args, with every
+ * template token standing for any valid run value, must satisfy the target
+ * command's input schema.
+ */
+async function templateArguments(
+  world: World,
+  c: Collector,
+  description: CommandDescription,
+): Promise<void> {
+  for (const [index, station] of description.stations.entries())
+    for (const { step } of stationSteps(station)) {
+      const target =
+        typeof step.command === "string"
+          ? world.descriptions.get(step.command)
+          : undefined;
+      if (target?.input == null || !Array.isArray(step.args)) continue;
+      const args = step.args.map((arg) =>
+        typeof arg !== "string"
+          ? JSON.stringify(arg)
+          : /[{}]/.test(arg)
+            ? TEMPLATE_VALUE
+            : arg,
+      );
+      const parsed = await parseAgainstSchema(
+        target.input,
+        args,
+        world.matcher,
+      );
+      c.check(
+        "step-arguments",
+        parsed.kind === "accepted",
+        () =>
+          `station ${index}: declared args for ${show(step.command)} cannot satisfy its input schema for any run value (${"reason" in parsed ? parsed.reason : ""}).`,
+      );
+    }
+}
+
 /** All cross-observation rules; one collector per case. */
 export async function judgeAcrossCases(
   cli: string,
@@ -697,8 +827,12 @@ export async function judgeAcrossCases(
     const c = await judgeEnvelopeCase(world, parsed);
     if (parsed.discovery !== null) judgeDiscovery(world, c, parsed.discovery);
     if (parsed.help !== null) judgeHelp(world, c, parsed.help);
-    if (parsed.description !== null)
+    if (parsed.description !== null) {
       judgeSelection(world, c, parsed, parsed.description);
+      await templateArguments(world, c, parsed.description);
+    }
+    if (parsed.item.role === "command-discovery")
+      judgeBuiltinSelection(world, c, parsed);
     if (parsed.item.role === "command") await judgeInput(world, c, parsed);
     if (parsed.item.sameAs !== undefined) judgeDeterministic(world, c, parsed);
     judgeProbe(world, c, parsed);

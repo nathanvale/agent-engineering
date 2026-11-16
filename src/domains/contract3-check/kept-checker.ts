@@ -9,6 +9,7 @@ const KEPT_CHECKER = {
   wrapperPath:
     "config/agents/plugins/my-second-brain-playground/bin/cli-design-check",
   runtimeEntry: "runtime/cli-design-check.js",
+  wrapperBlob: "7bdc6dd22b4097076801188979e5a686fc124e48",
 } as const;
 
 export function keptCheckerRoute(): string {

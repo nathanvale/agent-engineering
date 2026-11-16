@@ -30,7 +30,7 @@ function expectedExit(
     "exit-expected",
     exitCode(observation) === expected,
     () =>
-      `Real ${exitText(observation)} differs from the independently expected exit ${expected}.`,
+      `Real ${exitText(observation)} differs from the independently expected exitCode ${expected}.`,
   );
 }
 
@@ -107,6 +107,8 @@ export function machineProcessRules(
   observation: Observation,
   envelope: JsonObject,
 ): void {
+  // Captured bytes prove no process observation (INTERFACE.md section 3).
+  if (observation.source === "captured") return;
   const result = isObject(envelope.result) ? envelope.result : {};
   const code = exitCode(observation);
   c.check(
@@ -122,7 +124,7 @@ export function machineProcessRules(
       "cause-expected",
       result.causeCode === expect.causeCode,
       () =>
-        `Observed cause ${JSON.stringify(result.causeCode)} differs from the independently expected ${expect.causeCode}.`,
+        `Observed causeCode ${JSON.stringify(result.causeCode)} differs from the independently expected ${expect.causeCode}.`,
     );
   if (expect?.commandIdentity !== undefined)
     c.check(
@@ -183,6 +185,7 @@ export function humanProcessRules(
   item: AdmittedCase,
   observation: Observation,
 ): void {
+  if (observation.source === "captured") return;
   expectedExit(c, item, observation);
   const code = exitCode(observation);
   const printed = observation.stdout.bytes.length > 0;

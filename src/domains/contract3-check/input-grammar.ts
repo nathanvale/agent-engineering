@@ -12,11 +12,7 @@ import {
   strictKeys,
   type ShapeContext,
 } from "./collector.ts";
-import {
-  patternSyntaxProblem,
-  patternTooLarge,
-  type PatternMatcher,
-} from "./pattern.ts";
+import { patternSyntaxProblem, type PatternMatcher } from "./pattern.ts";
 import type { Json } from "./types.ts";
 
 type ValueSpec =
@@ -143,14 +139,9 @@ function validateValue(
       ctx.c.fail("pattern-syntax", `${path}/pattern must be null or a string.`);
       return null;
     }
-    ctx.c.touch("pattern-syntax", "pattern-budget");
-    if (patternTooLarge(pattern)) {
-      ctx.c.fail(
-        "pattern-budget",
-        `${path}/pattern exceeds the reader's pattern-size budget.`,
-      );
-      return null;
-    }
+    // An oversize pattern is a budget finding on the input case that matches
+    // it (binder G23), never on the declaration; compiling it is bounded work.
+    ctx.c.touch("pattern-syntax");
     const problem = patternSyntaxProblem(pattern);
     if (problem !== null) {
       ctx.c.fail(
@@ -247,11 +238,6 @@ function validateOption(
     );
     return null;
   }
-  if (item.value === null && item.repeatable)
-    ctx.c.fail(
-      "input-presence",
-      `${path} is a presence flag and cannot be repeatable.`,
-    );
   return {
     name: item.name,
     aliases,
@@ -282,7 +268,10 @@ function validateConstraint(
       !slots.has(thenPresent) ||
       ifPresent === thenPresent
     ) {
-      fail(ctx, `${path} must name two distinct declared slots.`);
+      fail(
+        ctx,
+        `${path} requires must name two distinct declared slots; got ${JSON.stringify([ifPresent, thenPresent])}.`,
+      );
       return null;
     }
     return { kind: "requires", ifPresent, thenPresent };
@@ -297,7 +286,7 @@ function validateConstraint(
   ) {
     fail(
       ctx,
-      `${path}/members must name at least two distinct declared slots.`,
+      `${path}/members must name at least two distinct declared slots; got ${JSON.stringify(members)}.`,
     );
     return null;
   }
@@ -333,7 +322,14 @@ function checkUniqueness(
     firstOptional >= 0 &&
     spec.arguments.slice(firstOptional).some((argument) => argument.required)
   )
-    fail(ctx, `${path} declares a required argument after an optional one.`);
+    fail(
+      ctx,
+      `${path} declares a required argument after an optional one: ${spec.arguments
+        .slice(firstOptional)
+        .filter((argument) => argument.required)
+        .map((argument) => argument.name)
+        .join(", ")}.`,
+    );
 }
 
 function checkSatisfiable(
@@ -358,14 +354,13 @@ function checkSatisfiable(
   for (const constraint of spec.constraints)
     if (constraint.kind === "requires" && forced.has(constraint.ifPresent))
       forced.add(constraint.thenPresent);
-  if (
-    exclusivePairs.some(
-      ([left, right]) => forced.has(left) && forced.has(right),
-    )
-  )
+  const clash = exclusivePairs.find(
+    ([left, right]) => forced.has(left) && forced.has(right),
+  );
+  if (clash !== undefined)
     fail(
       ctx,
-      `${path} admits no satisfiable combination of required slots and constraints.`,
+      `${path} admits no satisfiable combination: required slots ${clash.join(" and ")} are exclusive.`,
     );
 }
 
@@ -393,8 +388,16 @@ export function validateInputSchema(
       "additionalOptions",
     ],
     path,
-    "input-schema",
   );
+  const missing = [
+    "arguments",
+    "options",
+    "constraints",
+    "deadlineSupported",
+    "additionalArguments",
+    "additionalOptions",
+  ].some((key) => !Object.hasOwn(input, key));
+  if (missing) return null;
   if (input.additionalArguments !== false || input.additionalOptions !== false)
     fail(
       ctx,
@@ -447,15 +450,23 @@ export function validateInputSchema(
 export type ParseResult =
   | { kind: "accepted" }
   | { kind: "refused"; reason: string }
-  | { kind: "budget"; reason: string };
+  | { kind: "budget"; reason: string }
+  | { kind: "declaration"; reason: string };
 
 const ACCEPTED: ParseResult = { kind: "accepted" };
+
+/**
+ * Stands for a template token when a declared step's args are checked at
+ * declaration (F01): any run value may fill it, so its value always passes.
+ */
+export const TEMPLATE_VALUE = "\u0000template-value";
 
 async function valueProblem(
   value: ValueSpec,
   token: string,
   matcher: PatternMatcher,
 ): Promise<ParseResult> {
+  if (token === TEMPLATE_VALUE) return ACCEPTED;
   if (value.kind === "integer") {
     const number = Number(token);
     return INTEGER_TOKEN.test(token) &&
@@ -468,6 +479,22 @@ async function valueProblem(
           reason: `integer token ${JSON.stringify(token)} is outside the declared grammar or bounds`,
         };
   }
+  // The untrusted pattern is matched first, under its budget: binder
+  // pattern-budget.negative expects budget exhaustion even when the subject
+  // also breaks maxLength (INPUT-2 fixes no order).
+  if (value.pattern !== null) {
+    const matched = await matcher.match(value.pattern, token);
+    if (matched === "budget")
+      return {
+        kind: "budget",
+        reason: "pattern match exceeded the reader's finite budget",
+      };
+    if (matched !== "match")
+      return {
+        kind: "refused",
+        reason: "value does not match the declared pattern",
+      };
+  }
   const length = codePoints(token);
   if (length < value.minLength || length > value.maxLength)
     return {
@@ -476,16 +503,7 @@ async function valueProblem(
     };
   if (value.choices !== null && !value.choices.includes(token))
     return { kind: "refused", reason: "value is not a declared choice" };
-  if (value.pattern === null) return ACCEPTED;
-  const matched = await matcher.match(value.pattern, token);
-  if (matched === "budget")
-    return {
-      kind: "budget",
-      reason: "pattern match exceeded the reader's finite budget",
-    };
-  return matched === "match"
-    ? ACCEPTED
-    : { kind: "refused", reason: "value does not match the declared pattern" };
+  return ACCEPTED;
 }
 
 interface ParseState {
@@ -558,6 +576,14 @@ async function optionStep(
     ];
   const count = (state.counts.get(option.name) ?? 0) + 1;
   state.counts.set(option.name, count);
+  if (option.value === null && option.repeatable)
+    return [
+      {
+        kind: "declaration",
+        reason: `presence flag ${option.name} is declared repeatable (INPUT-2)`,
+      },
+      index + 1,
+    ];
   if (option.value === null)
     return [
       count > 1
