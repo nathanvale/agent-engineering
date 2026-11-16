@@ -42,10 +42,7 @@ const receipt: Record<string, unknown> = {
   startedAt: new Date().toISOString(),
 };
 /** unproved: the binding matched but its property is vacuous or not observed; never counted as passed. */
-const outcomes = new Map<
-  string,
-  { matched: boolean; problems: string[]; unproved?: string }
->();
+const outcomes = new Map<string, { matched: boolean; problems: string[] }>();
 /** Properties a passing test did not prove; each is reported, never counted as proof. */
 const unprovedProperties: { id: string; reason: string }[] = [];
 
@@ -62,17 +59,22 @@ afterAll(async () => {
       .filter((binding) => binding.provisional.length > 0)
       .map((binding) => binding.id),
   );
+  // F6, F-1: one source. A binding in unprovedProperties is unproved and
+  // never passed, whichever block recorded it.
+  const unprovedIds = new Set(unprovedProperties.map((item) => item.id));
   receipt.bindings = {
     run: results.length,
     passed: results.filter(
       ([id, result]) =>
-        result.matched && !provisional.has(id) && result.unproved === undefined,
+        result.matched && !provisional.has(id) && !unprovedIds.has(id),
     ).length,
     provisionalMatched: results.filter(
-      ([id, result]) => result.matched && provisional.has(id),
+      ([id, result]) =>
+        result.matched && provisional.has(id) && !unprovedIds.has(id),
     ).length,
-    unproved: results.filter(([, result]) => result.unproved !== undefined)
-      .length,
+    unproved: results.filter(
+      ([id, result]) => result.matched && unprovedIds.has(id),
+    ).length,
     failed: results.filter(([, result]) => !result.matched).length,
     notRun: manifest.totals.bindings - results.length,
     stopped: manifest.totals.stopped,
@@ -231,8 +233,6 @@ function timingProblems(expected: Expected, elapsedMs: number): string[] {
     : [];
 }
 
-const unprovedStatic = new Map<string, string>();
-
 /** S5: the checker's help (human and machine) and its interface documentation. */
 async function checkerHelpAndDocumentation(): Promise<Record<string, string>> {
   const help = (json: boolean) =>
@@ -346,16 +346,10 @@ describe("static blocks (group T)", () => {
           if (status.typescript === 0) {
             const reason = `UNPROVED (vacuous): the checker's help and documentation hold ${status.snippets} fenced snippets and no TypeScript snippet, so no snippet's proof status is exercised.`;
             unprovedProperties.push({ id: binding.id, reason });
-            unprovedStatic.set(binding.id, reason);
           }
         } else problems.push(`unhandled static rule ${binding.rule}`);
         results[binding.id] = problems;
-        const unproved = unprovedStatic.get(binding.id);
-        outcomes.set(binding.id, {
-          matched: problems.length === 0,
-          problems,
-          ...(unproved === undefined ? {} : { unproved }),
-        });
+        outcomes.set(binding.id, { matched: problems.length === 0, problems });
       }
       expect(Object.keys(results)).toHaveLength(manifest.totals.static);
       expect(
