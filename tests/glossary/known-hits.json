@@ -1,0 +1,131 @@
+{
+  "about": "Shrinking list. These avoid-word hits existed when the glossary check was introduced (16 November 2026). The check fails on any hit not listed here, and on any listed hit that no longer exists: remove or lower an entry in the same commit that fixes it. Never add an entry. When the list is empty, delete this file and the check is absolute.",
+  "hits": [
+    {
+      "file": "src/domains/contract3-check/admission.ts",
+      "term": "Admitted",
+      "surface": "visible-text",
+      "text": "${path}/${key} is not an admission key.",
+      "count": 1
+    },
+    {
+      "file": "src/domains/contract3-check/admission.ts",
+      "term": "Admitted",
+      "surface": "public-identifier",
+      "text": "AdmissionLoad",
+      "count": 1
+    },
+    {
+      "file": "src/domains/contract3-check/admission.ts",
+      "term": "Admitted",
+      "surface": "visible-text",
+      "text": "The admission exceeds ${BUDGETS.ADMISSION_MAX_BYTES} bytes.",
+      "count": 1
+    },
+    {
+      "file": "src/domains/contract3-check/admission.ts",
+      "term": "Admitted",
+      "surface": "visible-text",
+      "text": "The admission is not valid JSON.",
+      "count": 1
+    },
+    {
+      "file": "src/domains/contract3-check/admission.ts",
+      "term": "Admitted",
+      "surface": "visible-text",
+      "text": "The admission root must be a JSON object.",
+      "count": 1
+    },
+    {
+      "file": "src/domains/contract3-check/admission.ts",
+      "term": "Admitted",
+      "surface": "public-identifier",
+      "text": "loadAdmission",
+      "count": 1
+    },
+    {
+      "file": "src/domains/contract3-check/command.ts",
+      "term": "Admitted",
+      "surface": "visible-text",
+      "text": "The admission is invalid: ${load.problems.slice(0, 8).join(\" \")} No target ran.",
+      "count": 1
+    },
+    {
+      "file": "src/domains/contract3-check/host-adapter.ts",
+      "term": "Admitted",
+      "surface": "visible-text",
+      "text": "An admission, captured stream, program or working directory is missing or unreadable.",
+      "count": 1
+    },
+    {
+      "file": "src/domains/contract3-check/host-adapter.ts",
+      "term": "Admitted",
+      "surface": "visible-text",
+      "text": "Correct the admission or target output named in message; message names the observed version and the violated key or correlation.",
+      "count": 1
+    },
+    {
+      "file": "src/domains/contract3-check/host-adapter.ts",
+      "term": "Admitted",
+      "surface": "visible-text",
+      "text": "The invocation does not name exactly one admission path.",
+      "count": 1
+    },
+    {
+      "file": "src/domains/contract3-check/host-adapter.ts",
+      "term": "CLI front door",
+      "surface": "comment",
+      "text": "host CLI moves to a Contract 3.0 front door at composition and no translator",
+      "count": 1
+    },
+    {
+      "file": "src/domains/contract3-check/navigation-data.ts",
+      "term": "Template",
+      "surface": "visible-text",
+      "text": "${where} uses unknown template token ${token}.",
+      "count": 1
+    },
+    {
+      "file": "src/domains/contract3-check/observe.ts",
+      "term": "Admitted",
+      "surface": "public-identifier",
+      "text": "observeAdmission",
+      "count": 1
+    },
+    {
+      "file": "src/domains/contract3-check/observe.ts",
+      "term": "Test harness",
+      "surface": "comment",
+      "text": "harness's component layer: each admitted case observed once, in admission",
+      "count": 1
+    },
+    {
+      "file": "src/domains/contract3-check/outcome.ts",
+      "term": "Admitted",
+      "surface": "public-identifier",
+      "text": "admissionResult",
+      "count": 1
+    },
+    {
+      "file": "src/domains/contract3-check/types.ts",
+      "term": "Admitted",
+      "surface": "public-identifier",
+      "text": "Admission",
+      "count": 1
+    },
+    {
+      "file": "src/domains/contract3-check/types.ts",
+      "term": "Admitted",
+      "surface": "public-identifier",
+      "text": "AdmittedCase",
+      "count": 1
+    },
+    {
+      "file": "tests/contract3/checker/bindings/INTERFACE-REVIEW.md",
+      "term": "Accepted decision",
+      "surface": "doc",
+      "text": "[retained-2.json](../../retained-2.json) and Nathan's binding decisions of 16",
+      "count": 1
+    }
+  ]
+}

@@ -1,0 +1,297 @@
+{
+  "schemaVersion": 1,
+  "glossary": "Linear 'Agent ecosystem glossary (living)', as of 16 November 2026 14:42 AEDT (19 code terms accepted; 'Possible results:' accepted; the diagnostics add-on's allocation lock is a third, qualified lock)",
+  "owner": "Read by tests/glossary/glossary.test.ts. The same terms as the template's copy; scope and exemptions are this repository's. Wire names are never listed here; the check skips them by shape.",
+  "scope": [
+    "src/domains/contract3-check/**/*.ts",
+    "src/commands.ts",
+    "tests/contract3/checker/**/*.{ts,mjs,md}"
+  ],
+  "exempt": [
+    "skills/agent-cli-design/references/contract-3/**",
+    "tests/contract3/checker/bindings/cases/**",
+    "tests/contract3/checker-expectations.json",
+    "tests/contract3/expectations.json",
+    "tests/contract3/retained-2.json",
+    "tests/glossary/**"
+  ],
+  "terms": [
+    {
+      "term": "Handler entry",
+      "allowed": ["handler entry", "Dispatch", "<cli>.dispatch"],
+      "avoid": [
+        {
+          "pattern": "\\bdispatched\\b|\\bdispatches\\b",
+          "surfaces": [
+            "visible-text",
+            "comment",
+            "test-title",
+            "public-identifier",
+            "internal-identifier"
+          ],
+          "message": "Use 'handler entry' for the moment a handler starts; Dispatch is resolve, validate, admit or refuse."
+        },
+        {
+          "pattern": "\\b(before|after) (operation )?dispatch\\b",
+          "surfaces": ["comment", "test-title", "doc"],
+          "message": "Say 'before handler entry' or 'after handler entry' (accepted decision, 16 November 2026)."
+        }
+      ]
+    },
+    {
+      "term": "Outcome",
+      "allowed": ["outcome", "outcome-unknown closure"],
+      "avoid": [
+        {
+          "pattern": ".Outcome$",
+          "surfaces": ["public-identifier", "internal-identifier"],
+          "message": "Outcome is only success, refused or failed; name other results ...Result."
+        },
+        {
+          "pattern": "unknown-outcome",
+          "surfaces": ["visible-text", "comment", "doc", "test-title"],
+          "message": "Write 'outcome-unknown closure'."
+        },
+        {
+          "pattern": "\\bPossible outcomes\\b",
+          "surfaces": ["visible-text"],
+          "message": "The heading is 'Possible results:' (accepted 16 November 2026)."
+        }
+      ]
+    },
+    {
+      "term": "If no result",
+      "allowed": ["ifNoResult", "ifNoResult step", "If no result command"],
+      "avoid": [
+        {
+          "pattern": "\\brecovery route\\b|\\bno ?result ?route\\b|noResultRoute",
+          "surfaces": [
+            "visible-text",
+            "public-identifier",
+            "internal-identifier"
+          ],
+          "message": "The If no result command is read-only and is not Recovery; a route is a command's tokens. Quote DISC-15 with a clause id when you mean it."
+        },
+        {
+          "pattern": "RECOVERY_POINTER",
+          "surfaces": ["internal-identifier", "public-identifier"],
+          "message": "These pointers are the normalisable area, which excludes recovery fields."
+        }
+      ]
+    },
+    {
+      "term": "Admitted",
+      "allowed": [
+        "start admission",
+        "static admission",
+        "toolchain admission",
+        "admission lock",
+        "admission coordination lock",
+        "admission file",
+        "--admission",
+        "admitStart"
+      ],
+      "avoid": [
+        {
+          "pattern": "\\b(?:[Uu]n)?[Aa]dmi(?:t|ts|tted|ssion)\\b",
+          "surfaces": ["visible-text", "public-identifier"],
+          "unlessAllowedForm": true,
+          "message": "Say which gate: validated, consumed, created by contractFor.stateAddon, listed in the admission file, or a qualified admission form."
+        }
+      ]
+    },
+    {
+      "term": "Accepted decision",
+      "allowed": [
+        "accepted decision",
+        "decided by Nathan",
+        "default station words"
+      ],
+      "avoid": [
+        {
+          "pattern": "\\bbinding decisions?\\b|\\bbound by (Nathan|the coordinator)\\b|\\bwords are binding\\b|\\bbinding (default )?words\\b|\\bbindings? B[0-9]\\b",
+          "surfaces": ["comment", "doc", "test-title", "visible-text"],
+          "message": "A ruling is an accepted decision; the kernel's fallback words are default station words."
+        }
+      ]
+    },
+    {
+      "term": "Test harness",
+      "allowed": ["test harness", "process test harness"],
+      "avoid": [
+        {
+          "pattern": "(?<![Tt]est )(?<!process test )(?<![/.\\w-])\\bharness\\b(?![-./])",
+          "surfaces": ["comment", "doc", "test-title"],
+          "firstUsePerFile": true,
+          "message": "Write 'test harness' at least once in each file that uses the word."
+        }
+      ]
+    },
+    {
+      "term": "Handoff",
+      "allowed": ["handoff", "handback"],
+      "avoid": [
+        {
+          "pattern": "\\bhandoff (note|document)\\b|\\bPhase \\w+ handoff\\b|\\bbinder'?s? handoff\\b",
+          "surfaces": ["comment", "doc"],
+          "message": "A worker's return is a handback; a handoff is contract guidance."
+        }
+      ]
+    },
+    {
+      "term": "Coordinator",
+      "allowed": ["foundation coordinator"],
+      "avoid": [
+        {
+          "pattern": "(?<!foundation )\\bcoordinator\\b",
+          "surfaces": ["comment", "visible-text"],
+          "pathsOnly": ["src/domains/contract3-check/**"],
+          "message": "Stamped source cites a clause or decision id, not a session."
+        }
+      ]
+    },
+    {
+      "term": "CLI front door",
+      "allowed": ["CLI front door", "host front door", "kernel process entry"],
+      "avoid": [
+        {
+          "pattern": "(?<!CLI )(?<!host )\\bfront[- ]?door\\b",
+          "surfaces": ["comment", "visible-text"],
+          "pathsOnly": ["src/domains/contract3-check/**"],
+          "message": "The host owns the front door; runProcess is the kernel process entry."
+        }
+      ]
+    },
+    {
+      "term": "Host CLI",
+      "allowed": ["host CLI", "host-owned"],
+      "avoid": [
+        {
+          "pattern": "\\bHost (code|source) imports\\b|\\bhost source imports\\b|\\bdynamic host imports\\b",
+          "surfaces": ["visible-text", "test-title"],
+          "message": "These rules cover add-on folders too; say 'code outside the kernel' or 'add-on source'."
+        }
+      ]
+    },
+    {
+      "term": "Composer / Composition",
+      "allowed": ["composer", "built by contractFor", "host wiring"],
+      "avoid": [
+        {
+          "pattern": "\\bcomposed by contractFor\\b|\\bhost composition\\b|\\bcomposed contract\\b",
+          "surfaces": ["visible-text", "comment"],
+          "pathsOnly": ["src/domains/contract3-check/**"],
+          "message": "Composition is the composer's repository change; runtime wiring is 'built by contractFor'."
+        }
+      ]
+    },
+    {
+      "term": "State add-on factory and instance",
+      "allowed": [
+        "state add-on factory",
+        "state add-on instance",
+        "state add-on descriptor",
+        "installedAddons"
+      ],
+      "avoid": [
+        {
+          "pattern": "\\bstate installation\\b|\\banother installation\\b|'s installation\\b|\\b[Ss]tate installer\\b|\\binstaller authoring\\b|\\bstate factory\\b|\\bstamped state owner\\b|\\bauthoring seam\\b",
+          "surfaces": ["visible-text", "comment", "test-title"],
+          "message": "One factory call is a state add-on instance; the function is the state add-on factory (accepted 16 November 2026)."
+        }
+      ]
+    },
+    {
+      "term": "Stamped source",
+      "allowed": ["stamped kernel", "stamped add-on", "stamped source"],
+      "avoid": [
+        {
+          "pattern": "\\bstamped descriptor\\b|\\bstamped-add-on authoring\\b",
+          "surfaces": ["visible-text", "comment"],
+          "message": "Only a byte-for-byte copied file is stamped."
+        }
+      ]
+    },
+    {
+      "term": "Template",
+      "allowed": ["guidance template", "step template", "station template"],
+      "avoid": [
+        {
+          "pattern": "(?<!guidance )(?<!step )(?<!station )\\btemplate (token|values)\\b",
+          "surfaces": ["visible-text"],
+          "pathsOnly": ["src/domains/contract3-check/**"],
+          "message": "Qualify as a guidance template."
+        }
+      ]
+    },
+    {
+      "term": "Lock",
+      "allowed": [
+        "coordination lock",
+        "admission lock",
+        "held-lock",
+        "compile-time lock",
+        "compiler lock",
+        "lockfile",
+        "allocation lock"
+      ],
+      "avoid": [
+        {
+          "pattern": "(?<![.\\w-])(?<!coordination )(?<!admission )(?<!allocation )(?<!compile-time )(?<!compiler )\\block\\b(?!file)",
+          "surfaces": ["visible-text"],
+          "message": "Qualify the lock: coordination lock, admission lock, allocation lock (diagnostics only) or compile-time lock."
+        }
+      ]
+    },
+    {
+      "term": "Closure and settled case",
+      "allowed": ["closure", "effect closure", "settled case"],
+      "avoid": [
+        {
+          "pattern": "\\bsettlements?\\b",
+          "surfaces": ["visible-text", "comment", "doc", "test-title"],
+          "message": "Avoid 'settlement'; say closure (accepted 16 November 2026)."
+        }
+      ]
+    },
+    {
+      "term": "Approval store",
+      "allowed": ["approval store"],
+      "avoid": [
+        {
+          "pattern": "\\bledgers?\\b|Ledger",
+          "surfaces": [
+            "visible-text",
+            "comment",
+            "public-identifier",
+            "internal-identifier"
+          ],
+          "pathsOnly": ["starters/contract3/src/addons/approval/**"],
+          "message": "Say approval store, not ledger (accepted 16 November 2026)."
+        }
+      ]
+    },
+    {
+      "term": "Capability qualification table",
+      "allowed": ["capability qualification table"],
+      "avoid": [
+        {
+          "pattern": "(?<!capability )\\bqualification table\\b",
+          "surfaces": ["visible-text", "comment", "doc"],
+          "message": "Write 'capability qualification table'; 'qualified' alone is an evidence state."
+        }
+      ]
+    },
+    {
+      "term": "Module (design words)",
+      "allowed": ["Module", "Interface", "Seam", "Adapter"],
+      "avoid": [
+        {
+          "pattern": "\\bInterface for other components\\b|\\b(service|API) (module|seam)\\b",
+          "surfaces": ["doc", "comment"],
+          "message": "Use the codebase-design word."
+        }
+      ]
+    }
+  ]
+}
