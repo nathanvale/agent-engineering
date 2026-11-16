@@ -92,6 +92,7 @@
   "excluded": {},
   "harness": {
     "rule": "pattern-isolation",
+    "sensitivityControl": "Run the pattern synchronously on the checker's own thread with no budget; the harness must fail, either on the 5,000 ms bound or because the engine's false non-match gives a wrong exit or cause (exit 0 instead of the bound exit-4 refusal).",
     "assertion": "The checker's own budget ends the hostile match at PATTERN_MAX_MS (250 ms) and refuses; the checker exits 4 within 5,000 ms of start. On Bun 1.4.4 JavaScriptCore stops this match by itself after about 0.4 to 0.6 s and reports a false non-match, so a run that ends without the budget refusal is a wrong answer, not a pass (INPUT-2, V-44)."
   },
   "static": null,
