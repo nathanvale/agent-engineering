@@ -942,8 +942,8 @@ function envelopeRules() {
     [
       "overlap.remaining-uncertain",
       ["audit.write"],
-      ["note.write"],
-      ["note.write"],
+      ["index.write"],
+      ["index.write", "note.write"],
     ],
     [
       "duplicate.completed",
