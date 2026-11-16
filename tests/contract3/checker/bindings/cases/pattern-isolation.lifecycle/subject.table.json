@@ -8,9 +8,12 @@
   ],
   "responses": [
     {
-      "stdout": "subject.0.stdout",
+      "stdout": null,
       "stderr": null,
-      "exit": 2
+      "exit": 0,
+      "state": "input-run-started\n",
+      "hang": true
     }
-  ]
+  ],
+  "state": "lifecycle.state"
 }

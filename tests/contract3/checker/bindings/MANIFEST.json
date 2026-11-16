@@ -42,11 +42,11 @@
       "none": 8
     },
     "rows": {
-      "passed": 12460,
-      "failed": 354,
+      "passed": 12452,
+      "failed": 353,
       "not_run": 73,
       "skipped": 0,
-      "timed_out": 3,
+      "timed_out": 12,
       "missing": 0,
       "declared_unreachable": 0,
       "total": 12890
@@ -2477,7 +2477,7 @@
       "files": {
         "admission.json": "4b26d76017f6da03f9badd69d1fbc7e9ae63208e994e91c5f02d43e8397839a4",
         "expected.json": "a4397ab380c63dd93c6ef864b11929b645cff5f9fed92c686e19f376099d06ed",
-        "subject.0.stdout": "d4437f68115ef7ec475e4d12753771d63bf17b4c29a9fb7d3c74efab1e741613",
+        "subject.0.stdout": "8c019d5e1d513db75bd32bcfd8411aa1dcf6cdc60fe76e114ac653ec8d8dd8e2",
         "subject.table.json": "ecb2ae2a780529d301a2cb0ff5c99b752dc561e7d9a7e080a3ea3aba54f67fd9"
       },
       "shared": [],
@@ -2537,7 +2537,7 @@
       "files": {
         "admission.json": "9e1f9709e69ffd7f09033ff92a8432431c3dd7aecfa623e966a834e45f39d4b7",
         "expected.json": "ebb43bc3c0178c4bd33bc71175d12bede56c0fcb59270794db860f55d8105f50",
-        "subject.0.stdout": "6fdf66d64ed7fb900f3d9eb6e79da36a7f91afb983c7b877fdc694b52eccef59",
+        "subject.0.stdout": "bc47408d4a9b3543bd04c2a373198f5da74c788fc70fe9606766b202285b3360",
         "subject.table.json": "ecb2ae2a780529d301a2cb0ff5c99b752dc561e7d9a7e080a3ea3aba54f67fd9"
       },
       "shared": [],
@@ -2567,7 +2567,7 @@
       "files": {
         "admission.json": "54bbf03ab2bcb09ea9ab0adf4036f19156bb29e13b342b637ba526e1697844af",
         "expected.json": "1298791372f6bc4904921d96b1d8bb94a3877cfe432c440ac5dd9a8133f1ca66",
-        "subject.0.stdout": "e528103ade7b8707026d1f80444e7f9635835749ac4f3325eb5b46d548f28039",
+        "subject.0.stdout": "154ee00268277fa96c52dfb1bb7f1acccc0d2e3d442f32f9c92f7a17b5704860",
         "subject.table.json": "ecb2ae2a780529d301a2cb0ff5c99b752dc561e7d9a7e080a3ea3aba54f67fd9"
       },
       "shared": [],
@@ -2597,7 +2597,7 @@
       "files": {
         "admission.json": "e4b543acb60a7730979f604d4e56dc11d226975bed04ffa12955560196761ed9",
         "expected.json": "e66fc92cec0336d84b52da2a09523a58a2899976b1b358a354efe9e8ce4fd5da",
-        "subject.0.stdout": "092d7de993837ae667f09655222be91f9e5b4fdad5595dae13c0fdf519bdafc4",
+        "subject.0.stdout": "1f4f6bbb0df5e0402af52c05b853722e9ccc1875eb325d4beaeab890099d3186",
         "subject.table.json": "ecb2ae2a780529d301a2cb0ff5c99b752dc561e7d9a7e080a3ea3aba54f67fd9"
       },
       "shared": [],
@@ -4621,7 +4621,7 @@
         "admission.json": "14659422a37598abd655bcea33ef8f211bfa260f1113b1e17a9e2287aaef1295",
         "expected.json": "64afd219d796dfd6a493043e98610c675d2c5f0e1fa798d993243165a48c55fa",
         "subject.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-        "subject.stdout": "474d3adfd4c4ce8816827f0e74f1c6b7bab40fa95f8f8d9ce5f00fa690d430c0"
+        "subject.stdout": "baa0f544428bc57adb9fe9e447ce3f1263b446aa3e70aa105c8b67917f49f690"
       },
       "shared": [
         "shared/cd-apply.stdout",
@@ -14128,7 +14128,7 @@
         "admission.json": "63fc39b8211dd607b99fa28dbb285802344105c4fe7aae3bdbfffa2601bbbbb4",
         "cd-find.0.stdout": "33d8fc2d5f8d97a23efffe71af05d27fe778b20f27873a8c77d56fb52dcddfc1",
         "cd-find.table.json": "6cfbe4f0fe3b16f196a1bdbb0e193501235d8c0c1e2cbeb12ad9b06037b72a82",
-        "expected.json": "1fc5881a2075d60cf13b7ea51b5bfcb4494ff159aa36cd13e9fe056bc82f5ecf",
+        "expected.json": "9ed26591040034c26ebdee87af7de8226e7e5fa4c58a6351dd3281e19eca5ee6",
         "subject.0.stdout": "d062822c41f60992908feba708f487af5388b07c0a5e76279396aecfa589caaf",
         "subject.table.json": "cbf4fc9df89731c32335f251ddc11dd4b974c78102b7698ba52115ec32dce9cb"
       },
@@ -14189,23 +14189,22 @@
         "pattern-isolation.lifecycle/subject"
       ],
       "counts": {
-        "passed": 23,
-        "failed": 1,
+        "passed": 15,
+        "failed": 0,
         "not_run": 0,
         "skipped": 0,
-        "timed_out": 0,
+        "timed_out": 9,
         "missing": 0,
         "declared_unreachable": 0,
         "total": 24
       },
-      "checkerExit": 4,
+      "checkerExit": 0,
       "files": {
         "admission.json": "f5a6b122aadd5bd04283808acb93cff650cf4ce4961da67bdf2a02a83b7a2bd9",
         "cd-find.0.stdout": "33d8fc2d5f8d97a23efffe71af05d27fe778b20f27873a8c77d56fb52dcddfc1",
         "cd-find.table.json": "6cfbe4f0fe3b16f196a1bdbb0e193501235d8c0c1e2cbeb12ad9b06037b72a82",
-        "expected.json": "e0794acbc5ac8e70a27726f24102526c5d0f2a2e5651fe5bc51cce9723b34308",
-        "subject.0.stdout": "d062822c41f60992908feba708f487af5388b07c0a5e76279396aecfa589caaf",
-        "subject.table.json": "cbf4fc9df89731c32335f251ddc11dd4b974c78102b7698ba52115ec32dce9cb"
+        "expected.json": "90dc8aee30914f9bfb172681bd8469ed9faead03d9ab873efe52249464fb2897",
+        "subject.table.json": "a9d314c94c49405fd98d784d75b8bebfd8021040bec65a9ae8d65218ecf87b70"
       },
       "shared": ["shared/discovery.stdout", "shared/empty.stderr"],
       "specimens": ["specimens/target.mjs"]

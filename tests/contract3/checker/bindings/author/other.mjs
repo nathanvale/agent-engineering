@@ -606,27 +606,68 @@ function harness() {
       ref("pattern-isolation", "validTwin"),
     ],
     {
+      sensitivityControl:
+        "Run the pattern synchronously on the checker's own thread with no budget; the harness must fail, either on the 5,000 ms bound or because the engine's false non-match gives a wrong exit or cause (exit 0 instead of the bound exit-4 refusal).",
       assertion:
         "The checker's own budget ends the hostile match at PATTERN_MAX_MS (250 ms) and refuses; the checker exits 4 within 5,000 ms of start. On Bun 1.4.4 JavaScriptCore stops this match by itself after about 0.4 to 0.6 s and reports a false non-match, so a run that ends without the budget refusal is a wrong answer, not a pass (INPUT-2, V-44).",
     },
     WIDE_CODE,
   );
-  isolation(
-    "pattern-isolation.lifecycle",
-    HOSTILE,
-    HOSTILE_SUBJECT,
-    [
-      ref("pattern-isolation", "requiredVariations/3"),
-      ref("pattern-isolation", "negative"),
-    ],
-    {
-      assertion:
-        "Send SIGTERM to the checker as soon as the second target run has started (poll for its process or 50 ms after the first run's exit). The checker exits 143 with empty stdout within 500 ms of the signal, or, if it already finished, with this binding's exit-4 refusal. It never hangs.",
-      sensitivityControl:
-        "Run the pattern synchronously on the checker's own thread with no budget; the harness must fail, either on the 500 ms bound or because the engine's false non-match gives a wrong exit or cause (exit 0 instead of the bound exit-4 refusal).",
-    },
-    WIDE_CODE,
-  );
+  // B8: the second target run announces itself, then blocks, so the signal
+  // lands during that run by construction. Unsignalled, it times out.
+  {
+    const cases = patternCases(HOSTILE, HOSTILE_SUBJECT, {
+      cdMaxLength: WIDE_CODE,
+    });
+    const input = runCase(
+      "subject",
+      "command",
+      cases.argv,
+      [
+        {
+          stdout: null,
+          stderr: null,
+          exit: 0,
+          state: "input-run-started\n",
+          hang: true,
+        },
+      ],
+      {
+        rule: "pattern-budget",
+        expect: expectOf(BASE.findUsage(), true),
+        station: false,
+        state: "lifecycle.state",
+      },
+    );
+    const reason = {
+      timed_out:
+        "target exceeded TARGET_RUN_MAX_MS and was terminated; its effects are unknown",
+    };
+    input.case.status = Object.fromEntries(
+      input.case.rules.map((rule) => [rule, reason]),
+    );
+    bind({
+      id: "pattern-isolation.lifecycle",
+      rule: "pattern-isolation",
+      kind: "harness",
+      oracle: [
+        ref("pattern-isolation", "requiredVariations/3"),
+        ref("pattern-isolation", "negative"),
+      ],
+      verification: ["V-44"],
+      cases: [ctxDiscovery(), cases.cd, input.case],
+      harness: {
+        rule: "pattern-isolation",
+        announce: { file: "lifecycle.state", line: "input-run-started" },
+        assertion:
+          "Poll the case's lifecycle.state until it holds input-run-started: the second target run writes it before it blocks, so the run is in flight. Then send SIGTERM to the checker. It exits 143 with empty stdout within 500 ms of the signal, and no target process survives. If the announcement is never seen, the property is UNPROVED and this binding is not counted as passed. The process block below is the unsignalled run of the main loop: the blocked target times out at TARGET_RUN_MAX_MS, its rows are timed_out, and the checker exits 0 (timed_out is not a refusal).",
+        sensitivityControl:
+          "Make the checker ignore SIGTERM while a target runs, or stop forwarding it to the target: the harness must fail on the 500 ms bound or on a surviving target process.",
+      },
+      notes:
+        "B8 (repair round 2). The hostile pattern stays declared, so the admission is still a hostile one while the signal lands; the elapsed budget itself is proved by pattern-isolation.elapsed.",
+    });
+  }
 
   // observer-exclusions: a timed-out case stays visible with a reason.
   {

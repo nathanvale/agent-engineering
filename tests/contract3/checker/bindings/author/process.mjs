@@ -441,6 +441,8 @@ function navigation() {
     env.result.data.commands = env.result.data.commands.filter(
       (c) => c.commandIdentity !== id,
     );
+    // B6: drop it from availablePaths too, so only DISC-5 is broken (WIRE-6a).
+    env.availablePaths = env.availablePaths.filter((path) => path !== id);
     const negative = runCase(
       "subject",
       "discovery",
