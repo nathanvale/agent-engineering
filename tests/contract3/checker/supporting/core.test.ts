@@ -6,7 +6,12 @@
 import { describe, expect, test } from "bun:test";
 import checkerOracle from "../../checker-expectations.json";
 import retained from "../../retained-2.json";
+import boundBudgets from "../bindings/BUDGETS.json";
+import { BUDGETS } from "../../../../src/domains/contract3-check/budgets.ts";
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { judgeObservations } from "../../../../src/domains/contract3-check/judge.ts";
+import { PatternMatcher } from "../../../../src/domains/contract3-check/pattern.ts";
 import { keptCheckerRoute } from "../../../../src/domains/contract3-check/kept-checker.ts";
 import {
   createMinorTable,
@@ -45,6 +50,32 @@ describe("catalogue and kept route agree with frozen oracles", () => {
     ])
       expect(route).toContain(part);
     expect(runtime).toBe("runtime/cli-design-check.js");
+  });
+});
+
+describe("restated tables equal their independent owners", () => {
+  test("BUDGETS equals bindings/BUDGETS.json in key set and every number (S3, SF-2)", () => {
+    expect(boundBudgets.budgetsVersion).toBe(1);
+    expect(Object.keys(BUDGETS).sort()).toEqual(
+      Object.keys(boundBudgets.values).sort(),
+    );
+    expect(Object.keys(boundBudgets.values)).toHaveLength(13);
+    const restated: Record<string, number> = { ...BUDGETS };
+    for (const [name, value] of Object.entries(boundBudgets.values))
+      expect([name, restated[name]]).toEqual([name, value]);
+  });
+
+  test("the rule catalogue holds exactly the 93 frozen ids, no more and no fewer (N-4)", async () => {
+    const source = await readFile(
+      join(import.meta.dir, "../../../../src/domains/contract3-check/rules.ts"),
+      "utf8",
+    );
+    const declared = [
+      ...source.matchAll(/\[\s*"([a-z0-9-]+)",\s*"([A-Z0-9_]+)",/g),
+    ].map((match) => match[1]);
+    const frozen = checkerOracle.rules.map((rule) => rule.id);
+    expect(declared).toHaveLength(93);
+    expect([...declared].sort()).toEqual([...frozen].sort());
   });
 });
 
@@ -159,6 +190,7 @@ async function judgeOne(envelope: Json, exit = 0) {
     { cli: "t", cases: [caseOf("one")] },
     new Map([["one", observed("one", envelope, exit)]]),
     PRODUCTION_MINORS,
+    new PatternMatcher(),
   );
 }
 
@@ -236,6 +268,7 @@ describe("in-process judgement (component layer only)", () => {
         ],
       ]),
       PRODUCTION_MINORS,
+      new PatternMatcher(),
     );
     expect(statuses(judgement.rows)).toEqual({
       "strict-keys": "not_run",
@@ -271,6 +304,7 @@ describe("in-process judgement (component layer only)", () => {
         ],
       ]),
       PRODUCTION_MINORS,
+      new PatternMatcher(),
     );
     expect(statuses(judgement.rows)).toEqual({
       "json-framing": "passed",
@@ -291,6 +325,7 @@ describe("in-process judgement (component layer only)", () => {
         ],
       ]),
       PRODUCTION_MINORS,
+      new PatternMatcher(),
     );
     expect(
       judgement.rows

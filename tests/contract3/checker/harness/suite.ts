@@ -14,15 +14,11 @@ import {
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import * as admissionModule from "../../../../src/domains/contract3-check/admission.ts";
-import * as budgetsModule from "../../../../src/domains/contract3-check/budgets.ts";
+import * as observeModule from "../../../../src/domains/contract3-check/observe.ts";
 import * as judgeModule from "../../../../src/domains/contract3-check/judge.ts";
 import type { MinorTable } from "../../../../src/domains/contract3-check/minors.ts";
 import { PRODUCTION_MINORS } from "../../../../src/domains/contract3-check/minors.ts";
-import * as runnerModule from "../../../../src/domains/contract3-check/runner.ts";
-import type {
-  AdmittedCase,
-  Observation,
-} from "../../../../src/domains/contract3-check/types.ts";
+import * as patternModule from "../../../../src/domains/contract3-check/pattern.ts";
 import { FIXTURE_MINORS } from "../specimens/reader-3.1/reader.ts";
 
 export const REPO_ROOT = resolve(import.meta.dir, "../../../..");
@@ -183,51 +179,22 @@ export function minorsFor(reader: Expected["reader"]): MinorTable {
 /** The checker modules the component layer drives: the repository's, or a perturbed copy's. */
 export interface CheckerModules {
   admission: typeof admissionModule;
-  budgets: typeof budgetsModule;
+  observe: typeof observeModule;
   judge: typeof judgeModule;
-  runner: typeof runnerModule;
+  pattern: typeof patternModule;
 }
 
 const REPOSITORY_MODULES: CheckerModules = {
   admission: admissionModule,
-  budgets: budgetsModule,
+  observe: observeModule,
   judge: judgeModule,
-  runner: runnerModule,
+  pattern: patternModule,
 };
 
-async function observe(
-  modules: CheckerModules,
-  item: AdmittedCase,
-): Promise<Observation> {
-  const { readCaptured, runProgram } = modules.runner;
-  const { BUDGETS } = modules.budgets;
-  const target = item.target;
-  if (target.kind === "captured") {
-    const [stdout, stderr] = await Promise.all([
-      readCaptured(target.stdoutPath, BUDGETS.TARGET_STDOUT_MAX_BYTES),
-      readCaptured(target.stderrPath, BUDGETS.TARGET_STDERR_MAX_BYTES),
-    ]);
-    return {
-      caseId: item.caseId,
-      source: "captured",
-      started: true,
-      stdout,
-      stderr,
-      exit: target.exit,
-      timedOut: false,
-    };
-  }
-  const observation: Observation = {
-    caseId: item.caseId,
-    source: "run",
-    ...(await runProgram(target)),
-  };
-  if (item.probe !== undefined && observation.started)
-    observation.probe = await runProgram(item.probe);
-  return observation;
-}
-
-/** Component layer input: the same admission observed in its own copy, then the pure judgement (G1). */
+/**
+ * Component layer: the production observation loop (observeAdmission, the
+ * same one runCheck uses) in its own copy, then the pure judgement (G1).
+ */
 export async function componentRows(
   root: string,
   id: string,
@@ -237,17 +204,15 @@ export async function componentRows(
   const load = await modules.admission.loadAdmission(admissionPath(root, id));
   if (load.kind !== "ok")
     return { problem: `admission did not load: ${load.kind}` };
-  const observations = new Map<string, Observation>();
-  for (const item of load.admission.cases) {
-    const observation = await observe(modules, item);
-    observations.set(item.caseId, observation);
-    if (modules.judge.refusesAlone(load.admission, item, observation, minors))
-      break;
-  }
+  const observations = await modules.observe.observeAdmission(
+    load.admission,
+    minors,
+  );
   const judgement = await modules.judge.judgeObservations(
     load.admission,
     observations,
     minors,
+    new modules.pattern.PatternMatcher(),
   );
   return { rows: judgement.rows, refused: judgement.refusal !== null };
 }
@@ -282,11 +247,13 @@ export async function perturbedChecker(
       admission: (await import(
         join(domain, "admission.ts")
       )) as typeof admissionModule,
-      budgets: (await import(
-        join(domain, "budgets.ts")
-      )) as typeof budgetsModule,
+      observe: (await import(
+        join(domain, "observe.ts")
+      )) as typeof observeModule,
       judge: (await import(join(domain, "judge.ts"))) as typeof judgeModule,
-      runner: (await import(join(domain, "runner.ts"))) as typeof runnerModule,
+      pattern: (await import(
+        join(domain, "pattern.ts")
+      )) as typeof patternModule,
     }),
     dispose: () => rm(root, { recursive: true, force: true }),
   };

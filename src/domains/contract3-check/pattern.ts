@@ -1,7 +1,7 @@
 // Untrusted target patterns (INPUT-2): syntax is checked by compiling only;
 // matching runs in a terminable Worker under finite size and time budgets.
 
-import { BUDGETS } from "./budgets.ts";
+import { BUDGETS, TIMINGS } from "./budgets.ts";
 
 export type MatchResult = "match" | "no-match" | "invalid" | "budget";
 
@@ -22,12 +22,11 @@ function patternTooLarge(source: string): boolean {
 
 const WORKER_URL = new URL("./pattern-worker.ts", import.meta.url).href;
 
-const WORKER_START_MAX_MS = 5_000;
-
 function runWorker(source: string, subject: string): Promise<MatchResult> {
   return new Promise((resolve) => {
     const worker = new Worker(WORKER_URL);
-    let timer = setTimeout(() => finish("budget"), WORKER_START_MAX_MS);
+    let timer = setTimeout(() => finish("budget"), TIMINGS.WORKER_START_MAX_MS);
+    let startedAt = 0;
     function finish(result: MatchResult): void {
       clearTimeout(timer);
       void worker.terminate();
@@ -38,11 +37,17 @@ function runWorker(source: string, subject: string): Promise<MatchResult> {
     ) => {
       const answer = event.data;
       if (answer === "started") {
+        startedAt = performance.now();
         clearTimeout(timer);
         timer = setTimeout(() => finish("budget"), BUDGETS.PATTERN_MAX_MS);
         return;
       }
-      finish(answer === "invalid" ? "invalid" : answer ? "match" : "no-match");
+      if (answer === "invalid") finish("invalid");
+      else if (answer) finish("match");
+      // Fail closed (S2): a slow non-match may be the engine's own cutoff.
+      else if (performance.now() - startedAt >= TIMINGS.PATTERN_FAIL_CLOSED_MS)
+        finish("budget");
+      else finish("no-match");
     };
     worker.onerror = () => finish("invalid");
     worker.postMessage({ source, subject });

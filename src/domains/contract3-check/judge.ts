@@ -1,7 +1,8 @@
 // Judges an admission (INTERFACE.md section 5). judgeObservations is the one
 // pure judgement entry point (binder G1): admission, observations and the
-// supported-minor table in; every admitted row, failed rows included, out.
-// It runs nothing. The process layer collects observations with the
+// supported-minor table and the pattern matcher in; every admitted row,
+// failed rows included, out. It runs no target and starts nothing itself;
+// pattern matching happens only through the matcher the caller passes. The process layer collects observations with the
 // single-execution runner, stopping by refusesAlone, then calls it.
 // Prerequisites follow binder G2.
 
@@ -17,7 +18,7 @@ import {
   validateDiscoveryData,
   validateHelpData,
 } from "./navigation-data.ts";
-import { PatternMatcher } from "./pattern.ts";
+import type { PatternMatcher } from "./pattern.ts";
 import {
   humanProcessRules,
   machineProcessRules,
@@ -300,6 +301,7 @@ export async function judgeObservations(
   admission: Admission,
   observations: ReadonlyMap<string, Observation>,
   minors: MinorTable,
+  matcher: PatternMatcher,
 ): Promise<Judgement> {
   const book = new Book();
   const parsedCases: ParsedCase[] = [];
@@ -324,7 +326,7 @@ export async function judgeObservations(
   const collectors = await judgeAcrossCases(
     admission.cli,
     parsedCases,
-    new PatternMatcher(),
+    matcher,
     book,
   );
   for (const parsed of parsedCases) {

@@ -7,7 +7,13 @@ interface MatchRequest {
   subject: string;
 }
 
-const port = globalThis as unknown as Worker;
+/** The Worker side of the message channel, earned from the runtime's own self. */
+interface MatchPort {
+  onmessage: ((event: MessageEvent<MatchRequest>) => void) | null;
+  postMessage(message: boolean | "invalid" | "started"): void;
+}
+
+const port: MatchPort = self;
 
 port.onmessage = (event: MessageEvent<MatchRequest>) => {
   const { source, subject } = event.data;

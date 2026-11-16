@@ -21,3 +21,20 @@ export const BUDGETS = {
   FINDING_MESSAGE_MAX_BYTES: 512,
   OBSERVED_VALUE_ECHO_MAX_CHARS: 64,
 } as const;
+
+/**
+ * Checker-owned timing constants that are not admission budgets (not in
+ * BUDGETS.json). One owner, so no number is restated elsewhere.
+ */
+export const TIMINGS = {
+  /** First stop signal: force-kill a running target before the 500 ms bound (LIFE-3, LIFE-11). */
+  STOP_SIGNAL_FORCE_MS: BUDGETS.TARGET_KILL_GRACE_MS - 100,
+  /** Upper bound on a pattern Worker starting at all; startup is excluded from PATTERN_MAX_MS. */
+  WORKER_START_MAX_MS: 5_000,
+  /**
+   * Fail closed (S2): a non-match that took at least this long is treated as
+   * budget exhaustion, because JavaScriptCore reports a false non-match when
+   * its own backtracking cutoff fires. Benign anchored matches take far less.
+   */
+  PATTERN_FAIL_CLOSED_MS: BUDGETS.PATTERN_MAX_MS / 2,
+} as const;

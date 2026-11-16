@@ -37,7 +37,7 @@ function common(
   return { failureClass, outcome, transactionState, arm };
 }
 
-export const COMMON_CAUSES: Readonly<Record<string, CommonCause>> = {
+const COMMON_CAUSE_ROWS = {
   SUCCESS_UNCHANGED: common(null, "success", "unchanged", "next"),
   SUCCESS_COMPLETED: common(null, "success", "completed", "next"),
   USAGE_INVALID_INVOCATION: common("usage", "refused", "unchanged", "next"),
@@ -93,7 +93,13 @@ export const COMMON_CAUSES: Readonly<Record<string, CommonCause>> = {
     "handoff",
   ),
   INTERNAL_RESULT_UNKNOWN: common("internal", "failed", "unknown", "handoff"),
-};
+} as const satisfies Record<string, CommonCause>;
+
+/** A common cause name, checked against the one owner below. */
+export type CommonCauseCode = keyof typeof COMMON_CAUSE_ROWS;
+
+export const COMMON_CAUSES: Readonly<Record<string, CommonCause>> =
+  COMMON_CAUSE_ROWS;
 
 /** Causes the fallback can select (LIFE-9, DISC-11b). */
 export function isFallbackCause(cause: string): boolean {

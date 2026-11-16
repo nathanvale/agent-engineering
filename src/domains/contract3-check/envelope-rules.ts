@@ -14,6 +14,7 @@ import {
   strictKeys,
   type ShapeContext,
 } from "./collector.ts";
+import type { ObjectKind } from "./minors.ts";
 import { isFallbackCause, rowProblems, type Arm } from "./result-table.ts";
 import { BINDING_NAME, bindingValueProblem } from "./templates.ts";
 import type { Json, JsonObject } from "./types.ts";
@@ -56,6 +57,17 @@ function stringList(
   return value.filter((item): item is string => typeof item === "string");
 }
 
+const STEP_OBJECTS: Readonly<Record<string, ObjectKind>> = {
+  command: "step.command",
+  retry: "step.retry",
+  instruction: "step.instruction",
+  done: "step.done",
+};
+const INSPECT_OBJECTS: Readonly<Record<string, ObjectKind>> = {
+  command: "inspect.command",
+  instruction: "inspect.instruction",
+};
+
 export function validateStep(
   ctx: ShapeContext,
   step: Json | undefined,
@@ -72,19 +84,13 @@ export function validateStep(
   const kindUnion = inspection ? "inspectKind" : "stepKind";
   const ruleId = inspection ? "handoff-shape" : "closed-union";
   if (!member(ctx, kindUnion, step.kind, `${path}/kind`, ruleId)) return;
-  const kind = step.kind as string;
-  strictKeys(
-    ctx,
-    inspection
-      ? (`inspect.${kind}` as "inspect.command" | "inspect.instruction")
-      : (`step.${kind}` as
-          | "step.command"
-          | "step.retry"
-          | "step.instruction"
-          | "step.done"),
-    step,
-    path,
-  );
+  const kind = step.kind;
+  const objectKind =
+    typeof kind === "string"
+      ? (inspection ? INSPECT_OBJECTS : STEP_OBJECTS)[kind]
+      : undefined;
+  if (objectKind === undefined) return;
+  strictKeys(ctx, objectKind, step, path);
   if (kind === "command") {
     requireKeys(ctx, step, ["command", "args"], path);
     nonEmptyString(ctx, step.command, `${path}/command`);
@@ -493,11 +499,9 @@ const DIAGNOSTIC_CHECKS: Readonly<
     value === null || (typeof value === "string" && value.startsWith("/")),
   sinkFailure: (ctx, value) =>
     value === null ||
-    ctx.minors.memberMembership(
-      "sinkFailure",
-      value as string,
-      ctx.declaredMinor,
-    ) === "known",
+    (typeof value === "string" &&
+      ctx.minors.memberMembership("sinkFailure", value, ctx.declaredMinor) ===
+        "known"),
   droppedRecords: (_ctx, value) => counter(value),
   unflushedRecords: (_ctx, value) => counter(value),
   truncatedRecords: (_ctx, value) => counter(value),

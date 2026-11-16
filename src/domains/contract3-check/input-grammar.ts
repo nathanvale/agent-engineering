@@ -7,6 +7,7 @@ import {
   isNonEmptyString,
   isNonNegativeSafeInteger,
   isObject,
+  isStringArray,
   member,
   requireKeys,
   strictKeys,
@@ -76,9 +77,11 @@ function validateValue(
     strictKeys(ctx, "value.integer", value, path);
     const { minimum, maximum } = value;
     if (
+      typeof minimum !== "number" ||
+      typeof maximum !== "number" ||
       !Number.isSafeInteger(minimum) ||
       !Number.isSafeInteger(maximum) ||
-      (maximum as number) < (minimum as number)
+      maximum < minimum
     ) {
       fail(
         ctx,
@@ -86,11 +89,7 @@ function validateValue(
       );
       return null;
     }
-    return {
-      kind: "integer",
-      minimum: minimum as number,
-      maximum: maximum as number,
-    };
+    return { kind: "integer", minimum, maximum };
   }
   strictKeys(ctx, "value.string", value, path);
   requireKeys(
@@ -115,7 +114,7 @@ function validateValue(
   let choiceList: string[] | null = null;
   if (choices !== null) {
     const valid =
-      Array.isArray(choices) &&
+      isStringArray(choices) &&
       choices.length > 0 &&
       choices.every(
         (choice) =>
@@ -131,7 +130,7 @@ function validateValue(
       );
       return null;
     }
-    choiceList = choices as string[];
+    choiceList = choices;
   }
   let source: string | null = null;
   if (pattern !== null) {
@@ -279,9 +278,9 @@ function validateConstraint(
   strictKeys(ctx, "constraint.exclusive", item, path);
   const members = item.members;
   if (
-    !Array.isArray(members) ||
+    !isStringArray(members) ||
     members.length < 2 ||
-    !members.every((name) => typeof name === "string" && slots.has(name)) ||
+    !members.every((name) => slots.has(name)) ||
     new Set(members).size !== members.length
   ) {
     fail(
@@ -290,7 +289,7 @@ function validateConstraint(
     );
     return null;
   }
-  return { kind: "exclusive", members: members as string[] };
+  return { kind: "exclusive", members };
 }
 
 function checkUniqueness(
@@ -426,8 +425,10 @@ export function validateInputSchema(
     return null;
   }
   const partial = {
-    arguments: argumentsList as ArgumentSpec[],
-    options: options as OptionSpec[],
+    arguments: argumentsList.filter(
+      (item): item is ArgumentSpec => item !== null,
+    ),
+    options: options.filter((item): item is OptionSpec => item !== null),
     deadlineSupported: input.deadlineSupported,
   };
   const slots = new Set([
@@ -437,11 +438,11 @@ export function validateInputSchema(
   const constraints = input.constraints.map((item, index) =>
     validateConstraint(ctx, item, `${path}/constraints/${index}`, slots),
   );
-  if (constraints.includes(null)) return null;
-  const spec: InputSpec = {
-    ...partial,
-    constraints: constraints as ConstraintSpec[],
-  };
+  const resolved = constraints.filter(
+    (item): item is ConstraintSpec => item !== null,
+  );
+  if (resolved.length !== constraints.length) return null;
+  const spec: InputSpec = { ...partial, constraints: resolved };
   checkUniqueness(ctx, spec, path);
   checkSatisfiable(ctx, spec, path);
   return spec;

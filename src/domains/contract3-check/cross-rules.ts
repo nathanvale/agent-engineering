@@ -3,7 +3,7 @@
 // (V-11 to V-15, V-43, V-44, V-48, DISC-11 to DISC-13, STEP-6 to STEP-14).
 
 import type { Book } from "./book.ts";
-import { Collector, isObject } from "./collector.ts";
+import { Collector, isObject, isStringArray } from "./collector.ts";
 import {
   commandTokens,
   parseAgainstSchema,
@@ -139,12 +139,12 @@ async function stepArguments(
     if (
       description?.input === null ||
       description === undefined ||
-      !Array.isArray(step.args)
+      !isStringArray(step.args)
     )
       continue;
     const parsed = await parseAgainstSchema(
       description.input,
-      step.args as string[],
+      step.args,
       world.matcher,
     );
     if (parsed.kind === "budget")
@@ -243,15 +243,18 @@ function compareFixed(
     );
   const policy = station.retryDelayPolicy;
   const delay = result.retryDelayMilliseconds;
+  const minimum = isObject(policy) ? policy.minimumMilliseconds : undefined;
+  const maximum = isObject(policy) ? policy.maximumMilliseconds : undefined;
   if (
     isObject(policy) &&
     policy.kind === "bounded" &&
-    typeof delay === "number"
+    typeof delay === "number" &&
+    typeof minimum === "number" &&
+    typeof maximum === "number"
   )
     c.check(
       "retry-delay",
-      delay >= (policy.minimumMilliseconds as number) &&
-        delay <= (policy.maximumMilliseconds as number),
+      delay >= minimum && delay <= maximum,
       () =>
         `${where}: retryDelayMilliseconds ${delay} is outside the station bounds.`,
     );
@@ -423,7 +426,7 @@ function judgeHelp(world: World, c: Collector, help: CommandSummary[]): void {
     canonical(
       [...items].sort((a, b) =>
         a.commandIdentity < b.commandIdentity ? -1 : 1,
-      ) as unknown as Json,
+      ),
     );
   c.check(
     "help-discovery",

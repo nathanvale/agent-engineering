@@ -3,7 +3,10 @@
 // Expected exits and causes come only from the admission, never the target.
 
 import { isObject, type Collector } from "./collector.ts";
-import { COMMON_CAUSES } from "./result-table.ts";
+import { COMMON_CAUSES, type CommonCauseCode } from "./result-table.ts";
+
+const USAGE_INVALID: CommonCauseCode = "USAGE_INVALID_INVOCATION";
+const USAGE_UNKNOWN: CommonCauseCode = "USAGE_UNKNOWN_COMMAND";
 import type { AdmittedCase, JsonObject, Observation } from "./types.ts";
 
 function exitText(observation: Observation): string {
@@ -54,12 +57,11 @@ function dispatchMachine(
     result.commandIdentity === identity &&
     (item.role === "dispatch"
       ? result.outcome === "refused" &&
-        result.causeCode === "USAGE_INVALID_INVOCATION" &&
+        result.causeCode === USAGE_INVALID &&
         result.exitCode === 2
       : item.role === "command-discovery"
         ? (result.outcome === "success" && result.effectClass === "inspect") ||
-          (result.causeCode === "USAGE_UNKNOWN_COMMAND" &&
-            result.exitCode === 2)
+          (result.causeCode === USAGE_UNKNOWN && result.exitCode === 2)
         : result.outcome === "success" &&
           result.effectClass === "inspect" &&
           result.exitCode === 0);

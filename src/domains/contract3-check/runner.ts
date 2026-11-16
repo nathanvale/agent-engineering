@@ -3,7 +3,7 @@
 // admitted environment, bounded capture, wall-time budget with SIGTERM then
 // SIGKILL (LIFE-11). The runner has no retry path of any kind.
 
-import { BUDGETS } from "./budgets.ts";
+import { BUDGETS, TIMINGS } from "./budgets.ts";
 import type {
   ProgramObservation,
   ProgramSpec,
@@ -58,31 +58,32 @@ function terminate(child: Spawned): void {
   void child.exited.then(() => clearTimeout(escalation));
 }
 
-/** While a target runs, the checker's own stop signal stops it first (LIFE-11). */
-function forwardStopSignals(child: Spawned): () => void {
+let activeChild: Spawned | null = null;
+let stopHandlersInstalled = false;
+
+/**
+ * The checker's own stop signal stops the running target first (LIFE-11),
+ * then exits 130 or 143. Installed once; with no target running it exits at
+ * once, as the default action would.
+ */
+function installStopHandlers(): void {
+  if (stopHandlersInstalled) return;
+  stopHandlersInstalled = true;
   const stop = (exitCode: number) => {
+    const child = activeChild;
+    if (child === null) process.exit(exitCode);
     child.kill("SIGTERM");
     const force = setTimeout(() => {
       child.kill("SIGKILL");
       process.exit(exitCode);
-    }, 400);
+    }, TIMINGS.STOP_SIGNAL_FORCE_MS);
     void child.exited.then(() => {
       clearTimeout(force);
       process.exit(exitCode);
     });
   };
-  const onInterrupt = () => stop(130);
-  const onTerminate = () => stop(143);
-  process.once("SIGINT", onInterrupt);
-  process.once("SIGTERM", onTerminate);
-  // bun-types overrides hide the Node signal overload of removeListener.
-  const events = process as unknown as {
-    removeListener(event: string, listener: () => void): unknown;
-  };
-  return () => {
-    events.removeListener("SIGINT", onInterrupt);
-    events.removeListener("SIGTERM", onTerminate);
-  };
+  process.on("SIGINT", () => stop(130));
+  process.on("SIGTERM", () => stop(143));
 }
 
 function notStarted(error: unknown): ProgramObservation {
@@ -117,7 +118,8 @@ export async function runProgram(
   } catch (error) {
     return notStarted(error);
   }
-  const release = forwardStopSignals(child);
+  installStopHandlers();
+  activeChild = child;
   let timedOut = false;
   const timer = setTimeout(() => {
     timedOut = true;
@@ -133,15 +135,18 @@ export async function runProgram(
   ]);
   await child.exited;
   clearTimeout(timer);
-  release();
+  activeChild = null;
   return {
     started: true,
     stdout,
     stderr,
+    // Never report an exit the target did not give (review N-6).
     exit:
       child.signalCode !== null
         ? { signal: child.signalCode }
-        : { code: child.exitCode ?? 1 },
+        : child.exitCode !== null
+          ? { code: child.exitCode }
+          : null,
     timedOut,
   };
 }

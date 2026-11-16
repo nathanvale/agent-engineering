@@ -12,7 +12,7 @@ import {
 const IDENTITY = "example.contract3.check";
 
 test("declared stations are the five interface tuples, all inspect and unchanged", () => {
-  const stations = checkerStations(IDENTITY) as Record<string, unknown>[];
+  const stations = checkerStations(IDENTITY);
   expect(
     stations.map((station) => [
       station.outcome,

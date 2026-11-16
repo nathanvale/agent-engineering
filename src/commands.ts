@@ -4,6 +4,8 @@ import {
   executeCheck,
 } from "./domains/contract3-check/host-adapter.ts";
 
+const CHECKER_IDENTITY = "example.contract3.check";
+
 export const commands: CommandDefinition[] = [
   {
     commandIdentity: "example.status",
@@ -23,13 +25,13 @@ export const commands: CommandDefinition[] = [
     stations: () => [],
   },
   {
-    commandIdentity: "example.contract3.check",
+    commandIdentity: CHECKER_IDENTITY,
     effectClass: "inspect",
     route: ["contract3", "check"],
     summary:
       "Judge a Contract 3 CLI's output against an admitted case set without rerunning it.",
     acceptsArguments: true,
-    execute: (args) => executeCheck("example.contract3.check", args),
-    stations: () => checkerStations("example.contract3.check"),
+    execute: (args) => executeCheck(CHECKER_IDENTITY, args),
+    stations: () => checkerStations(CHECKER_IDENTITY),
   },
 ];

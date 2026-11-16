@@ -14,7 +14,9 @@ import type {
   Expected,
   Json,
   JsonObject,
+  Mode,
   Probe,
+  Role,
   RunTarget,
 } from "./types.ts";
 
@@ -23,8 +25,14 @@ export type AdmissionLoad =
   | { kind: "invalid"; problems: string[] }
   | { kind: "unreadable"; problem: string };
 
-const ROLES = ["help", "discovery", "command-discovery", "dispatch", "command"];
-const MODES = ["machine", "human"];
+const ROLES: readonly Role[] = [
+  "help",
+  "discovery",
+  "command-discovery",
+  "dispatch",
+  "command",
+];
+const MODES: readonly Mode[] = ["machine", "human"];
 const EXITS = [0, 1, 2, 3, 4, 75];
 const CASE_KEYS = [
   "caseId",
@@ -66,14 +74,20 @@ function readEnv(
   problems: Problems,
 ): Record<string, string> {
   if (value === undefined) return {};
+  const env: Record<string, string> = {};
+  if (isObject(value))
+    for (const [name, item] of Object.entries(value)) {
+      if (typeof item !== "string") break;
+      env[name] = item;
+    }
   if (
     !isObject(value) ||
-    !Object.values(value).every((item) => typeof item === "string")
+    Object.keys(env).length !== Object.keys(value).length
   ) {
     problems.add(`${path} must map names to strings.`);
     return {};
   }
-  return value as Record<string, string>;
+  return env;
 }
 
 function readProgram(
@@ -139,6 +153,8 @@ function readTarget(
     Object.keys(exit).length === 1 &&
     ((typeof exit.code === "number" && Number.isSafeInteger(exit.code)) ||
       isNonEmptyString(exit.signal));
+  const signal =
+    isObject(exit) && isNonEmptyString(exit.signal) ? exit.signal : "";
   if (
     !isNonEmptyString(value.stdout) ||
     !isNonEmptyString(value.stderr) ||
@@ -153,10 +169,7 @@ function readTarget(
     kind: "captured",
     stdoutPath: pathFrom(base, value.stdout),
     stderrPath: pathFrom(base, value.stderr),
-    exit:
-      typeof exit.code === "number"
-        ? { code: exit.code }
-        : { signal: exit.signal as string },
+    exit: typeof exit.code === "number" ? { code: exit.code } : { signal },
   };
 }
 
@@ -269,9 +282,11 @@ function readCase(
     problems.add(`${path}/caseId must be a nonempty string.`);
   else if (earlier.some((item) => item.caseId === caseId))
     problems.add(`${path}/caseId ${caseId} repeats.`);
-  if (typeof value.role !== "string" || !ROLES.includes(value.role))
+  const role = ROLES.find((item) => item === value.role);
+  const mode = MODES.find((item) => item === value.mode);
+  if (role === undefined)
     problems.add(`${path}/role must be one of ${ROLES.join(", ")}.`);
-  if (typeof value.mode !== "string" || !MODES.includes(value.mode))
+  if (mode === undefined)
     problems.add(`${path}/mode must be machine or human.`);
   const target = readTarget(value.target, base, `${path}/target`, problems);
   const rules = readRules(
@@ -293,8 +308,8 @@ function readCase(
   const admitted: AdmittedCase = {
     caseId: typeof caseId === "string" ? caseId : "",
     rules,
-    role: value.role as AdmittedCase["role"],
-    mode: value.mode as AdmittedCase["mode"],
+    role: role ?? "command",
+    mode: mode ?? "machine",
     target: target ?? {
       kind: "captured",
       stdoutPath: "",
@@ -313,8 +328,7 @@ function readCase(
       twin === undefined ||
       twin.role !== admitted.role ||
       twin.mode !== admitted.mode ||
-      canonical(twin.target as unknown as Json) !==
-        canonical(admitted.target as unknown as Json)
+      canonical(twin.target) !== canonical(admitted.target)
     )
       problems.add(
         `${path}/sameAs must name an earlier case with the same role, mode and target.`,
@@ -326,15 +340,17 @@ function readCase(
 
 function parseAdmission(value: unknown, base: string): AdmissionLoad {
   const problems = new Problems();
-  if (!isObject(value as Json))
+  if (!isObject(value))
     return {
       kind: "invalid",
       problems: ["The admission root must be a JSON object."],
     };
-  const root = value as JsonObject;
+  const root = value;
   problems.strict(root, ["admissionVersion", "cli", "cases"], "");
   if (root.admissionVersion !== 1) problems.add("/admissionVersion must be 1.");
-  if (!isNonEmptyString(root.cli) || /\s/.test(root.cli))
+  const cli =
+    isNonEmptyString(root.cli) && !/\s/.test(root.cli) ? root.cli : null;
+  if (cli === null)
     problems.add("/cli must be the target executable name without whitespace.");
   const cases = root.cases;
   if (
@@ -350,12 +366,9 @@ function parseAdmission(value: unknown, base: string): AdmissionLoad {
     const parsed = readCase(item, index, base, admitted, problems);
     if (parsed !== null) admitted.push(parsed);
   });
-  if (problems.list.length > 0)
+  if (problems.list.length > 0 || cli === null)
     return { kind: "invalid", problems: problems.list };
-  return {
-    kind: "ok",
-    admission: { cli: root.cli as string, cases: admitted },
-  };
+  return { kind: "ok", admission: { cli, cases: admitted } };
 }
 
 async function exists(

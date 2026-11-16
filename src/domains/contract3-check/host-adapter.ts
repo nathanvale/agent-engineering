@@ -1,10 +1,16 @@
-// The one edge that knows the host CLI's envelope major.
-// PROVISIONAL (D1): the host CLI is Contract 2.0, so the checker's own
-// result and stations use the host's 2.0 shape. VER-14 "an envelope at the
-// checker's minor" stays an open, disclosed obligation until the host moves
-// to the 3.0 base. A later D1 ruling replaces this file only; runCheck and
-// everything it judges stay unchanged. The checker core loads lazily so
-// discovery never loads it (DISC-2a).
+// The host envelope adapter: inside the checker, the only module that knows
+// the host CLI's envelope major.
+// PROVISIONAL (D1, open with Nathan): the host CLI is Contract 2.0, so the
+// checker's own result and stations use the host's 2.0 shape. VER-14 "an
+// envelope at the checker's minor" stays an open, disclosed obligation until
+// the host moves to the 3.0 base. If D1 moves the host to 3.0, these change:
+// this file (stations become kernel declarations with next or handoff arms);
+// the command entry in src/commands.ts and the acceptsArguments route mode in
+// src/cli.ts and src/commands-contract.ts; the D3 reader specimen
+// tests/contract3/checker/specimens/reader-3.1/reader.ts (it builds the host
+// envelope); and tests/contract3/checker/supporting/host-adapter.test.ts.
+// runCheck, judgeObservations and every rule module stay unchanged. The
+// checker core loads lazily so discovery never loads it (DISC-2a).
 
 import type { OperationResult } from "../../commands-contract.ts";
 import type { MinorTable } from "./minors.ts";
@@ -36,7 +42,7 @@ const HOST_STATIONS: Readonly<Record<CheckerStation, HostStationWords>> = {
     outcome: "refused",
     failureClass: "usage",
     exitCode: 2,
-    nextAction: "Run example --help and correct the invocation.",
+    nextAction: "Run {cli} --help and correct the invocation.",
     repairAction: "Pass --admission followed by one path, and nothing else.",
     trigger: "The invocation does not name exactly one admission path.",
   },
@@ -76,15 +82,41 @@ const HOST_STATIONS: Readonly<Record<CheckerStation, HostStationWords>> = {
   },
 };
 
+/** One host-shaped discovery station (the host's Contract 2.0 shape). */
+export interface HostStation {
+  causeCode: string;
+  commandIdentity: string;
+  effectClass: "inspect";
+  exitCode: 0 | 2 | 3 | 4;
+  failureClass: "usage" | "domain" | "schema" | null;
+  guidance: { nextAction: string };
+  outcome: "success" | "refused";
+  reachability: "required";
+  repairAction: string | null;
+  retryable: false;
+  retryDelayPolicy: { kind: "none" };
+  transactionState: "unchanged";
+  trigger: string;
+  unreachableRationale: null;
+}
+
+/** The host CLI's name is the first segment of the command identity. */
+function hostWords(text: string, commandIdentity: string): string {
+  return text.replace(
+    "{cli}",
+    commandIdentity.split(".")[0] ?? commandIdentity,
+  );
+}
+
 /** Host-shaped discovery stations for the checker command. */
-export function checkerStations(commandIdentity: string): unknown[] {
+export function checkerStations(commandIdentity: string): HostStation[] {
   return Object.values(HOST_STATIONS).map((words) => ({
     causeCode: words.causeCode,
     commandIdentity,
     effectClass: "inspect",
     exitCode: words.exitCode,
     failureClass: words.failureClass,
-    guidance: { nextAction: words.nextAction },
+    guidance: { nextAction: hostWords(words.nextAction, commandIdentity) },
     outcome: words.outcome,
     reachability: "required",
     repairAction: words.repairAction,
@@ -115,7 +147,7 @@ function toHostResult(
     exitCode: words.exitCode,
     failureClass: words.failureClass,
     message: outcome.message,
-    nextAction: words.nextAction,
+    nextAction: hostWords(words.nextAction, commandIdentity),
     outcome: words.outcome,
     repairAction: words.repairAction,
     retryable: false,

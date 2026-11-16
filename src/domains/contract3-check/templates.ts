@@ -201,9 +201,10 @@ export function renderGuidance(
     return key === "command" || key === "kind" ? value : render(value);
   if (Array.isArray(value)) {
     const items = value.map((item) => renderGuidance(item, render));
+    const rendered = items.filter((item): item is Json => item !== undefined);
     return items.some((item) => item === null || item === undefined)
       ? null
-      : (items as Json[]);
+      : rendered;
   }
   if (isObject(value)) {
     const object: JsonObject = {};
@@ -217,7 +218,7 @@ export function renderGuidance(
   return value;
 }
 
-export function canonical(value: Json | undefined): string {
+export function canonical(value: unknown): string {
   if (Array.isArray(value)) return `[${value.map(canonical).join(",")}]`;
   if (isObject(value))
     return `{${Object.keys(value)

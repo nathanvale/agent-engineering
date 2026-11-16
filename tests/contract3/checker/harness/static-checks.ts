@@ -120,7 +120,8 @@ interface EffectRow {
   uncertain: string;
 }
 
-const EXIT_OWNER: Record<string, number> = {
+/** Test-owned oracle restated from WIRE-14; the one copy in the test harness. */
+export const EXIT_OWNER: Readonly<Record<string, number>> = {
   success: 0,
   internal: 1,
   usage: 2,
@@ -283,14 +284,12 @@ export async function sourceAgreement(
       {
         contractVersion: "3.0.0",
         commands: [],
-        exitMeanings: {
-          "0": "success",
-          "1": "internal",
-          "2": "usage",
-          "3": "domain",
-          "4": "schema",
-          "75": "transient",
-        },
+        exitMeanings: Object.fromEntries(
+          Object.entries(EXIT_OWNER).map(([meaning, exit]) => [
+            String(exit),
+            meaning,
+          ]),
+        ),
         signalExits: signals,
         effectExclusions: [],
       },

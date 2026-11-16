@@ -123,7 +123,8 @@ export class Book {
     const code = ruleSpec(ruleId)?.findingCode ?? ruleId;
     const entry = this.entries.get(`${caseId}\u0000${ruleId}`);
     const whole = this.caseReasons.get(caseId);
-    const base = { ruleId, caseId, findings: [] as ReportRow["findings"] };
+    const none: ReportRow["findings"] = [];
+    const base = { ruleId, caseId, findings: none };
     if (entry !== undefined && entry.findings.length > 0)
       return {
         ...base,

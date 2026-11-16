@@ -52,7 +52,7 @@ export interface ShapeContext {
   declaredMinor: number;
 }
 
-export function isObject(value: Json | undefined): value is JsonObject {
+export function isObject(value: unknown): value is JsonObject {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
 

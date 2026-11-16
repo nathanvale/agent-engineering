@@ -95,23 +95,26 @@ function validateSummary(
     ["commandIdentity", "route", "summary", "effectClass"],
     path,
   );
+  const { commandIdentity, summary, effectClass, route } = value;
   const valid =
-    nonEmptyString(ctx, value.commandIdentity, `${path}/commandIdentity`) &&
-    nonEmptyString(ctx, value.summary, `${path}/summary`) &&
-    member(ctx, "effectClass", value.effectClass, `${path}/effectClass`);
-  const route = value.route;
+    nonEmptyString(ctx, commandIdentity, `${path}/commandIdentity`) &&
+    nonEmptyString(ctx, summary, `${path}/summary`) &&
+    member(ctx, "effectClass", effectClass, `${path}/effectClass`);
   const routeValid = ctx.c.check(
     "discovery-metadata",
     isStringArray(route) && route.every(isNonEmptyString),
     () => `${path}/route must be an array of nonempty argv tokens.`,
   );
-  if (!valid || !routeValid) return null;
-  return {
-    commandIdentity: value.commandIdentity as string,
-    route: route as string[],
-    effectClass: value.effectClass as string,
-    summary: value.summary as string,
-  };
+  if (
+    !valid ||
+    !routeValid ||
+    !isNonEmptyString(commandIdentity) ||
+    !isNonEmptyString(summary) ||
+    typeof effectClass !== "string" ||
+    !isStringArray(route)
+  )
+    return null;
+  return { commandIdentity, route, effectClass, summary };
 }
 
 function summaries(
@@ -422,14 +425,23 @@ function validateStation(
         `${path}/failureClass`,
       ));
   const guidance = isObject(station.guidance) ? station.guidance : {};
-  if (enums && typeof station.retryable === "boolean")
+  const { outcome, transactionState, failureClass, exitCode, retryable } =
+    station;
+  if (
+    enums &&
+    typeof outcome === "string" &&
+    typeof transactionState === "string" &&
+    (failureClass === null || typeof failureClass === "string") &&
+    typeof exitCode === "number" &&
+    typeof retryable === "boolean"
+  )
     for (const problem of rowProblems(
       {
-        outcome: station.outcome as string,
-        transactionState: station.transactionState as string,
-        failureClass: station.failureClass as string | null,
-        exitCode: station.exitCode as number,
-        retryable: station.retryable,
+        outcome,
+        transactionState,
+        failureClass,
+        exitCode,
+        retryable,
         arm: has(guidance, "next")
           ? "next"
           : has(guidance, "handoff")

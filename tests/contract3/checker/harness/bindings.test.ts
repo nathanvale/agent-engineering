@@ -6,6 +6,7 @@
 // a file path to write the totals as JSON.
 
 import { afterAll, beforeAll, describe, expect, test } from "bun:test";
+import { BUDGETS } from "../../../../src/domains/contract3-check/budgets.ts";
 import { readdir, readFile, stat } from "node:fs/promises";
 import { join } from "node:path";
 import {
@@ -28,6 +29,7 @@ import {
   verifyManifest,
 } from "./suite.ts";
 import {
+  EXIT_OWNER,
   minorCompatibility,
   retainedTooling,
   snippetStatus,
@@ -39,7 +41,13 @@ let manifest: Manifest;
 const receipt: Record<string, unknown> = {
   startedAt: new Date().toISOString(),
 };
-const outcomes = new Map<string, { matched: boolean; problems: string[] }>();
+/** unproved: the binding matched but its property is vacuous or not observed; never counted as passed. */
+const outcomes = new Map<
+  string,
+  { matched: boolean; problems: string[]; unproved?: string }
+>();
+/** Properties a passing test did not prove; each is reported, never counted as proof. */
+const unprovedProperties: { id: string; reason: string }[] = [];
 
 beforeAll(async () => {
   manifest = await loadManifest();
@@ -57,15 +65,19 @@ afterAll(async () => {
   receipt.bindings = {
     run: results.length,
     passed: results.filter(
-      ([id, result]) => result.matched && !provisional.has(id),
+      ([id, result]) =>
+        result.matched && !provisional.has(id) && result.unproved === undefined,
     ).length,
     provisionalMatched: results.filter(
       ([id, result]) => result.matched && provisional.has(id),
     ).length,
+    unproved: results.filter(([, result]) => result.unproved !== undefined)
+      .length,
     failed: results.filter(([, result]) => !result.matched).length,
     notRun: manifest.totals.bindings - results.length,
     stopped: manifest.totals.stopped,
   };
+  receipt.unprovedProperties = unprovedProperties;
   receipt.mismatches = Object.fromEntries(
     results
       .filter(([, result]) => !result.matched)
@@ -189,7 +201,9 @@ describe("admitted bindings at both layers", () => {
 
 function timingProblems(expected: Expected, elapsedMs: number): string[] {
   const bounds: Record<string, number> = {
-    "observer-exclusions": 5_000 + 500 + 5_000,
+    // Binder bound: run budget + kill grace + 5,000 ms checker slack.
+    "observer-exclusions":
+      BUDGETS.TARGET_RUN_MAX_MS + BUDGETS.TARGET_KILL_GRACE_MS + 5_000,
     "pattern-isolation": 5_000,
   };
   const rule = expected.harness?.rule as string | undefined;
@@ -197,6 +211,40 @@ function timingProblems(expected: Expected, elapsedMs: number): string[] {
   return bound !== undefined && elapsedMs > bound
     ? [`checker took ${Math.round(elapsedMs)} ms, bound ${bound} ms`]
     : [];
+}
+
+const unprovedStatic = new Map<string, string>();
+
+/** S5: the checker's help (human and machine) and its interface documentation. */
+async function checkerHelpAndDocumentation(): Promise<Record<string, string>> {
+  const help = (json: boolean) =>
+    Bun.spawnSync({
+      cmd: [
+        process.execPath,
+        "run",
+        join(REPO_ROOT, "src/cli.ts"),
+        "--help",
+        ...(json ? ["--json"] : []),
+      ],
+      cwd: REPO_ROOT,
+    }).stdout.toString();
+  const discovery = Bun.spawnSync({
+    cmd: [
+      process.execPath,
+      "run",
+      join(REPO_ROOT, "src/cli.ts"),
+      "--discover-command",
+      "example.contract3.check",
+      "--json",
+    ],
+    cwd: REPO_ROOT,
+  }).stdout.toString();
+  return {
+    "INTERFACE.md": await readFile(join(CHECKER_DIR, "INTERFACE.md"), "utf8"),
+    "help (human)": help(false),
+    "help (machine)": help(true),
+    "command discovery": discovery,
+  };
 }
 
 describe("static blocks (group T)", () => {
@@ -259,16 +307,12 @@ describe("static blocks (group T)", () => {
           );
           if (findings.length > 0) problems.push(JSON.stringify(findings));
         } else if (binding.rule === "snippet-status") {
-          const documents = {
-            "INTERFACE.md": await readFile(
-              join(CHECKER_DIR, "INTERFACE.md"),
-              "utf8",
-            ),
-          };
+          const documents = await checkerHelpAndDocumentation();
           const status = snippetStatus(documents);
           if (status.findings.length > 0)
             problems.push(JSON.stringify(status.findings));
           receipt.snippetStatus = {
+            documents: Object.keys(documents),
             snippets: status.snippets,
             typescript: status.typescript,
           };
@@ -281,9 +325,19 @@ describe("static blocks (group T)", () => {
             )
           )
             problems.push("negative control did not fail");
-        }
+          if (status.typescript === 0) {
+            const reason = `UNPROVED (vacuous): the checker's help and documentation hold ${status.snippets} fenced snippets and no TypeScript snippet, so no snippet's proof status is exercised.`;
+            unprovedProperties.push({ id: binding.id, reason });
+            unprovedStatic.set(binding.id, reason);
+          }
+        } else problems.push(`unhandled static rule ${binding.rule}`);
         results[binding.id] = problems;
-        outcomes.set(binding.id, { matched: problems.length === 0, problems });
+        const unproved = unprovedStatic.get(binding.id);
+        outcomes.set(binding.id, {
+          matched: problems.length === 0,
+          problems,
+          ...(unproved === undefined ? {} : { unproved }),
+        });
       }
       expect(Object.keys(results)).toHaveLength(manifest.totals.static);
       expect(
@@ -304,14 +358,7 @@ describe("static blocks (group T)", () => {
     try {
       const findings = await sourceAgreement(
         {
-          exitOwner: {
-            success: 0,
-            internal: 1,
-            usage: 2,
-            domain: 3,
-            schema: 4,
-            transient: 75,
-          },
+          exitOwner: { ...EXIT_OWNER },
           signalExits: { "130": "SIGINT", "143": "SIGTERM" },
         },
         join(perturbed.cli, "../domains/contract3-check"),
@@ -325,10 +372,37 @@ describe("static blocks (group T)", () => {
   });
 });
 
+function causeOf(stdout: string): string | null {
+  try {
+    const envelope: unknown = JSON.parse(stdout);
+    if (
+      typeof envelope !== "object" ||
+      envelope === null ||
+      !("result" in envelope)
+    )
+      return null;
+    const result: unknown = envelope.result;
+    return typeof result === "object" &&
+      result !== null &&
+      "causeCode" in result &&
+      typeof result.causeCode === "string"
+      ? result.causeCode
+      : null;
+  } catch {
+    return null;
+  }
+}
+
 async function processWith(
   cli: string,
   id: string,
-): Promise<{ problems: string[]; counter: string; elapsedMs: number }> {
+): Promise<{
+  problems: string[];
+  counter: string;
+  elapsedMs: number;
+  exitCode: number | null;
+  causeCode: string | null;
+}> {
   const copy = await freshCopy();
   try {
     const expected = await loadExpected(copy.root, id);
@@ -353,6 +427,8 @@ async function processWith(
               join(copy.root, "bindings/cases", id, counter.file),
             ),
       elapsedMs: run.elapsedMs,
+      exitCode: run.exitCode,
+      causeCode: causeOf(run.stdout),
     };
   } finally {
     await copy.dispose();
@@ -364,7 +440,7 @@ describe("harness blocks and their sensitivity controls", () => {
     "no-replay: a checker that reruns the target makes the counter 2 and the harness fails",
     async () => {
       const perturbed = await perturbedChecker(
-        "command.ts",
+        "observe.ts",
         "    const observation = await observeCase(item);\n",
         '    const observation = await observeCase(item);\n    if (item.target.kind === "run") await observeCase(item);\n',
       );
@@ -503,8 +579,16 @@ describe("harness blocks and their sensitivity controls", () => {
           msAfterSignal:
             signalledAt === null ? null : Math.round(finishedAt - signalledAt),
         };
-        if (signalledAt === null) expect(run.exitCode).toBe(4);
-        else {
+        if (signalledAt === null) {
+          // The binding's allowed finished path. The signal-during-second-run
+          // property was NOT observed: report it, never count it as proved.
+          expect(run.exitCode).toBe(4);
+          unprovedProperties.push({
+            id: "pattern-isolation.lifecycle",
+            reason:
+              "UNPROVED: the second target run ended before the poll saw it, so SIGTERM was not delivered during that run; the binding's allowed finished path (exit 4) was taken. Signal forwarding during a target run is proved separately by the SUPPORTING hanging-target test.",
+          });
+        } else {
           expect(run.exitCode === 143 || run.signal === "SIGTERM").toBe(true);
           expect(run.stdout).toBe("");
           expect(finishedAt - signalledAt).toBeLessThan(500 + 250);
@@ -517,7 +601,7 @@ describe("harness blocks and their sensitivity controls", () => {
   );
 
   test(
-    "pattern-isolation sensitivity: a synchronous match with no budget breaks the elapsed bound",
+    "pattern-isolation sensitivity: a synchronous match with no budget fails by the time bound or by a wrong exit or cause",
     async () => {
       const perturbed = await perturbedChecker(
         "pattern.ts",
@@ -530,12 +614,17 @@ describe("harness blocks and their sensitivity controls", () => {
           "pattern-isolation.elapsed",
         );
         receipt.patternIsolationSensitivity = {
-          problems: result.problems.slice(0, 3),
+          exitCode: result.exitCode,
+          causeCode: result.causeCode,
           elapsedMs: Math.round(result.elapsedMs),
         };
-        expect(result.problems.length > 0 || result.elapsedMs > 5_000).toBe(
-          true,
-        );
+        // The corrected binding's control (B1): the bound refusal (exit 4,
+        // SCHEMA_INVALID_INPUT within 5,000 ms) must not hold.
+        const boundRefusal =
+          result.elapsedMs <= 5_000 &&
+          result.exitCode === 4 &&
+          result.causeCode === "SCHEMA_INVALID_INPUT";
+        expect(boundRefusal).toBe(false);
       } finally {
         await perturbed.dispose();
       }
