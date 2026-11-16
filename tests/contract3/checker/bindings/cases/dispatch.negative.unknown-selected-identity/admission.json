@@ -23,8 +23,6 @@
       },
       "expect": {
         "exitCode": 2,
-        "causeCode": "USAGE_UNKNOWN_COMMAND",
-        "outcome": "refused",
         "commandIdentity": "specimen.command-discovery"
       }
     }

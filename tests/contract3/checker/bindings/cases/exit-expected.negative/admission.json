@@ -68,9 +68,7 @@
         }
       },
       "expect": {
-        "exitCode": 3,
-        "causeCode": "DOMAIN_NOTE_MISSING",
-        "outcome": "refused"
+        "exitCode": 3
       }
     }
   ]

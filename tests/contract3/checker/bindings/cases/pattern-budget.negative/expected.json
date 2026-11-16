@@ -90,5 +90,5 @@
   "excluded": {},
   "harness": null,
   "static": null,
-  "notes": "Pattern (a+)+b against 40 a characters backtracks exponentially; the checker must stop at PATTERN_MAX_MS and refuse."
+  "notes": "Pattern (a+)+b against 40 a characters backtracks catastrophically. On Bun 1.4.4 JavaScriptCore gives up after about 0.4 to 0.6 s and reports a false non-match, so the checker's own budget must fire first and refuse (INPUT-2, V-44). --code maxLength is widened to 64 so no length-before-pattern order is assumed."
 }

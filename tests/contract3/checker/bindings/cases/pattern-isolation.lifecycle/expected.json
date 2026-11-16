@@ -93,7 +93,7 @@
   "harness": {
     "rule": "pattern-isolation",
     "assertion": "Send SIGTERM to the checker as soon as the second target run has started (poll for its process or 50 ms after the first run's exit). The checker exits 143 with empty stdout within 500 ms of the signal, or, if it already finished, with this binding's exit-4 refusal. It never hangs.",
-    "sensitivityControl": "Run the pattern synchronously on the checker's own thread with no budget; the harness must fail on the 500 ms bound."
+    "sensitivityControl": "Run the pattern synchronously on the checker's own thread with no budget; the harness must fail, either on the 500 ms bound or because the engine's false non-match gives a wrong exit or cause (exit 0 instead of the bound exit-4 refusal)."
   },
   "static": null,
   "notes": null

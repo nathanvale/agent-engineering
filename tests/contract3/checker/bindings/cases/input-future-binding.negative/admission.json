@@ -74,10 +74,7 @@
         }
       },
       "expect": {
-        "exitCode": 2,
-        "causeCode": "USAGE_INVALID_INVOCATION",
-        "outcome": "refused",
-        "commandIdentity": "specimen.preview"
+        "exitCode": 2
       },
       "probe": {
         "program": "bun-runtime",

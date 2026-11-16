@@ -98,6 +98,14 @@
       "after": "1\n"
     },
     "counterOwner": "no-replay.valid.pattern-budget/cd-find",
+    "additionalCounters": [
+      {
+        "file": "no-replay.input.counter",
+        "before": "absent",
+        "after": "1\n",
+        "owner": "no-replay.valid.pattern-budget/subject"
+      }
+    ],
     "readerStderr": ""
   },
   "static": null,

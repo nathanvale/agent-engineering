@@ -99,9 +99,17 @@
       "after": "1\n"
     },
     "counterOwner": "no-replay.executed-pattern-budget/cd-find",
+    "additionalCounters": [
+      {
+        "file": "no-replay.input.counter",
+        "before": "absent",
+        "after": "1\n",
+        "owner": "no-replay.executed-pattern-budget/subject"
+      }
+    ],
     "readerStderr": "",
-    "sensitivityControl": "Perturb the checker to run the command-discovery target again after the budget refusal; the counter becomes 2\\n and the harness must fail."
+    "sensitivityControl": "Perturb the checker to run either target again after the budget refusal; that target's counter becomes 2\\n and the harness must fail. Both counters are compared."
   },
   "static": null,
-  "notes": "The command-discovery run increments the counter and emits the hostile pattern; the later input run carries the subject value."
+  "notes": "The command-discovery run increments its counter and emits the hostile pattern; the later input run carries the subject value and increments its own counter (B4)."
 }

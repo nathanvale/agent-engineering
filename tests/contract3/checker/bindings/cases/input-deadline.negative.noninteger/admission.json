@@ -98,8 +98,6 @@
       },
       "expect": {
         "exitCode": 2,
-        "causeCode": "USAGE_INVALID_INVOCATION",
-        "outcome": "refused",
         "commandIdentity": "specimen.dispatch"
       }
     }

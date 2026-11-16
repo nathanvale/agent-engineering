@@ -77,10 +77,7 @@
         }
       },
       "expect": {
-        "exitCode": 0,
-        "causeCode": "SUCCESS_UNCHANGED",
-        "outcome": "success",
-        "commandIdentity": "specimen.find"
+        "exitCode": 0
       },
       "probe": {
         "program": "bun-runtime",

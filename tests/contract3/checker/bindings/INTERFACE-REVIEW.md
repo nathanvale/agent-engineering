@@ -301,3 +301,30 @@ their cases' notes; a different reading changes only those cases.
   `USAGE_INVALID_INVOCATION` (INPUT-2; CMD-9 step 3 allows usage or schema).
 - An invalid generated binding found at creation, before any dependent effect,
   is `INTERNAL_RESULT_UNCHANGED`.
+
+## Addendum 2: corrections after the checker review (repair round 1)
+
+Applied through the generator on 16 November 2026 after the contract review
+of the checker at `63d711a` (its B1 to B5) and the coordinator's decision on
+S1 (option (i)). The text above is unchanged; these entries supersede it where
+they differ.
+
+- **G2, rule 1 narrowed (B2).** A framing failure blocks rows that read
+  envelope content. Rules that judge whether an envelope is produced
+  (`dispatch`, the navigation rules in machine mode, `machine-stderr`) are
+  still judged, and the framing failure is their evidence (DISC-1, LIFE-1).
+  `dispatch.negative.machine-help` was already bound this way.
+- **G23, extended (B3).** `--code` `maxLength` is widened to 64 in every
+  pattern-budget context (`pattern-budget.valid` and `.negative`, both
+  pattern-budget no-replay bindings, `pattern-isolation.elapsed` and
+  `.lifecycle`). No binding now assumes the checker checks length before
+  matching the pattern, or the reverse.
+- **Budget reason (B1).** On Bun 1.4.4, JavaScriptCore ends `(a+)+b` on 40
+  characters after about 0.4 to 0.6 s with a false non-match. The bound
+  refusal is unchanged and right by INPUT-2 and V-44. The pattern-isolation
+  sensitivity control fails either by the time bound or by a wrong exit or
+  cause.
+- **G24 (B4).** The pattern-budget no-replay pair also counts its input run
+  (`harness.additionalCounters`).
+- **G16, tightened (B5).** Under option (i), a refusing binding's `expect`
+  carries only the fields an admitted rule consumes.

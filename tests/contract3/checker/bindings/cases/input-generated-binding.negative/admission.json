@@ -74,10 +74,7 @@
         }
       },
       "expect": {
-        "exitCode": 1,
-        "causeCode": "INTERNAL_RESULT_UNCHANGED",
-        "outcome": "failed",
-        "commandIdentity": "specimen.preview"
+        "exitCode": 1
       },
       "probe": {
         "program": "bun-runtime",

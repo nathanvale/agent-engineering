@@ -60,20 +60,38 @@ the binder writes nothing there.
    sensitivity control in the same harness. No-replay bindings read their
    counter file after the checker exits: `absent` before, `1\n` after. A
    perturbed checker that reruns the target must make the counter `2\n` and
-   the harness must fail.
+   the harness must fail. Where `harness.additionalCounters` is present
+   (the two pattern-budget no-replay bindings count their input run too),
+   every listed counter is compared the same way; ignoring one is a
+   test harness defect.
 7. **Static blocks** (`static`, group T): feed `table.json` or the stated
    constants to the repository's static check and assert the verdict and
    finding codes.
 8. **Rule sensitivity** (`MANIFEST.json` `procedures`): for every listed
    negative, disable its target rule alone; the binding must stop matching and
-   the harness must fail; restore and it matches again.
+   the harness must fail; restore and it matches again. Under the
+   coordinator's decision on S1 (option (i)), this is required at both layers
+   and each layer's count is reported separately:
+   - Component layer: always; the target row loses its bound finding.
+   - Process layer: the bound refusal must disappear wherever the negative's
+     observation breaks no other always-judged rule. Expectation rules
+     (`exit-expected`, `cause-expected` and the input-agreement family) are
+     judged only when admitted, and every negative's `expect` carries only
+     the fields its admitted rules consume (B5). A broken observation of an
+     accepted minor is still always refused (VER-10), so a negative whose
+     mutation also breaks another contract rule (for example a deleted
+     `failureClass`, which the declared station also contradicts) keeps
+     exit 4 with its target rule disabled. For those, the process count
+     records the refusal as over-determined, never as a pass, and the
+     component layer carries the per-rule proof.
 9. **Stopped cases** (`STOPPED.json`) are reported as stopped, never passed
    and never silently skipped.
 
 `targetExecutions` lists every run and probe the checker must start, in
-order. Execution count is independently observed only where a counter
-exists (the no-replay bindings); elsewhere it is not independently observed,
-which stays a stated proof gap.
+order. Stated limit (review S6, G24): execution count is observed only
+through the no-replay counters, which cover 12 targets in 10 bindings. Every
+other `targetExecutions` list is an expectation the test harness cannot
+observe, and is reported as such, never as proved.
 
 ## Expected-file shape
 
@@ -106,13 +124,27 @@ which stays a stated proof gap.
   location, and lists every excluded rule with its reason in `excluded`. The
   binder never predicts a collateral `failed` row; unrelated admitted rows are
   expected `passed`.
-- **Prerequisites.** A framing failure blocks every other row on that case
-  except `machine-stderr`; a version refusal blocks every row except
+- **Prerequisites.** A framing failure blocks every row on that case that
+  reads envelope content. Rules that judge whether an envelope is produced at
+  all (`dispatch` and the navigation rules where machine mode must print one
+  envelope, and `machine-stderr`) are still judged, and a framing failure is
+  their evidence (DISC-1, LIFE-1; `dispatch.negative.machine-help`). A
+  version refusal blocks every row except
   `json-framing`, the version rules up to the refusing class and
   `machine-stderr` (VER-10 order). Blocked rows are `not_run` with a reason.
   Later version classes are not admitted after a refusing class.
 - **Review rules.** `unreachable-review` and `minor-meaning` never pass from
   shape; their valid twins expect `not_run` with a review reason.
+- **Expectation fields** (B5). In a refusing binding, `expect` keeps
+  `causeCode` and `outcome` only when `cause-expected` is admitted, and
+  `commandIdentity` only when `cause-expected`, `dispatch`,
+  `command-selection`, `input-dash` or `input-deadline` is admitted.
+  `exitCode` stays whenever `expect` is present, since the interface makes it
+  required. Valid twins keep their full `expect`.
+- **No assumed check order.** Where an untrusted pattern is matched against a
+  long subject, the declared `maxLength` is widened (`--code` to 64 in the
+  pattern-budget contexts), so a checker may check length and pattern in
+  either order (INPUT-2 fixes none; B3).
 - **One input rule per argv case** (G8). Expected exits, causes and
   identities come from the binder's reading of INPUT-2 to INPUT-5 and the
   B1 decision, never from the specimen's catalogue.
@@ -133,21 +165,21 @@ counters and state. `ubuntu-latest` is not yet observed.
 
 ## Budgets
 
-| Name                            | Value     | Reason                                                                                                       |
-| ------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------ |
-| `ADMISSION_MAX_BYTES`           | 1,048,576 | Largest bound admission is under 100 KB; 1 MiB bounds hostile input with headroom                            |
-| `ADMISSION_MAX_CASES`           | 256       | Largest bound admission has 6 cases; `budget.admission-cases` admits 257                                     |
-| `TARGET_STDOUT_MAX_BYTES`       | 1,048,576 | Discovery output is a few KB; 1 MiB matches the DIAG-9 per-run order of magnitude                            |
-| `TARGET_STDERR_MAX_BYTES`       | 65,536    | Only emptiness, length and digest are used; one bounded line is far below                                    |
-| `TARGET_JSON_MAX_DEPTH`         | 64        | Frozen: LIFE-7 step 2, counted per B2 (envelope level 0, every value counts)                                 |
-| `TARGET_RUN_MAX_MS`             | 5,000     | Specimen runs take tens of milliseconds; 5 s is a wide CI margin and keeps the timeout case short            |
-| `TARGET_KILL_GRACE_MS`          | 500       | Frozen 500 ms stopping bound (LIFE-3, LIFE-11)                                                               |
-| `PATTERN_MAX_SOURCE_BYTES`      | 4,096     | Real declaration patterns are tens of bytes                                                                  |
-| `PATTERN_MAX_SUBJECT_BYTES`     | 4,096     | Above any declared string bound in the specimen and far above the 1,024-byte binding value limit (STEP-10)   |
-| `PATTERN_MAX_MS`                | 250       | Benign anchored matches finish in microseconds; `(a+)+b` on 40 characters runs for minutes                   |
-| `MESSAGE_MAX_BYTES`             | 2,048     | A case id, a 64-character version echo and a few key names fit; it stays well under the 16,384-byte fallback |
-| `FINDING_MESSAGE_MAX_BYTES`     | 512       | One violated key or correlation and a repair direction                                                       |
-| `OBSERVED_VALUE_ECHO_MAX_CHARS` | 64        | A legal version is under 20 characters; `budget.observed-version-echo` sends 201                             |
+| Name                            | Value     | Reason                                                                                                                                                                                                                                                                            |
+| ------------------------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ADMISSION_MAX_BYTES`           | 1,048,576 | Largest bound admission is under 100 KB; 1 MiB bounds hostile input with headroom                                                                                                                                                                                                 |
+| `ADMISSION_MAX_CASES`           | 256       | Largest bound admission has 6 cases; `budget.admission-cases` admits 257                                                                                                                                                                                                          |
+| `TARGET_STDOUT_MAX_BYTES`       | 1,048,576 | Discovery output is a few KB; 1 MiB matches the DIAG-9 per-run order of magnitude                                                                                                                                                                                                 |
+| `TARGET_STDERR_MAX_BYTES`       | 65,536    | Only emptiness, length and digest are used; one bounded line is far below                                                                                                                                                                                                         |
+| `TARGET_JSON_MAX_DEPTH`         | 64        | Frozen: LIFE-7 step 2, counted per B2 (envelope level 0, every value counts)                                                                                                                                                                                                      |
+| `TARGET_RUN_MAX_MS`             | 5,000     | Specimen runs take tens of milliseconds; 5 s is a wide CI margin and keeps the timeout case short                                                                                                                                                                                 |
+| `TARGET_KILL_GRACE_MS`          | 500       | Frozen 500 ms stopping bound (LIFE-3, LIFE-11)                                                                                                                                                                                                                                    |
+| `PATTERN_MAX_SOURCE_BYTES`      | 4,096     | Real declaration patterns are tens of bytes                                                                                                                                                                                                                                       |
+| `PATTERN_MAX_SUBJECT_BYTES`     | 4,096     | Above any declared string bound in the specimen and far above the 1,024-byte binding value limit (STEP-10)                                                                                                                                                                        |
+| `PATTERN_MAX_MS`                | 250       | Benign anchored matches finish in microseconds. On Bun 1.4.4, JavaScriptCore stops `(a+)+b` on 40 characters by itself after about 0.4 to 0.6 s and reports a false non-match, so this budget must fire first; losing that race is a wrong answer, not a slow one (INPUT-2, V-44) |
+| `MESSAGE_MAX_BYTES`             | 2,048     | A case id, a 64-character version echo and a few key names fit; it stays well under the 16,384-byte fallback                                                                                                                                                                      |
+| `FINDING_MESSAGE_MAX_BYTES`     | 512       | One violated key or correlation and a repair direction                                                                                                                                                                                                                            |
+| `OBSERVED_VALUE_ECHO_MAX_CHARS` | 64        | A legal version is under 20 characters; `budget.observed-version-echo` sends 201                                                                                                                                                                                                  |
 
 ## Provisional markers
 

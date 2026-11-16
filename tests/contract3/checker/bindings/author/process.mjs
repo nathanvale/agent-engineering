@@ -1556,6 +1556,9 @@ function deterministic() {
 
 // ----- pattern budget ------------------------------------------------------
 export const HOSTILE = "(a+)+b";
+// B3: wide enough for every subject in the pattern-budget contexts, so no
+// check order between length and pattern is assumed (INPUT-2 fixes none).
+export const WIDE_CODE = 64;
 export const HOSTILE_SUBJECT = "a".repeat(40);
 
 export function patternCases(pattern, subject, { counter, cdMaxLength } = {}) {
@@ -1582,7 +1585,7 @@ export function patternCases(pattern, subject, { counter, cdMaxLength } = {}) {
 
 function patternBudget() {
   const rule = "pattern-budget";
-  const benign = patternCases("[a-z]+", "abc");
+  const benign = patternCases("[a-z]+", "abc", { cdMaxLength: WIDE_CODE });
   const twin = runCase(
     "subject",
     "command",
@@ -1600,7 +1603,9 @@ function patternBudget() {
     oracle: [ref(rule, "validTwin")],
     cases: [ctxDiscovery(), benign.cd, twin.case],
   });
-  const hostile = patternCases(HOSTILE, HOSTILE_SUBJECT);
+  const hostile = patternCases(HOSTILE, HOSTILE_SUBJECT, {
+    cdMaxLength: WIDE_CODE,
+  });
   const negative = runCase(
     "subject",
     "command",
@@ -1620,7 +1625,7 @@ function patternBudget() {
     verification: ["V-44"],
     cases: [ctxDiscovery(), hostile.cd, negative.case],
     message: [V],
-    notes: `Pattern ${HOSTILE} against 40 a characters backtracks exponentially; the checker must stop at PATTERN_MAX_MS and refuse.`,
+    notes: `Pattern ${HOSTILE} against 40 a characters backtracks catastrophically. On Bun 1.4.4 JavaScriptCore gives up after about 0.4 to 0.6 s and reports a false non-match, so the checker's own budget must fire first and refuse (INPUT-2, V-44). --code maxLength is widened to ${WIDE_CODE} so no length-before-pattern order is assumed.`,
   });
 }
 

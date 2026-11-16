@@ -9,6 +9,7 @@ import {
   HOSTILE,
   HOSTILE_SUBJECT,
   RETAINED_COMMIT,
+  WIDE_CODE,
   RETAINED_WRAPPER,
   expectOf,
   patternCases,
@@ -310,6 +311,7 @@ function stopped() {
 // ----- group H: harness-judged ---------------------------------------------
 function harness() {
   const counter = "no-replay.counter";
+  const INPUT_COUNTER = "no-replay.input.counter";
   const noReplay = (id, caseId, stdout, failing, given, extra = {}) => {
     const oracle = [
       ...given,
@@ -424,7 +426,10 @@ function harness() {
     subject.status.presence = { failed: finding("presence") };
   }
   {
-    const hostile = patternCases(HOSTILE, HOSTILE_SUBJECT, { counter });
+    const hostile = patternCases(HOSTILE, HOSTILE_SUBJECT, {
+      counter,
+      cdMaxLength: WIDE_CODE,
+    });
     const input = runCase(
       "subject",
       "command",
@@ -434,6 +439,7 @@ function harness() {
         rule: "pattern-budget",
         expect: expectOf(BASE.findUsage(), true),
         station: false,
+        counter: INPUT_COUNTER,
       },
     );
     input.case.status["pattern-budget"] = { failed: finding("pattern-budget") };
@@ -453,12 +459,20 @@ function harness() {
         rule: "no-replay",
         counter: { file: counter, before: "absent", after: "1\n" },
         counterOwner: `no-replay.executed-pattern-budget/cd-find`,
+        additionalCounters: [
+          {
+            file: INPUT_COUNTER,
+            before: "absent",
+            after: "1\n",
+            owner: "no-replay.executed-pattern-budget/subject",
+          },
+        ],
         readerStderr: "",
         sensitivityControl:
-          "Perturb the checker to run the command-discovery target again after the budget refusal; the counter becomes 2\\n and the harness must fail.",
+          "Perturb the checker to run either target again after the budget refusal; that target's counter becomes 2\\n and the harness must fail. Both counters are compared.",
       },
       notes:
-        "The command-discovery run increments the counter and emits the hostile pattern; the later input run carries the subject value.",
+        "The command-discovery run increments its counter and emits the hostile pattern; the later input run carries the subject value and increments its own counter (B4).",
     });
   }
   // Valid twins: same single increment, accepted output.
@@ -485,7 +499,10 @@ function harness() {
     );
   }
   {
-    const benign = patternCases("[a-z]+", "abc", { counter });
+    const benign = patternCases("[a-z]+", "abc", {
+      counter,
+      cdMaxLength: WIDE_CODE,
+    });
     const input = runCase(
       "subject",
       "command",
@@ -495,6 +512,7 @@ function harness() {
         rule: "pattern-budget",
         expect: expectOf(BASE.findOk(), true),
         station: false,
+        counter: INPUT_COUNTER,
       },
     );
     bind({
@@ -512,6 +530,14 @@ function harness() {
         rule: "no-replay",
         counter: { file: counter, before: "absent", after: "1\n" },
         counterOwner: "no-replay.valid.pattern-budget/cd-find",
+        additionalCounters: [
+          {
+            file: INPUT_COUNTER,
+            before: "absent",
+            after: "1\n",
+            owner: "no-replay.valid.pattern-budget/subject",
+          },
+        ],
         readerStderr: "",
       },
     });
@@ -581,8 +607,9 @@ function harness() {
     ],
     {
       assertion:
-        "The hostile match is terminated at PATTERN_MAX_MS (250 ms); the checker exits 4 within 5,000 ms of start.",
+        "The checker's own budget ends the hostile match at PATTERN_MAX_MS (250 ms) and refuses; the checker exits 4 within 5,000 ms of start. On Bun 1.4.4 JavaScriptCore stops this match by itself after about 0.4 to 0.6 s and reports a false non-match, so a run that ends without the budget refusal is a wrong answer, not a pass (INPUT-2, V-44).",
     },
+    WIDE_CODE,
   );
   isolation(
     "pattern-isolation.lifecycle",
@@ -596,8 +623,9 @@ function harness() {
       assertion:
         "Send SIGTERM to the checker as soon as the second target run has started (poll for its process or 50 ms after the first run's exit). The checker exits 143 with empty stdout within 500 ms of the signal, or, if it already finished, with this binding's exit-4 refusal. It never hangs.",
       sensitivityControl:
-        "Run the pattern synchronously on the checker's own thread with no budget; the harness must fail on the 500 ms bound.",
+        "Run the pattern synchronously on the checker's own thread with no budget; the harness must fail, either on the 500 ms bound or because the engine's false non-match gives a wrong exit or cause (exit 0 instead of the bound exit-4 refusal).",
     },
+    WIDE_CODE,
   );
 
   // observer-exclusions: a timed-out case stays visible with a reason.
