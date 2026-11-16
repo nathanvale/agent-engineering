@@ -1,0 +1,82 @@
+{
+  "about": "Shrinking list. These avoid-word hits existed when the glossary check was introduced (16 November 2026). The check fails on any hit not listed here, and on any listed hit that no longer exists: remove or lower an entry in the same commit that fixes it. Never add an entry. When the list is empty, delete this file and the check is absolute.",
+  "hits": [
+    {
+      "file": "src/domains/contract3-check/cross-rules.ts",
+      "term": "Run binding",
+      "surface": "visible-text",
+      "text": "${where}: binding ${names.get(arg) ?? \"value\"} renders ${JSON.stringify(arg)} into args, which equals a declared route token.",
+      "count": 1
+    },
+    {
+      "file": "src/domains/contract3-check/cross-rules.ts",
+      "term": "Run binding",
+      "surface": "visible-text",
+      "text": "${where}: bindings is ${present ? \"present although the station names no binding\" : \"absent although the station templates name a binding\"}.",
+      "count": 1
+    },
+    {
+      "file": "src/domains/contract3-check/cross-rules.ts",
+      "term": "Run binding",
+      "surface": "visible-text",
+      "text": "${where}: bindings must have exactly the names the station templates use (${[...declared].join(\", \") || \"none\"}).",
+      "count": 1
+    },
+    {
+      "file": "src/domains/contract3-check/cross-rules.ts",
+      "term": "Run binding",
+      "surface": "visible-text",
+      "text": "absent although the station templates name a binding",
+      "count": 1
+    },
+    {
+      "file": "src/domains/contract3-check/cross-rules.ts",
+      "term": "Run binding",
+      "surface": "visible-text",
+      "text": "present although the station names no binding",
+      "count": 1
+    },
+    {
+      "file": "src/domains/contract3-check/envelope-rules.ts",
+      "term": "Run binding",
+      "surface": "visible-text",
+      "text": "Binding ${name} ${problem ?? \"\"}.",
+      "count": 1
+    },
+    {
+      "file": "src/domains/contract3-check/envelope-rules.ts",
+      "term": "Run binding",
+      "surface": "visible-text",
+      "text": "Binding name ${JSON.stringify(name)} does not match ^[a-z][A-Za-z0-9]*$.",
+      "count": 1
+    },
+    {
+      "file": "src/domains/contract3-check/host-adapter.ts",
+      "term": "CLI front door",
+      "surface": "comment",
+      "text": "host CLI moves to a Contract 3.0 front door at composition and no translator",
+      "count": 1
+    },
+    {
+      "file": "src/domains/contract3-check/navigation-data.ts",
+      "term": "Run binding",
+      "surface": "visible-text",
+      "text": "${where} (${item.slot}) may hold a binding only as a whole args element or the whole resource.id.",
+      "count": 1
+    },
+    {
+      "file": "src/domains/contract3-check/navigation-data.ts",
+      "term": "Template",
+      "surface": "visible-text",
+      "text": "${where} uses unknown template token ${token}.",
+      "count": 1
+    },
+    {
+      "file": "src/domains/contract3-check/observe.ts",
+      "term": "Test harness",
+      "surface": "comment",
+      "text": "harness's component layer: each listed case observed once, in admission",
+      "count": 1
+    }
+  ]
+}
