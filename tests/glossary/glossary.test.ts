@@ -51,6 +51,8 @@ type Table = {
   readonly quoteIds: readonly string[];
   // Contract phrases (row titles) that count as quotes when double-quoted.
   readonly quotes: readonly string[];
+  // The frozen contract folder, when this repository holds it.
+  readonly contractFolder: string | undefined;
   readonly terms: readonly Term[];
 };
 type TextRecord = {
@@ -89,6 +91,8 @@ function parseTable(raw: unknown): Table {
     exempt: strings(raw.exempt, "exempt"),
     quoteIds: strings(raw.quoteIds, "quoteIds"),
     quotes: strings(raw.quotes, "quotes"),
+    contractFolder:
+      typeof raw.contractFolder === "string" ? raw.contractFolder : undefined,
     terms: terms.map((entry, index) => {
       if (!isRecord(entry) || typeof entry.term !== "string")
         throw new Error(`terms[${index}] needs a term.`);
@@ -733,12 +737,13 @@ describe("glossary check proof", () => {
     ).toBe(0);
   });
 
-  // The frozen contract is present only in the engineering repository; in
-  // the template this test is visibly skipped (a stated limit).
-  const contract = join(root, "skills/agent-cli-design/references/contract-3");
-  test.skipIf(!existsSync(contract))(
-    "R5b every quote id is a clause in the frozen contract or a decision id",
-    () => {
+  // Registered only where the term table names the frozen contract folder
+  // (the engineering repository). The template has no contract, so the
+  // quote-id lookup is a stated limit there and no test is registered.
+  const contractFolder = table.contractFolder;
+  if (contractFolder !== undefined)
+    test("R5b every quote id is a clause in the frozen contract or a decision id", () => {
+      const contract = join(root, contractFolder);
       const text = [...new Bun.Glob("*.md").scanSync({ cwd: contract })]
         .map((name) => readFileSync(join(contract, name), "utf8"))
         .join("\n");
@@ -747,6 +752,5 @@ describe("glossary check proof", () => {
           !/^[BF]\d+$/u.test(id) && !new RegExp(`\\b${id}\\b`, "u").test(text),
       );
       expect(missing).toEqual([]);
-    },
-  );
+    });
 });

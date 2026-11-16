@@ -566,5 +566,6 @@
     "Deadline after dispatch, partial confirmed",
     "Deadline after dispatch, effects uncertain"
   ],
-  "exemptWhy": "Bound case folders: generated, byte-frozen evidence of the independent binder. The binder's own documents stay in scope (Nathan, 16 November: the binder rewords them)."
+  "exemptWhy": "Bound case folders: generated, byte-frozen evidence of the independent binder. The binder's own documents stay in scope (Nathan, 16 November: the binder rewords them).",
+  "contractFolder": "skills/agent-cli-design/references/contract-3"
 }
