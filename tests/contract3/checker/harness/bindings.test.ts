@@ -606,6 +606,10 @@ describe("harness blocks and their sensitivity controls", () => {
           msAfterSignal:
             signalledAt === null ? null : Math.round(finishedAt - signalledAt),
         };
+        // An explicit line for the hosted run: which path the binding took.
+        process.stdout.write(
+          `C3-LIFECYCLE binding=pattern-isolation.lifecycle platform=${process.platform}-${process.arch} path=${signalledAt === null ? "finished-before-signal" : "signal-during-second-run"} exit=${String(run.exitCode)} signal=${String(run.signal)} verdict=${signalledAt === null ? "UNPROVED" : "PROVED"}\n`,
+        );
         if (signalledAt === null) {
           // The binding's allowed finished path. The signal-during-second-run
           // property was NOT observed: report it, never count it as proved.
