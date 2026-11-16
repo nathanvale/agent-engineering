@@ -69,7 +69,7 @@ const VERSION_RULES: Record<
   "newer-minor": "version-newer",
 };
 
-interface CaseOutcome {
+interface CaseJudgement {
   parsed: ParsedCase | null;
   refusal: Refusal | null;
 }
@@ -131,7 +131,7 @@ function judgeMachine(
   observation: Observation,
   minors: MinorTable,
   book: Book,
-): CaseOutcome {
+): CaseJudgement {
   const ingress = readEnvelope(
     observation.stdout.bytes,
     BUDGETS.TARGET_JSON_MAX_DEPTH,
@@ -224,7 +224,7 @@ function judgeHuman(
   item: AdmittedCase,
   observation: Observation,
   book: Book,
-): CaseOutcome {
+): CaseJudgement {
   const c = new Collector();
   humanProcessRules(c, item, observation);
   book.record(item.caseId, c);
@@ -257,7 +257,7 @@ function judgeObservation(
   observation: Observation,
   minors: MinorTable,
   book: Book,
-): CaseOutcome {
+): CaseJudgement {
   if (!observation.started) {
     book.wholeCase(
       item.caseId,

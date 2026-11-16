@@ -170,8 +170,7 @@ export class Book {
       status: "not_run",
       evidence: [],
       reason:
-        entry?.reason ??
-        "No admitted observation in this case exercised this rule.",
+        entry?.reason ?? "No observation in this case exercised this rule.",
     };
   }
 

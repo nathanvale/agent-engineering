@@ -316,7 +316,7 @@ function validateGuidanceArm(ctx: ShapeContext, result: JsonObject): void {
   );
 }
 
-/** Presence of the conditional key is also a presence finding (binder bindings). */
+/** Presence of the conditional key is also a presence finding (the binder's bound cases). */
 function validateRetryDelay(ctx: ShapeContext, result: JsonObject): void {
   const present = has(result, "retryDelayMilliseconds");
   const delay = result.retryDelayMilliseconds;
@@ -466,7 +466,7 @@ function validateCorrelation(ctx: ShapeContext, result: JsonObject): void {
     else
       ctx.c.unproved(
         "fallback-version",
-        "The wire does not distinguish a fallback from an ordinary internal result at a later minor (binder G14, stopped).",
+        "The wire does not distinguish a fallback from an ordinary internal result at a later minor (stopped case G14).",
       );
   }
 }
