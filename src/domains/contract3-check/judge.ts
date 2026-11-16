@@ -357,9 +357,13 @@ export async function judgeObservations(
     rows: book.rows(admission.cases),
     refusal: withCause(
       firstRefusal(admission, refusals),
-      book.failures.every(({ finding }) =>
-        EXPECTATION_RULES.has(finding.ruleId),
-      ),
+      // F1: the expectation-only wording needs at least one finding, and
+      // every finding from an admitted expectation rule; a budget or framing
+      // refusal with no expectation finding is never "accepted".
+      book.failures.length > 0 &&
+        book.failures.every(({ finding }) =>
+          EXPECTATION_RULES.has(finding.ruleId),
+        ),
     ),
     readerVersion: minors.readerVersion,
     observedVersions: [

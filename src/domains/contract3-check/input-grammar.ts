@@ -181,15 +181,13 @@ function validateArgument(
   if (
     !isNonEmptyString(item.name) ||
     !isNonEmptyString(item.summary) ||
-    typeof item.required !== "boolean" ||
-    value === null
+    typeof item.required !== "boolean"
   ) {
-    fail(
-      ctx,
-      `${path} needs a name, a summary, a boolean required and a value schema.`,
-    );
+    fail(ctx, `${path} needs a name, a summary and a boolean required.`);
     return null;
   }
+  // F3: an invalid value schema already has its own finding; no cascade.
+  if (value === null) return null;
   return { name: item.name, required: item.required, value };
 }
 
@@ -228,13 +226,16 @@ function validateOption(
     !aliases.every((alias) => optionToken(alias, false)) ||
     !isNonEmptyString(item.summary) ||
     typeof item.required !== "boolean" ||
-    typeof item.repeatable !== "boolean" ||
-    (item.value !== null && value === null)
+    typeof item.repeatable !== "boolean"
   ) {
     fail(
       ctx,
-      `${path} needs a --long-name, option-token aliases, a summary, boolean required and repeatable, and a value schema or null.`,
+      `${path} needs a --long-name, option-token aliases, a summary, and boolean required and repeatable.`,
     );
+    return null;
+  }
+  // F3: an invalid value schema already has its own finding; no cascade.
+  if (item.value !== null && value === null) {
     return null;
   }
   return {
@@ -414,16 +415,13 @@ export function validateInputSchema(
     : [null];
   if (
     typeof input.deadlineSupported !== "boolean" ||
-    argumentsList.includes(null) ||
-    options.includes(null) ||
     !Array.isArray(input.constraints)
   ) {
-    fail(
-      ctx,
-      `${path} has an invalid argument, option, constraint list or deadlineSupported.`,
-    );
+    fail(ctx, `${path} has an invalid constraint list or deadlineSupported.`);
     return null;
   }
+  // F3: an invalid argument or option was reported where it failed.
+  if (argumentsList.includes(null) || options.includes(null)) return null;
   const partial = {
     arguments: argumentsList.filter(
       (item): item is ArgumentSpec => item !== null,

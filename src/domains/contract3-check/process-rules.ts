@@ -217,7 +217,18 @@ export function humanProcessRules(
     );
     return;
   }
-  if (item.role === "command") return;
+  // F3: one owner per DISC-1 row. Human help belongs to dispatch; human
+  // discovery and command discovery belong to human-discovery.
+  if (item.role === "help") {
+    c.check(
+      "dispatch",
+      code === 0 && printed,
+      () =>
+        `Human help must exit 0 on stdout; observed ${exitText(observation)}.`,
+    );
+    return;
+  }
+  if (item.role !== "discovery" && item.role !== "command-discovery") return;
   const navigation =
     item.role === "command-discovery" && code !== 0
       ? oneStderrLine
@@ -228,10 +239,4 @@ export function humanProcessRules(
     () =>
       `Human ${item.role} prints to stdout with exit 0 without --json, or refuses with one stderr line; observed ${exitText(observation)}.`,
   );
-  if (item.role !== "command-discovery")
-    c.check(
-      "dispatch",
-      code === 0 && printed,
-      () => `Human ${item.role} must exit 0 on stdout.`,
-    );
 }
