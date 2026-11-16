@@ -4,36 +4,8 @@
     {
       "file": "src/domains/contract3-check/admission.ts",
       "term": "Admitted",
-      "surface": "visible-text",
-      "text": "${path}/${key} is not an admission key.",
-      "count": 1
-    },
-    {
-      "file": "src/domains/contract3-check/admission.ts",
-      "term": "Admitted",
       "surface": "public-identifier",
       "text": "AdmissionLoad",
-      "count": 1
-    },
-    {
-      "file": "src/domains/contract3-check/admission.ts",
-      "term": "Admitted",
-      "surface": "visible-text",
-      "text": "The admission exceeds ${BUDGETS.ADMISSION_MAX_BYTES} bytes.",
-      "count": 1
-    },
-    {
-      "file": "src/domains/contract3-check/admission.ts",
-      "term": "Admitted",
-      "surface": "visible-text",
-      "text": "The admission is not valid JSON.",
-      "count": 1
-    },
-    {
-      "file": "src/domains/contract3-check/admission.ts",
-      "term": "Admitted",
-      "surface": "visible-text",
-      "text": "The admission root must be a JSON object.",
       "count": 1
     },
     {
@@ -44,31 +16,45 @@
       "count": 1
     },
     {
-      "file": "src/domains/contract3-check/command.ts",
-      "term": "Admitted",
+      "file": "src/domains/contract3-check/cross-rules.ts",
+      "term": "Run binding",
       "surface": "visible-text",
-      "text": "The admission is invalid: ${load.problems.slice(0, 8).join(\" \")} No target ran.",
+      "text": "${where}: binding ${names.get(arg) ?? \"value\"} renders ${JSON.stringify(arg)} into args, which equals a declared route token.",
       "count": 1
     },
     {
-      "file": "src/domains/contract3-check/host-adapter.ts",
-      "term": "Admitted",
+      "file": "src/domains/contract3-check/cross-rules.ts",
+      "term": "Run binding",
       "surface": "visible-text",
-      "text": "An admission, captured stream, program or working directory is missing or unreadable.",
+      "text": "${where}: bindings is ${present ? \"present although the station names no binding\" : \"absent although the station templates name a binding\"}.",
       "count": 1
     },
     {
-      "file": "src/domains/contract3-check/host-adapter.ts",
-      "term": "Admitted",
+      "file": "src/domains/contract3-check/cross-rules.ts",
+      "term": "Run binding",
       "surface": "visible-text",
-      "text": "Correct the admission or target output named in message; message names the observed version and the violated key or correlation.",
+      "text": "absent although the station templates name a binding",
       "count": 1
     },
     {
-      "file": "src/domains/contract3-check/host-adapter.ts",
-      "term": "Admitted",
+      "file": "src/domains/contract3-check/cross-rules.ts",
+      "term": "Run binding",
       "surface": "visible-text",
-      "text": "The invocation does not name exactly one admission path.",
+      "text": "present although the station names no binding",
+      "count": 1
+    },
+    {
+      "file": "src/domains/contract3-check/envelope-rules.ts",
+      "term": "Run binding",
+      "surface": "visible-text",
+      "text": "Binding ${name} ${problem ?? \"\"}.",
+      "count": 1
+    },
+    {
+      "file": "src/domains/contract3-check/envelope-rules.ts",
+      "term": "Run binding",
+      "surface": "visible-text",
+      "text": "Binding name ${JSON.stringify(name)} does not match ^[a-z][A-Za-z0-9]*$.",
       "count": 1
     },
     {
@@ -76,6 +62,13 @@
       "term": "CLI front door",
       "surface": "comment",
       "text": "host CLI moves to a Contract 3.0 front door at composition and no translator",
+      "count": 1
+    },
+    {
+      "file": "src/domains/contract3-check/navigation-data.ts",
+      "term": "Run binding",
+      "surface": "visible-text",
+      "text": "${where} (${item.slot}) may hold a binding only as a whole args element or the whole resource.id.",
       "count": 1
     },
     {
@@ -96,7 +89,7 @@
       "file": "src/domains/contract3-check/observe.ts",
       "term": "Test harness",
       "surface": "comment",
-      "text": "harness's component layer: each admitted case observed once, in admission",
+      "text": "harness's component layer: each listed case observed once, in admission",
       "count": 1
     },
     {
@@ -111,13 +104,6 @@
       "term": "Admitted",
       "surface": "public-identifier",
       "text": "Admission",
-      "count": 1
-    },
-    {
-      "file": "src/domains/contract3-check/types.ts",
-      "term": "Admitted",
-      "surface": "public-identifier",
-      "text": "AdmittedCase",
       "count": 1
     },
     {

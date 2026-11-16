@@ -170,6 +170,12 @@
           "pattern": "\\bHost (code|source) imports\\b|\\bhost source imports\\b|\\bdynamic host imports\\b",
           "surfaces": ["visible-text", "test-title"],
           "message": "These rules cover add-on folders too; say 'code outside the kernel' or 'add-on source'."
+        },
+        {
+          "pattern": "\\bHost code\\b",
+          "surfaces": ["visible-text"],
+          "pathsOnly": ["config/**"],
+          "message": "Lint rules here cover add-on folders too; say 'code outside the kernel' or name the folder (standing rule, 16 November 16:02)."
         }
       ]
     },
@@ -276,9 +282,9 @@
       "allowed": ["capability qualification table"],
       "avoid": [
         {
-          "pattern": "(?<!capability )\\bqualification table\\b",
+          "pattern": "(?<!capability )\\bqualification (table|row)s?\\b",
           "surfaces": ["visible-text", "comment", "doc"],
-          "message": "Write 'capability qualification table'; 'qualified' alone is an evidence state."
+          "message": "Write 'capability qualification table' or 'capability qualification row'; 'qualified' alone is an evidence state."
         }
       ]
     },
@@ -290,6 +296,30 @@
           "pattern": "\\bInterface for other components\\b|\\b(service|API) (module|seam)\\b",
           "surfaces": ["doc", "comment"],
           "message": "Use the codebase-design word."
+        }
+      ]
+    },
+    {
+      "term": "Run binding",
+      "allowed": ["run binding", "future binding"],
+      "avoid": [
+        {
+          "pattern": "(?<![Rr]un )(?<![Ff]uture )(?<![/.\\w-])\\b[Bb]inding\\b(?![-.])",
+          "surfaces": ["visible-text"],
+          "message": "In presented text write 'run binding' (STEP-10) or 'future binding' (V-44); bare 'binding' also names bound cases and rulings (standing rule, 16 November 16:02)."
+        }
+      ]
+    },
+    {
+      "term": "Admission file",
+      "allowed": ["admission file", "--admission"],
+      "avoid": [
+        {
+          "pattern": "\\b[Aa]dmission\\b(?! file)(?! lock)(?! coordination lock)",
+          "surfaces": ["visible-text"],
+          "pathsOnly": ["src/domains/contract3-check/**"],
+          "message": "The checker's input is the admission file; an entry in it is listed (standing rule, 16 November 16:02).",
+          "unlessAllowedForm": true
         }
       ]
     }
