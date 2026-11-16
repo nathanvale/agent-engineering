@@ -2,7 +2,7 @@
 
 Read-only Bun CLI generated from the canonical simple starter.
 
-Source packet: `https://github.com/myagentdojo/my-second-brain-playground/tree/main/projects/cli-design-skill`
+Source packet: `projects/cli-design-skill` in the private planning vault
 
 ```sh
 bun install --frozen-lockfile
