@@ -803,15 +803,22 @@ describe("rule sensitivity (checker-rule-disabled)", () => {
                 kind === "malformed" ||
                 kind === "other-major" ||
                 kind === "newer-minor";
-              const cause =
-                others.length > 0
+              const admissionRefused = "problem" in component;
+              const cause = admissionRefused
+                ? "refused by admission validation before any observation; no rule finding exists"
+                : others.length > 0
                   ? `also refused by always-judged rules: ${others.join(", ")}`
                   : classified
                     ? `refused by the VER-10 version classification (${String(kind)}) before any finding`
                     : kind === "broken"
                       ? "refused by the framing or stream-budget check itself before any finding"
                       : `refused with no remaining finding (refusal kind ${String(kind)})`;
-              if (others.length === 0 && !classified && kind !== "broken")
+              if (
+                !admissionRefused &&
+                others.length === 0 &&
+                !classified &&
+                kind !== "broken"
+              )
                 unexplained.push(id);
               overDetermined[id] = {
                 cause,
