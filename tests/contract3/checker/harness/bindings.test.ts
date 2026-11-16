@@ -92,6 +92,34 @@ test("manifest identity and every SHA-256 verify before any run", async () => {
   expect(manifest.bindings).toHaveLength(550);
 });
 
+interface CounterBlock {
+  file: string;
+  before: string;
+  after: string;
+}
+
+/** Every counter a binding names: harness.counter and harness.additionalCounters (B4). */
+function countersOf(expected: Expected): CounterBlock[] {
+  const harness = expected.harness;
+  if (harness === null) return [];
+  const extra: unknown = harness.additionalCounters;
+  const additional: unknown[] = Array.isArray(extra)
+    ? extra.map((item: unknown) => item)
+    : [];
+  const blocks: unknown[] = [harness.counter, ...additional];
+  return blocks.filter(
+    (block): block is CounterBlock =>
+      typeof block === "object" &&
+      block !== null &&
+      "file" in block &&
+      typeof block.file === "string" &&
+      "before" in block &&
+      typeof block.before === "string" &&
+      "after" in block &&
+      typeof block.after === "string",
+  );
+}
+
 async function counterText(path: string): Promise<string> {
   try {
     return await readFile(path, "utf8");
@@ -114,23 +142,12 @@ describe("admitted bindings at both layers", () => {
           const expected = await loadExpected(processCopy.root, binding.id);
           if (expected.checker === null) continue;
           const problems: string[] = [];
-          const counter = expected.harness?.counter as
-            | { file: string; before: string; after: string }
-            | undefined;
-          const counterPath =
-            counter === undefined
-              ? null
-              : join(
-                  processCopy.root,
-                  "bindings/cases",
-                  binding.id,
-                  counter.file,
-                );
-          if (
-            counterPath !== null &&
-            (await counterText(counterPath)) !== counter?.before
-          )
-            problems.push("counter present before the run");
+          const counterBlocks = countersOf(expected);
+          const counterPath = (block: CounterBlock) =>
+            join(processCopy.root, "bindings/cases", binding.id, block.file);
+          for (const block of counterBlocks)
+            if ((await counterText(counterPath(block))) !== block.before)
+              problems.push(`counter ${block.file} present before the run`);
           const run = await runChecker(
             checkerCommand(
               expected.reader,
@@ -146,11 +163,12 @@ describe("admitted bindings at both layers", () => {
                 (problem) => `process rows: ${problem}`,
               ),
             );
-          if (counterPath !== null) {
-            counters[binding.id] = await counterText(counterPath);
-            if (counters[binding.id] !== counter?.after)
+          for (const block of counterBlocks) {
+            const text = await counterText(counterPath(block));
+            counters[`${binding.id}:${block.file}`] = text;
+            if (text !== block.after)
               problems.push(
-                `counter ${JSON.stringify(counters[binding.id])}, expected ${JSON.stringify(counter?.after)}`,
+                `counter ${block.file} ${JSON.stringify(text)}, expected ${JSON.stringify(block.after)}`,
               );
           }
           problems.push(...timingProblems(expected, run.elapsedMs));
@@ -372,6 +390,28 @@ describe("static blocks (group T)", () => {
   });
 });
 
+/** Rules whose refusal is produced by classification, not by their finding alone. */
+const STRUCTURAL_REFUSALS: ReadonlySet<string> = new Set([
+  "json-framing",
+  "version-malformed",
+  "version-major",
+  "version-newer",
+]);
+
+function messageOf(stdout: string): string {
+  try {
+    const envelope: unknown = JSON.parse(stdout);
+    return typeof envelope === "object" &&
+      envelope !== null &&
+      "message" in envelope &&
+      typeof envelope.message === "string"
+      ? envelope.message
+      : "";
+  } catch {
+    return "";
+  }
+}
+
 function causeOf(stdout: string): string | null {
   try {
     const envelope: unknown = JSON.parse(stdout);
@@ -398,7 +438,7 @@ async function processWith(
   id: string,
 ): Promise<{
   problems: string[];
-  counter: string;
+  counters: Record<string, string>;
   elapsedMs: number;
   exitCode: number | null;
   causeCode: string | null;
@@ -417,15 +457,14 @@ async function processWith(
       ...processed.problems,
       ...(processed.rows === null ? [] : rowProblems(expected, processed.rows)),
     ];
-    const counter = expected.harness?.counter as { file: string } | undefined;
+    const counters: Record<string, string> = {};
+    for (const block of countersOf(expected))
+      counters[block.file] = await counterText(
+        join(copy.root, "bindings/cases", id, block.file),
+      );
     return {
       problems,
-      counter:
-        counter === undefined
-          ? "none"
-          : await counterText(
-              join(copy.root, "bindings/cases", id, counter.file),
-            ),
+      counters,
       elapsedMs: run.elapsedMs,
       exitCode: run.exitCode,
       causeCode: causeOf(run.stdout),
@@ -437,7 +476,7 @@ async function processWith(
 
 describe("harness blocks and their sensitivity controls", () => {
   test(
-    "no-replay: a checker that reruns the target makes the counter 2 and the harness fails",
+    "no-replay: a checker that reruns its targets makes every counter 2 and the harness fails",
     async () => {
       const perturbed = await perturbedChecker(
         "observe.ts",
@@ -450,13 +489,15 @@ describe("harness blocks and their sensitivity controls", () => {
           (item) => item.rule === "no-replay",
         )) {
           const result = await processWith(perturbed.cli, binding.id);
-          counters[binding.id] = result.counter;
+          for (const [file, text] of Object.entries(result.counters))
+            counters[`${binding.id}:${file}`] = text;
         }
       } finally {
         await perturbed.dispose();
       }
       receipt.noReplaySensitivity = counters;
-      expect(Object.values(counters)).toHaveLength(10);
+      // 12 counted targets in 10 bindings (B4 adds the input run's counter).
+      expect(Object.values(counters)).toHaveLength(12);
       expect(
         Object.values(counters).every((counter) => counter === "2\n"),
       ).toBe(true);
@@ -710,10 +751,16 @@ describe("rule sensitivity (checker-rule-disabled)", () => {
         manifest.bindings.map((binding) => [binding.id, binding]),
       );
       const stillMatching: string[] = [];
+      const processSensitive: string[] = [];
+      const overDetermined: Record<
+        string,
+        { cause: string; process: string; message: string }
+      > = {};
       const rules = [...new Set(applies.map((id) => byId.get(id)?.rule ?? ""))];
       for (const rule of rules) {
         const perturbed = await perturbedChecker(...disableRulePatch(rule));
         const copy = await freshCopy();
+        const processCopy = await freshCopy();
         try {
           const modules = await perturbed.modules();
           for (const id of applies.filter(
@@ -731,16 +778,43 @@ describe("rule sensitivity (checker-rule-disabled)", () => {
                 ? [component.problem]
                 : rowProblems(expected, component.rows);
             if (problems.length === 0) stillMatching.push(id);
+            // Process layer: the perturbed real CLI on the same admission.
+            const run = await runChecker(
+              checkerCommand(
+                expected.reader,
+                admissionPath(processCopy.root, id),
+                expected.reader === "test-minor-3.1.0"
+                  ? undefined
+                  : perturbed.cli,
+              ),
+            );
+            const processed =
+              expected.checker === null
+                ? { problems: ["no checker block"], rows: null }
+                : processProblems(expected.checker, run);
+            if (processed.problems.length > 0) processSensitive.push(id);
+            else
+              overDetermined[id] = {
+                cause: STRUCTURAL_REFUSALS.has(rule)
+                  ? "structural: the VER-10 version classification or the framing failure refuses before any finding; disabling the finding alone cannot remove the refusal"
+                  : "another always-judged contract rule also refuses this observation",
+                process: `exit ${String(run.exitCode)} ${String(causeOf(run.stdout))}`,
+                message: messageOf(run.stdout).slice(0, 400),
+              };
           }
         } finally {
           await copy.dispose();
+          await processCopy.dispose();
           await perturbed.dispose();
         }
       }
       receipt.ruleDisabledSweep = {
         negatives: applies.length,
         rules: rules.length,
-        stillMatching,
+        componentStillMatching: stillMatching,
+        processSensitive: processSensitive.length,
+        processOverDetermined: Object.keys(overDetermined).length,
+        overDetermined,
       };
       expect(applies).toHaveLength(334);
       expect(stillMatching).toEqual([]);
