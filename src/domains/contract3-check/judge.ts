@@ -56,6 +56,8 @@ export interface Judgement {
   readerVersion: string;
   /** Distinct accepted contractVersion values, in admission order (VER-10 message). */
   observedVersions: string[];
+  /** Distinct rule ids with at least one finding, admitted or not, in finding order. */
+  failedRules: string[];
 }
 
 const VERSION_RULES: Record<
@@ -366,6 +368,9 @@ export async function judgeObservations(
         ),
     ),
     readerVersion: minors.readerVersion,
+    failedRules: [
+      ...new Set(book.failures.map(({ finding }) => finding.ruleId)),
+    ],
     observedVersions: [
       ...new Set(
         parsedCases

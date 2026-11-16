@@ -200,7 +200,15 @@ export async function componentRows(
   id: string,
   minors: MinorTable,
   modules: CheckerModules = REPOSITORY_MODULES,
-): Promise<{ rows: ReportRowLike[]; refused: boolean } | { problem: string }> {
+): Promise<
+  | {
+      rows: ReportRowLike[];
+      refused: boolean;
+      refusalKind: string | null;
+      failedRules: string[];
+    }
+  | { problem: string }
+> {
   const load = await modules.admission.loadAdmission(admissionPath(root, id));
   if (load.kind !== "ok")
     return { problem: `admission did not load: ${load.kind}` };
@@ -214,7 +222,12 @@ export async function componentRows(
     minors,
     new modules.pattern.PatternMatcher(),
   );
-  return { rows: judgement.rows, refused: judgement.refusal !== null };
+  return {
+    rows: judgement.rows,
+    refused: judgement.refusal !== null,
+    refusalKind: judgement.refusal?.kind ?? null,
+    failedRules: judgement.failedRules,
+  };
 }
 
 /**

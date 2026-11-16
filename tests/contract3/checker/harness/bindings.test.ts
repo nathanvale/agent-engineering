@@ -384,14 +384,6 @@ describe("static blocks (group T)", () => {
   });
 });
 
-/** Rules whose refusal is produced by classification, not by their finding alone. */
-const STRUCTURAL_REFUSALS: ReadonlySet<string> = new Set([
-  "json-framing",
-  "version-malformed",
-  "version-major",
-  "version-newer",
-]);
-
 function messageOf(stdout: string): string {
   try {
     const envelope: unknown = JSON.parse(stdout);
@@ -745,11 +737,13 @@ describe("rule sensitivity (checker-rule-disabled)", () => {
         manifest.bindings.map((binding) => [binding.id, binding]),
       );
       const stillMatching: string[] = [];
-      const processSensitive: string[] = [];
+      const sensitiveByExitAndCause: string[] = [];
+      const sensitiveByMessageOnly: string[] = [];
       const overDetermined: Record<
         string,
         { cause: string; process: string; message: string }
       > = {};
+      const unexplained: string[] = [];
       const rules = [...new Set(applies.map((id) => byId.get(id)?.rule ?? ""))];
       for (const rule of rules) {
         const perturbed = await perturbedChecker(...disableRulePatch(rule));
@@ -785,15 +779,42 @@ describe("rule sensitivity (checker-rule-disabled)", () => {
               expected.checker === null
                 ? { problems: ["no checker block"], rows: null }
                 : processProblems(expected.checker, run);
-            if (processed.problems.length > 0) processSensitive.push(id);
-            else
+            const exitOrCauseChanged =
+              expected.checker !== null &&
+              (run.exitCode !== expected.checker.exitCode ||
+                causeOf(run.stdout) !== expected.checker.causeCode);
+            if (exitOrCauseChanged) sensitiveByExitAndCause.push(id);
+            else if (processed.problems.length > 0)
+              sensitiveByMessageOnly.push(id);
+            else {
+              // F-2: the cause comes from the perturbed judgement's own failed
+              // rule ids, never from a list.
+              const others =
+                "problem" in component
+                  ? []
+                  : component.failedRules.filter((other) => other !== rule);
+              const kind =
+                "problem" in component ? null : component.refusalKind;
+              const classified =
+                kind === "malformed" ||
+                kind === "other-major" ||
+                kind === "newer-minor";
+              const cause =
+                others.length > 0
+                  ? `also refused by always-judged rules: ${others.join(", ")}`
+                  : classified
+                    ? `refused by the VER-10 version classification (${String(kind)}) before any finding`
+                    : kind === "broken"
+                      ? "refused by the framing or stream-budget check itself before any finding"
+                      : `refused with no remaining finding (refusal kind ${String(kind)})`;
+              if (others.length === 0 && !classified && kind !== "broken")
+                unexplained.push(id);
               overDetermined[id] = {
-                cause: STRUCTURAL_REFUSALS.has(rule)
-                  ? "structural: the VER-10 version classification or the framing failure refuses before any finding; disabling the finding alone cannot remove the refusal"
-                  : "another always-judged contract rule also refuses this observation",
+                cause,
                 process: `exit ${String(run.exitCode)} ${String(causeOf(run.stdout))}`,
-                message: messageOf(run.stdout).slice(0, 400),
+                message: messageOf(run.stdout).slice(0, 300),
               };
+            }
           }
         } finally {
           await copy.dispose();
@@ -805,12 +826,23 @@ describe("rule sensitivity (checker-rule-disabled)", () => {
         negatives: applies.length,
         rules: rules.length,
         componentStillMatching: stillMatching,
-        processSensitive: processSensitive.length,
+        processSensitiveByExitAndCause: sensitiveByExitAndCause.length,
+        processSensitiveByMessageOnly: sensitiveByMessageOnly,
         processOverDetermined: Object.keys(overDetermined).length,
+        processNotMeasured: 0,
         overDetermined,
       };
       expect(applies).toHaveLength(334);
       expect(stillMatching).toEqual([]);
+      // Every negative is measured at the process layer (F4) and lands in
+      // exactly one class; every over-determined refusal is explained by the
+      // judgement's own failed rules or by classification (F-2).
+      expect(
+        sensitiveByExitAndCause.length +
+          sensitiveByMessageOnly.length +
+          Object.keys(overDetermined).length,
+      ).toBe(applies.length);
+      expect(unexplained).toEqual([]);
     },
     30 * MINUTE,
   );
