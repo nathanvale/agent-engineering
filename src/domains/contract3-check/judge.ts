@@ -1,6 +1,6 @@
 // Judges an admission (INTERFACE.md section 5). judgeObservations is the one
 // pure judgement entry point (binder G1): admission, observations and the
-// supported-minor table and the pattern matcher in; every admitted row,
+// supported-minor table and the pattern matcher in; every listed row,
 // failed rows included, out. It runs no target and starts nothing itself;
 // pattern matching happens only through the matcher the caller passes. The process layer collects observations with the
 // single-execution runner, stopping by refusesAlone, then calls it.
@@ -28,7 +28,7 @@ import {
 import { classifyVersion, type VersionClass } from "./version.ts";
 import type {
   Admission,
-  AdmittedCase,
+  ListedCase,
   Json,
   JsonObject,
   Observation,
@@ -46,7 +46,7 @@ export interface Refusal {
   observedVersion: Json | undefined;
   details: string[];
   targetExecuted: boolean;
-  /** Every finding came from an admitted expectation rule; the envelope itself was not broken. */
+  /** Every finding came from a listed expectation rule; the envelope itself was not broken. */
   expectationOnly: boolean;
 }
 
@@ -56,7 +56,7 @@ export interface Judgement {
   readerVersion: string;
   /** Distinct accepted contractVersion values, in admission order (VER-10 message). */
   observedVersions: string[];
-  /** Distinct rule ids with at least one finding, admitted or not, in finding order. */
+  /** Distinct rule ids with at least one finding, listed or not, in finding order. */
   failedRules: string[];
 }
 
@@ -83,7 +83,7 @@ function labelled(caseId: string, message: string): string {
 
 function refusalOf(
   kind: RefusalKind,
-  item: AdmittedCase,
+  item: ListedCase,
   observation: Observation,
   observedVersion: Json | undefined,
   details: string[],
@@ -127,7 +127,7 @@ function validateData(
 
 function judgeMachine(
   admission: Admission,
-  item: AdmittedCase,
+  item: ListedCase,
   observation: Observation,
   minors: MinorTable,
   book: Book,
@@ -221,7 +221,7 @@ function judgeMachine(
 }
 
 function judgeHuman(
-  item: AdmittedCase,
+  item: ListedCase,
   observation: Observation,
   book: Book,
 ): CaseJudgement {
@@ -253,7 +253,7 @@ function judgeHuman(
 
 function judgeObservation(
   admission: Admission,
-  item: AdmittedCase,
+  item: ListedCase,
   observation: Observation,
   minors: MinorTable,
   book: Book,
@@ -289,7 +289,7 @@ function judgeObservation(
 /** Whether this observation alone refuses the invocation (the stop rule). */
 export function refusesAlone(
   admission: Admission,
-  item: AdmittedCase,
+  item: ListedCase,
   observation: Observation,
   minors: MinorTable,
 ): boolean {
@@ -302,7 +302,7 @@ export function refusesAlone(
 const NOT_EXECUTED =
   "Not executed: the checker starts no further target after a refused observation.";
 
-/** The one pure judgement: every admitted row, failed rows included. */
+/** The one pure judgement: every listed row, failed rows included. */
 export async function judgeObservations(
   admission: Admission,
   observations: ReadonlyMap<string, Observation>,
@@ -319,15 +319,16 @@ export async function judgeObservations(
       continue;
     }
     book.evidence.set(item.caseId, observationEvidence(observation));
-    const outcome = judgeObservation(
+    const caseJudgement = judgeObservation(
       admission,
       item,
       observation,
       minors,
       book,
     );
-    if (outcome.refusal !== null) refusals.set(item.caseId, outcome.refusal);
-    if (outcome.parsed !== null) parsedCases.push(outcome.parsed);
+    if (caseJudgement.refusal !== null)
+      refusals.set(item.caseId, caseJudgement.refusal);
+    if (caseJudgement.parsed !== null) parsedCases.push(caseJudgement.parsed);
   }
   const collectors = await judgeAcrossCases(
     admission.cli,
@@ -360,7 +361,7 @@ export async function judgeObservations(
     refusal: withCause(
       firstRefusal(admission, refusals),
       // F1: the expectation-only wording needs at least one finding, and
-      // every finding from an admitted expectation rule; a budget or framing
+      // every finding from a listed expectation rule; a budget or framing
       // refusal with no expectation finding is never "accepted".
       book.failures.length > 0 &&
         book.failures.every(({ finding }) =>

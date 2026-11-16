@@ -23,7 +23,7 @@ import {
   ruleSpec,
 } from "../../../../src/domains/contract3-check/rules.ts";
 import type {
-  AdmittedCase,
+  ListedCase,
   Json,
   Observation,
 } from "../../../../src/domains/contract3-check/types.ts";
@@ -162,7 +162,7 @@ const RULE_SET = [
   "machine-stderr",
 ];
 
-function caseOf(caseId: string): AdmittedCase {
+function caseOf(caseId: string): ListedCase {
   return {
     caseId,
     rules: RULE_SET,
@@ -209,7 +209,7 @@ function statuses(rows: { ruleId: string; status: string }[]) {
 }
 
 describe("in-process judgement (component layer only)", () => {
-  test("a valid envelope passes every admitted row and succeeds", async () => {
+  test("a valid envelope passes every listed row and succeeds", async () => {
     const judgement = await judgeOne(validEnvelope());
     expect(judgement.refusal).toBeNull();
     expect(judgement.rows.map((row) => [row.ruleId, row.status])).toEqual(
@@ -227,11 +227,11 @@ describe("in-process judgement (component layer only)", () => {
         .filter((row) => row.status === "failed")
         .map((row) => [row.ruleId, row.findings[0]?.code]),
     ).toEqual([["strict-keys", "UNLISTED_KEY"]]);
-    const outcome = judgementResult(judgement);
-    expect(outcome.station).toBe("invalid-input");
-    expect(outcome.data).toBeNull();
-    expect(outcome.message).toContain("3.0.0");
-    expect(outcome.message).toContain("envelopeVersion");
+    const judged = judgementResult(judgement);
+    expect(judged.station).toBe("invalid-input");
+    expect(judged.data).toBeNull();
+    expect(judged.message).toContain("3.0.0");
+    expect(judged.message).toContain("envelopeVersion");
   });
 
   test("a real exit that differs from the envelope fails exit-envelope", async () => {
@@ -249,20 +249,20 @@ describe("in-process judgement (component layer only)", () => {
       contractVersion: "2.0.0",
       envelopeVersion: 2,
     };
-    const outcome = judgementResult(await judgeOne(envelope));
-    expect(outcome.station).toBe("unsupported-contract");
-    expect(outcome.data).toBeNull();
-    expect(outcome.message).toContain('"2.0.0"');
-    expect(outcome.message).toContain(retained.wrapperRoute.source.path);
-    expect(outcome.message).toContain(retained.wrapperRoute.source.commit);
+    const judged = judgementResult(await judgeOne(envelope));
+    expect(judged.station).toBe("unsupported-contract");
+    expect(judged.data).toBeNull();
+    expect(judged.message).toContain('"2.0.0"');
+    expect(judged.message).toContain(retained.wrapperRoute.source.path);
+    expect(judged.message).toContain(retained.wrapperRoute.source.commit);
   });
 
   test("3.0.1 is refused as malformed and names contractVersion", async () => {
     const envelope = { ...validEnvelope(), contractVersion: "3.0.1" };
-    const outcome = judgementResult(await judgeOne(envelope));
-    expect(outcome.station).toBe("invalid-input");
-    expect(outcome.message).toContain("contractVersion");
-    expect(outcome.message).toContain('"3.0.1"');
+    const judged = judgementResult(await judgeOne(envelope));
+    expect(judged.station).toBe("invalid-input");
+    expect(judged.message).toContain("contractVersion");
+    expect(judged.message).toContain('"3.0.1"');
   });
 
   test("G2.1: a framing failure leaves only machine-stderr evaluable", async () => {

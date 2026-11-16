@@ -7,7 +7,7 @@ import { COMMON_CAUSES, type CommonCauseCode } from "./result-table.ts";
 
 const USAGE_INVALID: CommonCauseCode = "USAGE_INVALID_INVOCATION";
 const USAGE_UNKNOWN: CommonCauseCode = "USAGE_UNKNOWN_COMMAND";
-import type { AdmittedCase, JsonObject, Observation } from "./types.ts";
+import type { ListedCase, JsonObject, Observation } from "./types.ts";
 
 function exitText(observation: Observation): string {
   if (observation.exit === null) return "no exit";
@@ -24,10 +24,10 @@ function exitCode(observation: Observation): number | null {
 
 function expectedExit(
   c: Collector,
-  item: AdmittedCase,
+  item: ListedCase,
   observation: Observation,
 ): void {
-  // S1 option (i): an expectation rule is judged only when admitted.
+  // S1 option (i): an expectation rule is judged only when listed.
   if (item.expect === undefined || !item.rules.includes("exit-expected"))
     return;
   const expected = item.expect.exitCode;
@@ -48,7 +48,7 @@ const NAVIGATION_IDENTITY: Readonly<Record<string, string>> = {
 
 function dispatchMachine(
   c: Collector,
-  item: AdmittedCase,
+  item: ListedCase,
   cli: string,
   result: JsonObject,
 ): void {
@@ -89,7 +89,7 @@ export function machineStderrRule(
     );
 }
 
-/** Binder G17: an expected identity is owned by the admitted rule that judges identity. */
+/** Binder G17: an expected identity is owned by the listed rule that judges identity. */
 const IDENTITY_RULES = [
   "dispatch",
   "command-selection",
@@ -97,7 +97,7 @@ const IDENTITY_RULES = [
   "input-deadline",
 ];
 
-function identityOwner(item: AdmittedCase): string {
+function identityOwner(item: ListedCase): string {
   return (
     item.rules.find((rule) => IDENTITY_RULES.includes(rule)) ?? "cause-expected"
   );
@@ -106,7 +106,7 @@ function identityOwner(item: AdmittedCase): string {
 /** Rules for one machine-mode observation with an accepted envelope. */
 export function machineProcessRules(
   c: Collector,
-  item: AdmittedCase,
+  item: ListedCase,
   cli: string,
   observation: Observation,
   envelope: JsonObject,
@@ -124,11 +124,11 @@ export function machineProcessRules(
   expectedExit(c, item, observation);
   const expect = item.expect;
   // S1 option (i): cause, outcome and identity expectations are judged only
-  // when their owning rule is admitted; a valid envelope is never refused
-  // because an unadmitted expectation differs.
-  const causeAdmitted = item.rules.includes("cause-expected");
+  // when their owning rule is listed; a valid envelope is never refused
+  // because an unlisted expectation differs.
+  const causeListed = item.rules.includes("cause-expected");
   const identityRule = identityOwner(item);
-  if (causeAdmitted && expect?.causeCode !== undefined)
+  if (causeListed && expect?.causeCode !== undefined)
     c.check(
       "cause-expected",
       result.causeCode === expect.causeCode,
@@ -145,7 +145,7 @@ export function machineProcessRules(
       () =>
         `Observed commandIdentity ${JSON.stringify(result.commandIdentity)} differs from the expected ${expect.commandIdentity}.`,
     );
-  if (causeAdmitted && expect?.outcome !== undefined)
+  if (causeListed && expect?.outcome !== undefined)
     c.check(
       "cause-expected",
       result.outcome === expect.outcome,
@@ -194,7 +194,7 @@ function looksLikeEnvelope(bytes: Uint8Array): boolean {
 /** Rules for one human-mode observation (LIFE-2, DISC-1, DISC-2, binder G18). */
 export function humanProcessRules(
   c: Collector,
-  item: AdmittedCase,
+  item: ListedCase,
   observation: Observation,
 ): void {
   if (observation.source === "captured") return;

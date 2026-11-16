@@ -52,7 +52,7 @@ export interface Probe extends ProgramSpec {
   expectedStdout: string;
 }
 
-export interface AdmittedCase {
+export interface ListedCase {
   caseId: string;
   rules: string[];
   role: CaseRole;
@@ -67,7 +67,7 @@ export interface AdmittedCase {
 
 export interface Admission {
   cli: string;
-  cases: AdmittedCase[];
+  cases: ListedCase[];
 }
 
 export type ProcessExit = { code: number } | { signal: string };

@@ -132,9 +132,9 @@ async function counterText(path: string): Promise<string> {
   }
 }
 
-describe("admitted bindings at both layers", () => {
+describe("bound cases at both layers", () => {
   test(
-    "every admitted binding matches its process and component expectation",
+    "every bound case matches its process and component expectation",
     async () => {
       const processCopy = await freshCopy();
       const componentCopy = await freshCopy();

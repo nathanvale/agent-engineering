@@ -1,6 +1,6 @@
-// Executes one admitted program exactly once (INTERFACE.md section 4):
+// Executes one listed program exactly once (INTERFACE.md section 4):
 // argument vector only (no shell, no PATH lookup), null stdin, only the
-// admitted environment, bounded capture, wall-time budget with SIGTERM then
+// admission file's environment, bounded capture, wall-time budget with SIGTERM then
 // SIGKILL (LIFE-11). The runner has no retry path of any kind.
 
 import { BUDGETS, TIMINGS } from "./budgets.ts";
