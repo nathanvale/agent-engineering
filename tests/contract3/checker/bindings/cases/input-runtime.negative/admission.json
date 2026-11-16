@@ -74,10 +74,7 @@
         }
       },
       "expect": {
-        "exitCode": 3,
-        "causeCode": "DOMAIN_PREVIEW_MISSING",
-        "outcome": "refused",
-        "commandIdentity": "specimen.apply"
+        "exitCode": 3
       },
       "probe": {
         "program": "bun-runtime",

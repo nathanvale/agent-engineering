@@ -192,7 +192,84 @@ function validateSpec(spec) {
   }
 }
 
+// B5 (coordinator decision on S1, option (i)): expectation rules are judged
+// only when admitted. In a refusing binding, an expect field no admitted rule
+// consumes is dropped, so each negative refuses for its own rule alone.
+// exitCode is required whenever expect is present; expect is removed only when
+// no admitted rule could consume it.
+const EXIT_CONSUMERS = new Set([
+  "exit-expected",
+  "cause-expected",
+  "builtins",
+  "human-discovery",
+  "help-discovery",
+  "command-selection",
+  "dispatch",
+  "global-mode",
+  "input-case",
+  "input-required",
+  "input-option",
+  "input-presence",
+  "input-repeat",
+  "input-string",
+  "input-integer",
+  "input-constraints",
+  "input-hidden",
+  "input-dash",
+  "input-deadline",
+  "navigation-effects",
+  "provider-loading",
+  "input-future-binding",
+  "input-generated-binding",
+  "input-runtime",
+]);
+const CAUSE_CONSUMERS = new Set(["cause-expected"]);
+const IDENTITY_CONSUMERS = new Set([
+  "cause-expected",
+  "dispatch",
+  "command-selection",
+  "input-dash",
+  "input-deadline",
+]);
+export const TRIMMED = {
+  causeCode: 0,
+  outcome: 0,
+  commandIdentity: 0,
+  expect: 0,
+};
+
+function trimExpectations(spec) {
+  if (spec.admissionRefusal !== undefined) return;
+  const refusing = spec.cases.some((c) =>
+    Object.values(c.status ?? {}).some((st) => st.failed !== undefined),
+  );
+  if (!refusing) return;
+  for (const c of spec.cases) {
+    if (c.expect === undefined) continue;
+    const admitted = new Set(c.rules);
+    const any = (set) => [...set].some((rule) => admitted.has(rule));
+    if (!any(EXIT_CONSUMERS)) {
+      delete c.expect;
+      TRIMMED.expect += 1;
+      continue;
+    }
+    const expect = { ...c.expect };
+    for (const [field, consumers] of [
+      ["causeCode", CAUSE_CONSUMERS],
+      ["outcome", CAUSE_CONSUMERS],
+      ["commandIdentity", IDENTITY_CONSUMERS],
+    ]) {
+      if (field in expect && !any(consumers)) {
+        delete expect[field];
+        TRIMMED[field] += 1;
+      }
+    }
+    c.expect = expect;
+  }
+}
+
 export function writeBinding(root, spec) {
+  trimExpectations(spec);
   const dir = join(root, "cases", spec.id);
   rmSync(dir, { recursive: true, force: true });
   mkdirSync(dir, { recursive: true });

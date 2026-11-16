@@ -108,10 +108,7 @@
         }
       },
       "expect": {
-        "exitCode": 0,
-        "causeCode": "SUCCESS_UNCHANGED",
-        "outcome": "success",
-        "commandIdentity": "specimen.discovery"
+        "exitCode": 0
       },
       "probe": {
         "program": "bun-runtime",

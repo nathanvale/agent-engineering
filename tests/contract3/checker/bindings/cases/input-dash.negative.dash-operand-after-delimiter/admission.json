@@ -75,8 +75,6 @@
       },
       "expect": {
         "exitCode": 0,
-        "causeCode": "SUCCESS_UNCHANGED",
-        "outcome": "success",
         "commandIdentity": "specimen.find"
       }
     }

@@ -74,10 +74,7 @@
         }
       },
       "expect": {
-        "exitCode": 4,
-        "causeCode": "SCHEMA_INVALID_INPUT",
-        "outcome": "refused",
-        "commandIdentity": "specimen.preview"
+        "exitCode": 4
       }
     }
   ]

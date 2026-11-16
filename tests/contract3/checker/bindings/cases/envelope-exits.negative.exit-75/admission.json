@@ -74,10 +74,7 @@
         }
       },
       "expect": {
-        "exitCode": 75,
-        "causeCode": "TRANSIENT_NOT_STARTED",
-        "outcome": "refused",
-        "commandIdentity": "specimen.apply"
+        "exitCode": 75
       }
     }
   ]

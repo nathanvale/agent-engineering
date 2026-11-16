@@ -17,7 +17,7 @@ import { BINDINGS, GROUP_OF, RULES, STOPPED } from "./framework.mjs";
 import { BUDGETS, otherBindings } from "./other.mjs";
 import { processBindings } from "./process.mjs";
 import { shapeBindings } from "./shape.mjs";
-import { writeBinding, writeShared } from "./writer.mjs";
+import { TRIMMED, writeBinding, writeShared } from "./writer.mjs";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const CHECKER = fileURLToPath(new URL("../..", import.meta.url));
@@ -43,7 +43,7 @@ function build() {
     json({ budgetsVersion: 1, values: BUDGETS }),
   );
   process.stdout.write(
-    `wrote ${BINDINGS.length} bindings, ${STOPPED.length} stopped\n`,
+    `wrote ${BINDINGS.length} bindings, ${STOPPED.length} stopped; B5 trimmed ${JSON.stringify(TRIMMED)}\n`,
   );
 }
 
@@ -196,7 +196,7 @@ function manifest() {
           )
           .map((b) => b.id),
         procedure:
-          "For each listed binding, disable its target rule in the checker alone; the binding must stop matching (the expected refusal becomes exit 0 or loses its finding) and the harness must fail. Restore the rule and the binding must match again in the same harness.",
+          "For each listed binding, disable its target rule in the checker alone. Under option (i) the binding must stop matching at BOTH layers: the process result is no longer the bound refusal, and the component row loses its bound finding. Report each layer's count separately. Restore the rule and the binding must match again in the same test harness.",
       },
     ],
     budgets: "tests/contract3/checker/bindings/BUDGETS.json",

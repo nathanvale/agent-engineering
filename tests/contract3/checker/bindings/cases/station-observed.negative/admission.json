@@ -67,8 +67,7 @@
         }
       },
       "expect": {
-        "exitCode": 3,
-        "outcome": "refused"
+        "exitCode": 3
       }
     }
   ]

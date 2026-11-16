@@ -68,10 +68,7 @@
         }
       },
       "expect": {
-        "exitCode": 1,
-        "causeCode": "INTERNAL_RESULT_UNCHANGED",
-        "outcome": "failed",
-        "commandIdentity": "specimen.show"
+        "exitCode": 1
       }
     }
   ]

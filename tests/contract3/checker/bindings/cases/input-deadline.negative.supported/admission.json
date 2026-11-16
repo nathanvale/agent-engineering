@@ -77,8 +77,6 @@
       },
       "expect": {
         "exitCode": 0,
-        "causeCode": "SUCCESS_COMPLETED",
-        "outcome": "success",
         "commandIdentity": "specimen.apply"
       }
     }
