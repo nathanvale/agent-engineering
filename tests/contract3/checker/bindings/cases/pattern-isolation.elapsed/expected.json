@@ -92,7 +92,7 @@
   "excluded": {},
   "harness": {
     "rule": "pattern-isolation",
-    "assertion": "The hostile match is terminated at PATTERN_MAX_MS (250 ms); the checker exits 4 within 5,000 ms of start."
+    "assertion": "The checker's own budget ends the hostile match at PATTERN_MAX_MS (250 ms) and refuses; the checker exits 4 within 5,000 ms of start. On Bun 1.4.4 JavaScriptCore stops this match by itself after about 0.4 to 0.6 s and reports a false non-match, so a run that ends without the budget refusal is a wrong answer, not a pass (INPUT-2, V-44)."
   },
   "static": null,
   "notes": null
