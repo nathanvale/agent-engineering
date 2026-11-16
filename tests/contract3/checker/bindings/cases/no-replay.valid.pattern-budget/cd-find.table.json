@@ -1,0 +1,10 @@
+{
+  "argv": ["--discover-command", "specimen.find", "--json"],
+  "responses": [
+    {
+      "stdout": "cd-find.0.stdout",
+      "stderr": null,
+      "exit": 0
+    }
+  ]
+}

@@ -1,0 +1,98 @@
+{
+  "tableVersion": 1,
+  "status": "binder proposal; provisional until T1 agrees",
+  "minors": {
+    "3.0.0": {
+      "result": {
+        "runId": "required",
+        "commandIdentity": "required",
+        "outcome": "required",
+        "effectClass": "required",
+        "transactionState": "required",
+        "causeCode": "required",
+        "failureClass": "nullable",
+        "exitCode": "required",
+        "data": "nullable",
+        "retryable": "required",
+        "retryDelayMilliseconds": "conditional",
+        "repairAction": "nullable",
+        "effects": "required",
+        "next": "conditional",
+        "handoff": "conditional",
+        "bindings": "conditional",
+        "idempotencyKey": "optional",
+        "attemptedEffect": "optional"
+      },
+      "commonCauses": [
+        "SUCCESS_UNCHANGED",
+        "SUCCESS_COMPLETED",
+        "USAGE_INVALID_INVOCATION",
+        "USAGE_UNKNOWN_COMMAND",
+        "SCHEMA_INVALID_INPUT",
+        "SCHEMA_UNSUPPORTED_CONTRACT",
+        "DOMAIN_PRECONDITION_UNMET",
+        "DOMAIN_AUTHORITY_REQUIRED",
+        "TRANSIENT_NOT_STARTED",
+        "TRANSIENT_ATTEMPT_UNCHANGED",
+        "DOMAIN_DEADLINE_BEFORE_START",
+        "DOMAIN_DEADLINE_UNCHANGED",
+        "DOMAIN_DEADLINE_COMPLETED",
+        "DOMAIN_DEADLINE_PARTIAL",
+        "DOMAIN_DEADLINE_UNKNOWN",
+        "INTERNAL_PREPARATION",
+        "INTERNAL_RESULT_UNCHANGED",
+        "INTERNAL_RESULT_COMPLETED",
+        "INTERNAL_RESULT_PARTIAL",
+        "INTERNAL_RESULT_UNKNOWN"
+      ]
+    },
+    "3.1.0": {
+      "result": {
+        "runId": "required",
+        "commandIdentity": "required",
+        "outcome": "required",
+        "effectClass": "required",
+        "transactionState": "required",
+        "causeCode": "required",
+        "failureClass": "nullable",
+        "exitCode": "required",
+        "data": "nullable",
+        "retryable": "required",
+        "retryDelayMilliseconds": "conditional",
+        "repairAction": "nullable",
+        "effects": "required",
+        "next": "conditional",
+        "handoff": "conditional",
+        "bindings": "conditional",
+        "idempotencyKey": "optional",
+        "attemptedEffect": "optional",
+        "fixtureNote": "required"
+      },
+      "commonCauses": [
+        "SUCCESS_UNCHANGED",
+        "SUCCESS_COMPLETED",
+        "USAGE_INVALID_INVOCATION",
+        "USAGE_UNKNOWN_COMMAND",
+        "SCHEMA_INVALID_INPUT",
+        "SCHEMA_UNSUPPORTED_CONTRACT",
+        "DOMAIN_PRECONDITION_UNMET",
+        "DOMAIN_AUTHORITY_REQUIRED",
+        "TRANSIENT_NOT_STARTED",
+        "TRANSIENT_ATTEMPT_UNCHANGED",
+        "DOMAIN_DEADLINE_BEFORE_START",
+        "DOMAIN_DEADLINE_UNCHANGED",
+        "DOMAIN_DEADLINE_COMPLETED",
+        "DOMAIN_DEADLINE_PARTIAL",
+        "DOMAIN_DEADLINE_UNKNOWN",
+        "INTERNAL_PREPARATION",
+        "INTERNAL_RESULT_UNCHANGED",
+        "INTERNAL_RESULT_COMPLETED",
+        "INTERNAL_RESULT_PARTIAL",
+        "INTERNAL_RESULT_UNKNOWN"
+      ],
+      "meanings": {
+        "fixtureNote": "Optional nonempty string for a reader's test only. Absent means exactly what 3.0.0 meant; it grants nothing."
+      }
+    }
+  }
+}

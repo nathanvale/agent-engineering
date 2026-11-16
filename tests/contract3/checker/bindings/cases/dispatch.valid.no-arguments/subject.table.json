@@ -1,0 +1,10 @@
+{
+  "argv": [],
+  "responses": [
+    {
+      "stdout": null,
+      "stderr": "subject.0.stderr",
+      "exit": 2
+    }
+  ]
+}

@@ -1,0 +1,93 @@
+{
+  "bindingVersion": 1,
+  "id": "strict-keys.negative.unknown-key.retry-policy-bounded",
+  "rule": "strict-keys",
+  "group": "E",
+  "kind": "variation-negative",
+  "oracle": ["rules/strict-keys/requiredVariations/0"],
+  "verification": ["V-34"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": [
+      "strict-keys.negative.unknown-key.retry-policy-bounded/subject",
+      "3.0.0",
+      "unlisted"
+    ]
+  },
+  "rows": [
+    {
+      "caseId": "strict-keys.negative.unknown-key.retry-policy-bounded/discovery",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "strict-keys.negative.unknown-key.retry-policy-bounded/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "version-major",
+        "version-newer",
+        "result-correlation",
+        "effect-inventory",
+        "guidance-arm",
+        "retry-kind",
+        "done-outcome",
+        "metadata-values",
+        "json-values",
+        "effects-sets",
+        "effects-state",
+        "closed-union",
+        "available-order"
+      ],
+      "failed": {
+        "strict-keys": "UNLISTED_KEY"
+      },
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 21,
+    "failed": 1,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 22
+  },
+  "excluded": {
+    "presence": "reads keyset, which this mutation changes",
+    "station-duplicate": "reads stations, which this mutation changes",
+    "retry-policy": "reads stationRetry, which this mutation changes",
+    "lost-result-missing": "reads ifNoResult, which this mutation changes",
+    "lost-result-target": "reads ifNoResult, which this mutation changes",
+    "lost-result-literals": "reads ifNoResult, which this mutation changes",
+    "input-schema": "reads input, which this mutation changes",
+    "template-token": "reads templates, which this mutation changes"
+  },
+  "harness": null,
+  "static": null,
+  "notes": null
+}

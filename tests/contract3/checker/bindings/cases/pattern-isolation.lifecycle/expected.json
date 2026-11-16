@@ -1,0 +1,103 @@
+{
+  "bindingVersion": 1,
+  "id": "pattern-isolation.lifecycle",
+  "rule": "pattern-isolation",
+  "group": "H",
+  "kind": "harness",
+  "oracle": [
+    "rules/pattern-isolation/requiredVariations/3",
+    "rules/pattern-isolation/negative"
+  ],
+  "verification": ["V-44"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [
+    "pattern-isolation.lifecycle/cd-find:run",
+    "pattern-isolation.lifecycle/subject:run"
+  ],
+  "checker": {
+    "exitCode": 0,
+    "outcome": "success",
+    "causeCode": "SUCCESS_UNCHANGED",
+    "failureClass": null,
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": "report",
+    "stderr": "",
+    "messageIncludes": []
+  },
+  "rows": [
+    {
+      "caseId": "pattern-isolation.lifecycle/discovery",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "pattern-isolation.lifecycle/cd-find",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "exit-expected",
+        "cause-expected",
+        "pattern-syntax"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "pattern-isolation.lifecycle/subject",
+      "passed": [],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {
+        "pattern-budget": "target exceeded TARGET_RUN_MAX_MS and was terminated; its effects are unknown",
+        "json-framing": "target exceeded TARGET_RUN_MAX_MS and was terminated; its effects are unknown",
+        "version-malformed": "target exceeded TARGET_RUN_MAX_MS and was terminated; its effects are unknown",
+        "strict-keys": "target exceeded TARGET_RUN_MAX_MS and was terminated; its effects are unknown",
+        "result-correlation": "target exceeded TARGET_RUN_MAX_MS and was terminated; its effects are unknown",
+        "machine-stderr": "target exceeded TARGET_RUN_MAX_MS and was terminated; its effects are unknown",
+        "exit-envelope": "target exceeded TARGET_RUN_MAX_MS and was terminated; its effects are unknown",
+        "exit-expected": "target exceeded TARGET_RUN_MAX_MS and was terminated; its effects are unknown",
+        "cause-expected": "target exceeded TARGET_RUN_MAX_MS and was terminated; its effects are unknown"
+      }
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 15,
+    "failed": 0,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 9,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 24
+  },
+  "excluded": {},
+  "harness": {
+    "rule": "pattern-isolation",
+    "announce": {
+      "file": "lifecycle.state",
+      "line": "input-run-started"
+    },
+    "assertion": "Poll the case's lifecycle.state until it holds input-run-started: the second target run writes it before it blocks, so the run is in flight. Then send SIGTERM to the checker. It exits 143 with empty stdout within 500 ms of the signal, and no target process survives. If the announcement is never seen, the property is UNPROVED and this binding is not counted as passed. The process block below is the unsignalled run of the main loop: the blocked target times out at TARGET_RUN_MAX_MS, its rows are timed_out, and the checker exits 0 (timed_out is not a refusal).",
+    "sensitivityControl": "Make the checker ignore SIGTERM while a target runs, or stop forwarding it to the target: the harness must fail on the 500 ms bound or on a surviving target process."
+  },
+  "static": null,
+  "notes": "B8 (repair round 2). The hostile pattern stays declared, so the admission is still a hostile one while the signal lands; the elapsed budget itself is proved by pattern-isolation.elapsed."
+}

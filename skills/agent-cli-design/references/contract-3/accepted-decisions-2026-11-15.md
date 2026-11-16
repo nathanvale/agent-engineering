@@ -1,0 +1,682 @@
+# Contract 3.0 decisions after final review
+
+Recorded on 15 November 2026, Australia/Melbourne.
+Authority: Nathan's explicit replies in the foreground Codex conversation.
+Purpose: preserve accepted directions for the next contract-text revision.
+
+These decisions do not accept the complete contract or authorise its
+implementation. Keep the generated 2.0 bootstrap unchanged. Existing CLI
+migrations, installation, activation, release and merge remain outside scope.
+
+## Relationship to the reviewed candidate
+
+The original reviewed candidate is preserved at commit `9d1ecf1`. Its manifest
+had SHA-256 `751cca38f0edc5012e8dad2170e1d46a0e90447dac1ce8a7ec4effe9f02dcd8a`.
+This record was outside that original manifest. The current revised candidate
+incorporates A1 to A20 and includes this record in its new manifest. Its review
+status is owned by [review.md](review.md); earlier review does not qualify new
+wording. Accepted directions are not acceptance of the whole contract.
+
+The source plan remains in the vault's `projects/cli-design-skill` packet.
+This repository-binding record does not relocate that packet or settle the
+post-vault home of planning and acceptance records.
+
+## A1. A person may close an operation with an unknown outcome
+
+Status: accepted direction. Relates to Q7 and CMD-13/CMD-13a.
+
+Nathan: "Yes, allow an authorised person to close it as outcome unknown,
+but never automatically replay it."
+
+- Permit an authorised person to close the unresolved operation while
+  retaining the fact that its effects remain unknown.
+- Keep closure separate from proof of success, failure or non-application.
+- Never use closure as authority for automatic replay.
+- Design and verify the runtime authority boundary. A caller-supplied
+  boolean or TypeScript value is not proof that a person authorised closure.
+
+Reason and trade-off: provide an end to a case where evidence cannot be
+obtained, while explicitly retaining the uncertainty a person accepts.
+The alternative discussed was leaving the case unresolved until evidence
+arrives, potentially indefinitely.
+
+Required proof, not yet run: an agent cannot forge human closure; closing
+preserves the unknown history; closure never repeats a completed or uncertain
+effect. The exact closure record and authorisation mechanism remain to design.
+
+## A2. Block affected operations and resources only
+
+Status: accepted direction. Refines Q7's blocking scope.
+
+Nathan: "Yes, only block the affected operation and resources. Let unrelated
+work continue when we can prove it's independent."
+
+- Scope unresolved-work restrictions to the affected operation and resources.
+- Permit other work when independence is established.
+- Treat unproven independence conservatively; a different command name alone
+  does not establish independent resources or shared invariants.
+
+Reason and trade-off: an uncertain operation should not stop unrelated work,
+but the design must establish resource overlap and independence correctly.
+The alternative discussed was blocking all changes through the CLI.
+
+Required proof, not yet run: two operations sharing an affected resource are
+blocked appropriately; a demonstrably independent operation proceeds; unknown
+or incomplete resource information cannot evade the restriction. The resource
+model, evidence for independence and concurrency mechanism remain to design.
+
+## A3. Place the new tools beside the skill
+
+Status: accepted. Addresses final-review finding 4 and ROLL-4/ROLL-7.
+
+Nathan: "Yes, put the 3.0 checker, composer and exemplar in agent-engineering
+alongside the skill, behind the one CLI."
+
+- Make `agent-engineering` the source owner of the 3.0 checker, composer and
+  exemplar alongside `agent-cli-design`.
+- Expose application commands through the repository's one existing CLI.
+- Preserve the separate template repository and the accepted foundation-first
+  order. Keep existing 2.0 callers working until separately migrated.
+
+Reason and trade-off: keep the contract and its tools together. Moving the
+tools adds packaging and consumer-routing work; leaving them in Dotfiles
+would keep the owners split. The kept 2.0 checker's final placement and
+consumer routing need engineering reconciliation, not automatic relocation.
+
+Required proof, not yet run: discovery and actual dispatch reach the new
+commands through one front door; existing 2.0 consumers retain their checker;
+the adoption and rollback descriptions name the actual repositories and pins.
+
+## A4. Use four next-step kinds
+
+Status: accepted direction for the candidate. Resolves the kind-list part of Q2.
+
+Nathan: "Yes, we should try those four next step kinds, command, retry,
+instruction, and done."
+
+- Use `command`, `retry`, `instruction` and `done` as the proposed 3.0 kind set.
+- Preserve the inherited restrictions: unknown and partial effects cannot
+  suggest retry; done appears only on success; guidance grants no authority.
+- Keep human closure as a handoff requiring authority, not an ordinary retry.
+
+Reason and trade-off: make retry and completion explicit for machine readers,
+at the cost of more validation than command and instruction alone. This does
+not accept every field, binding rule or example in the draft. Sequences and
+branching workflows were not added by this decision.
+
+Required proof, not yet run: reject each illegal outcome/kind combination;
+resolve command suggestions to declared routes; preserve exhaustive handling.
+
+## A5. Allow implementation modules in src or packages
+
+Status: accepted placement direction. Refines A3 without adding a CLI.
+
+Nathan: "Yeah, the implementations can live in the packages folder. If it's
+a big implementation, or if it's small, it can live inside the source folder."
+
+- Keep small implementations under `src/` and allow large implementations
+  under `packages/`.
+- Register application commands through the single `src/cli.ts` front door
+  and its command registration owner. A package does not add a second
+  application CLI.
+- Choose placement through engineering judgment. No size threshold, workspace
+  package configuration or exact command names were accepted in this exchange.
+
+Reason and trade-off: separate substantial implementations without forcing
+small modules into packages. The split adds import and build boundaries only
+where useful. The earlier illustrated file layout was not an exact layout spec.
+
+Required proof, not yet run: package and source implementations are discoverable
+and callable through the same CLI; no second application front door appears.
+
+## A6. Allow validated run values in arguments and resource IDs
+
+Status: accepted direction. Resolves the permission to add run-value bindings
+in Q3; relates to STEP-9a, STEP-10, WIRE-7, V-14 and V-39.
+
+Nathan: "Yes, allow validated run values in arguments and resource IDs, but
+keep command names and guidance fixed. Make that durable."
+
+- Permit validated run values, such as a preview ID, in whole argument tokens
+  and resource identifiers.
+- Keep command identities and guidance text fixed by their declarations.
+  A run value cannot introduce an instruction or select another command.
+- Preserve argv boundaries without shell evaluation. Validate caller-supplied
+  bound values before effects, and validate the emitted result at runtime.
+- Preserve the rule that guidance grants no execution authority. A valid
+  binding does not permit replay, repair or human closure by itself.
+
+Reason and trade-off: an agent can use the exact run-specific identifier
+without reconstructing a command from prose. This adds validation rules; the
+alternative was a text instruction referring the reader to message or data.
+The exact wire key, template notation and limits still need reviewed wording.
+This direction does not approve every detail of the existing Q3 proposal.
+
+Required proof, not yet run: legitimate values remain single arguments;
+malicious values cannot become options, command selectors or executable shell
+text; secret values are not exposed; invalid bound input is refused before
+effects; rendered guidance matches the fixed declaration after substitution.
+Types alone cannot establish these runtime properties.
+
+## A7. Declare the implemented contract version on normal responses
+
+Status: accepted. Resolves the producer-version choice in Q5 and VER-8.
+
+Nathan: "Yes, always declare the CLI's implemented contract version and
+upgrade readers first. Make that durable."
+
+- Stamp normal responses with the CLI's implemented contract version.
+- Upgrade readers before producers that emit a newer contract minor.
+- Preserve the already accepted rule that newer 3.x readers accept older
+  3.x responses. Do not choose a version separately for each normal response
+  based on the lowest schema it happens to fit.
+
+Reason and trade-off: use a predictable producer identity without per-response
+compatibility inference. Coordinated reader-first deployment is the cost;
+lowest-fitting-version stamping would keep some older readers usable longer
+but adds producer complexity.
+
+Required proof, not yet run: all normal responses carry the implemented
+version; reader-first rollout is checked; newer readers accept valid older
+3.x responses; unsupported newer versions are refused clearly. The emergency
+fallback's version was expressly left separate in the question Nathan answered.
+This does not accept the rest of the version grammar or Q5 policy by implication.
+
+## A8. Keep the emergency fallback at Contract 3.0.0
+
+Status: accepted. Resolves Q5's fallback-version choice, VER-9 and LIFE-10.
+
+Nathan: "Yes, keep the emergency fallback at 3.0.0 as the exception.
+Make that durable."
+
+- Declare `contractVersion: "3.0.0"` on the emergency fallback, as the
+  explicit exception to A7's normal-response stamping rule.
+- Keep that fallback within the original 3.0.0 format so every conforming
+  3.x reader can interpret it. Do not relabel newer fields as 3.0.0.
+- Preserve the inherited one-attempt fallback boundary and honest reporting
+  of trusted effects or uncertainty. Fallback grants no authority to replay.
+
+Reason and trade-off: an older 3.x reader can understand an emergency response
+during an incomplete upgrade. Maintaining a frozen fallback format is the
+cost; using the producer's newer version everywhere would be more uniform
+but could make the emergency response unreadable to that older reader.
+
+Required proof, not yet run: a producer at a test-only newer minor emits a
+3.0.0-valid fallback, with no newer fields or union members; 3.0.0 and newer
+readers accept it; its effect report remains honest; no fallback path retries
+the domain operation. No future minor is released by this decision.
+
+## A9. Allow additive changes within 3.x
+
+Status: accepted direction. Resolves the minor-evolution choice in Q5,
+VER-5 and VER-6.
+
+Nathan: "Yes, allow additive 3.x changes with readers upgraded first.
+Preserve existing meanings and require a new major for breaking changes.
+Make that durable."
+
+- Permit later 3.x minors to add optional fields and contract-owned union
+  members, including new next-step kinds, while preserving existing meanings.
+- Preserve the meaning of an older response and of an absent new field.
+- Require a new major for removing or renaming fields, making optional fields
+  mandatory, or changing established meanings or guarantees.
+- Upgrade readers first. A reader cannot interpret a newer normal response
+  merely because its fields look familiar; it refuses unsupported versions.
+  Validate supported responses against their declared version.
+- Keep A8's emergency fallback within the frozen 3.0.0 format.
+
+Reason and trade-off: small additions do not require repeated major-version
+migrations. Readers must retain older minor schemas and compatibility checks.
+Adding a union member still breaks exhaustive handling in an unupgraded
+reader; version refusal protects that reader. The alternative discussed was
+freezing additions throughout 3.x and requiring a major for each addition.
+
+Required proof, not yet run: valid older responses retain their original
+interpretation; a newer normal minor is refused by an older reader before
+interpretation; a field or union member not in the declared minor is rejected;
+breaking schema or meaning changes cannot be classified as additive. Use
+test-only future minors, not new production releases, for these checks.
+Exact version grammar and handling of common-cause name collisions still need
+reconciliation in the revised text; this is not acceptance of every Q5 clause.
+
+## A10. Refuse a missing command and keep explicit help successful
+
+Status: accepted. Resolves the no-argument choice in Q6, DISC-1 and DISC-4.
+
+Nathan: "Yes, show usage and exit 2 when no command is given, and exit 0 for
+--help. Make that durable."
+
+- Show usage guidance and exit 2 when the invocation supplies no command.
+- Keep an explicit `--help` request successful with exit 0.
+- Preserve the human/machine output distinction and avoid domain effects on
+  either route. Root routing must not treat a missing command as success.
+
+Reason and trade-off: agents and scripts detect accidentally missing commands
+instead of interpreting help as completed work. A person using a bare CLI
+still receives navigation guidance but gets a nonzero exit. The alternative
+discussed was treating bare invocation as successful help.
+
+Required proof, not yet run: real no-argument and explicit-help invocations
+return exits 2 and 0 respectively; machine output agrees with the real exit;
+neither invocation changes domain resources. Exact usage rendering remains
+to draft consistently with the inherited output rules.
+
+## A11. Generate an agent-facing command and station map
+
+Status: requested direction for the candidate. Relates to DISC-1 through
+DISC-9 and the station-declaration design in the accepted plan's B12.
+
+Nathan requested an agent-native help dashboard for navigating command
+contract stations, then clarified that the map should be generated dynamically.
+This paragraph paraphrases the transcribed request rather than quoting it.
+
+- Generate the navigation map from the executable's registered commands and
+  station definitions. Keep help and discovery aligned with the same owners.
+- Use the existing help, discovery and selected-command discovery surfaces
+  as the starting point. Preserve the single application CLI.
+- Let an agent find a command, inspect its possible outcomes and follow its
+  declared guidance, repair hints and handoff inspection routes.
+- Distinguish this map of possible outcomes from observed resource state.
+  Obtain current state through the appropriate inspection command; generating
+  help must not execute domain work or initialise unavailable integrations.
+- Preserve progressive discovery: list commands first, then inspect one
+  command's stations. The inherited rule does not dump every station at once.
+
+Reason: derive navigation from what the CLI actually declares, rather than
+maintaining a second map that can drift. The dynamic map is generated metadata,
+not an agent-generated guess or an assertion of current execution authority.
+Exact station construction APIs and rendering remain to draft. This request
+does not authorise a web application, interactive TUI, second CLI or automatic
+execution of the suggested paths.
+
+Required proof, not yet run: changing a command declaration changes its help
+and discovery consistently; every listed route dispatches to the intended
+command; stations match emitted outcomes; missing integrations do not break
+navigation; traversing the map causes no domain effects. No dashboard or
+Contract 3.0 implementation has been built by recording this direction.
+
+Nathan subsequently requested a specification derived from executable
+declarations, using existing discovery routes, with navigation, dispatch and
+no-domain-effect tests and unresolved schema choices kept explicit. The
+[navigation proposal](navigation-proposal.md) supplies that wording and its
+unrun acceptance checks for the next candidate. This is a requested draft,
+not acceptance of its exact text. A12 below subsequently accepts the
+input-schema requirement while leaving its format for the draft.
+
+## A12. Generate argument and option schemas from input declarations
+
+Status: accepted direction. Resolves the input-discovery choice within Q2;
+qualifies STEP-6 and the navigation proposal's previously open input schema.
+
+Nathan: "Yes, require argument and option schemas generated from the command's
+input declarations. Leave the exact format for the draft. Make that durable."
+
+- Require selected-command discovery to describe accepted arguments and
+  options, including requiredness and declared validation constraints.
+- Generate the schema from the same input declarations used by the command's
+  parser and validator. Keep a single owner rather than a separately authored
+  description that can drift.
+- Leave the exact wire format, supported constraint vocabulary and its
+  integration with the version rules for the revised contract draft.
+- Preserve runtime validation. Discoverable input constraints do not prove
+  resource existence, current state, permission or safety to execute, and
+  valid arguments never confer authority.
+
+Reason and trade-off: an agent can learn how to construct an invocation
+through the existing discovery route. The contract grows to describe inputs
+and requires proof that the description agrees with actual parsing. This
+does not choose a schema library, change the toolchain or migrate existing
+CLIs. Acceptance of the exact contract text still precedes implementation.
+
+Required proof, not yet run: changing input declarations updates discovery;
+independently specified valid invocations parse; missing required inputs and
+violations of published constraints refuse before domain effects; stale or
+incorrect schema output fails the check. Tests distinguish input-shape
+acceptance from subsequent runtime resource and authority checks. Navigation
+itself retains A11's no-domain-effect requirement.
+
+## A13. Reclaim a lock only with proven stopped ownership and exclusive takeover
+
+Status: accepted direction. Resolves Q4's policy conflict for the next
+Contract 3.0 draft; the mechanism and its evidence remain incomplete.
+
+Nathan: "Yes, allow automatic reclaim only when the owner is proven stopped
+and exclusive takeover is guaranteed. Hand off to a person if either is
+uncertain, and never automatically replay effects. Make that durable."
+
+- Permit automatic reclaim only when runtime evidence proves the owner has
+  stopped and the takeover mechanism guarantees exclusive ownership.
+- If either condition is uncertain, preserve the lock protection and hand
+  off to a person with inspection and repair guidance. Lock age alone is
+  not proof that an owner has stopped.
+- Keep reclaim separate from settlement. Acquiring a lock neither proves
+  what the interrupted operation did nor marks it complete. Never
+  automatically replay effects after reclaim.
+- Preserve A1's authorised unknown-outcome closure and A2's affected-resource
+  scope. Unrelated work continues only when independence is established.
+
+This is a narrow successor to the inherited lifecycle rule against automatic
+stale-lock takeover, reconciling it with decision 20's dead-owner reclaim.
+It does not retrospectively change Contract 2.0 or approve a previously
+rejected reclaim design. The state add-on owns the shared mechanism; host
+commands do not each invent a takeover policy.
+
+Reason and trade-off: a proven abandoned lock need not require manual removal,
+but uncertain cases still need a person. Runtime ownership and concurrency
+proof are required; a TypeScript value, caller assertion or process-age
+heuristic is insufficient. The draft must state the supported environment
+and the limits of the ownership evidence.
+
+Required proof, not yet run: live owners are never displaced; two competing
+reclaimers cannot both gain ownership; ambiguous process identity or liveness
+produces a handoff without takeover; a crash during takeover preserves
+exclusivity; reclaim preserves interrupted-operation evidence and repeats no
+completed or uncertain effect. Account for still-running delegated work
+when establishing safe ownership: a stopped parent alone does not prove
+all writers have stopped. Use real concurrent processes, isolated resources
+and failing controls against the supported environment. The shared recovery
+design and independent review remain prerequisites to implementation.
+
+## A14. Bound shutdown of programs owned by the CLI
+
+Status: accepted direction. Resolves Q10's shutdown policy for the next
+Contract 3.0 draft. Exact lifecycle wording and process evidence remain to
+complete before implementation.
+
+Nathan: "Yes, require bounded shutdown of programs the CLI owns, with forced
+termination attempts on repeated cancellation or a catchable crash. Keep the
+cleanup limits explicit. Make that durable."
+
+- Require bounded shutdown of programs the CLI owns. On the first
+  cancellation, request a graceful stop and attempt forced termination if
+  necessary within the existing shutdown limit. Stop starting domain work.
+- On repeated cancellation or a catchable crash, attempt forced termination
+  of owned programs before exiting. Do not turn immediate termination into
+  an unbounded wait for confirmation.
+- Distinguish sending a termination request from observing that a program
+  stopped. State the supported process-ownership and descendant boundaries;
+  do not claim that every possible descendant is contained.
+- Retain explicit limits for an uncatchable kill of the CLI, abort, hook
+  failure and power loss. These cannot promise cleanup. Stopping a local
+  program neither undoes completed effects nor proves a remote operation
+  stopped. Preserve uncertainty and inspection guidance; never replay effects
+  automatically during cleanup.
+
+This supplies the accepted direction for LIFE-3 and LIFE-11's successor to
+the inherited lifecycle rows and decision 20's program ownership. It does
+not accept the draft's absolute statement that a started program never
+outlives the CLI as a guarantee beyond observable, supported cleanup paths.
+Retain the existing envelope, diagnostic-flush and journal limits. Reconcile
+the precise order and timing in the next reviewed text.
+
+Reason and trade-off: cancellation should stop owned local work where the
+CLI can still act. Bounded cleanup adds process-management obligations but
+does not delay shutdown indefinitely or promise recovery from forced death.
+The programs add-on and base lifecycle must share one ownership and shutdown
+design; host commands do not each invent cleanup semantics.
+
+Required proof, not yet run: real owned child processes that cooperate and
+that ignore graceful termination; repeated cancellation and catchable crash;
+termination attempts and elapsed bounds; descendant/ownership limits;
+preservation of unrelated processes; no new domain work or effect replay;
+and accurate reporting of interrupted effects. Include forced-death cases
+that demonstrate the documented lack of cleanup guarantee. Reconcile with
+A13: a stopped parent or a sent kill request alone does not prove all writers
+stopped or that reclaim is safe.
+
+## A15. Reject Object.assign in contract-handling code
+
+Status: accepted direction. Resolves the Object.assign restriction within
+Q8 and GATE-9a. Exact rule configuration and path scope remain for the draft.
+
+Nathan: "Yes, make Object.assign a lint error in code that constructs and
+handles contract values, and keep runtime validation mandatory. Make that
+durable."
+
+- Make `Object.assign` a lint error in code that constructs and handles
+  contract values. Name the applicable files and boundaries in the draft so
+  coverage is mechanically checkable.
+- Keep runtime result validation mandatory. This restriction catches a
+  demonstrated mutation route; it proves neither general immutability nor
+  the validity of external values.
+- Keep the restriction scoped to contract-handling code. This decision does
+  not ban mutation throughout a repository or select every additional rule
+  mentioned in Q8.
+
+Reason and trade-off: catch the demonstrated overwrite of a typed contract
+value during development, before it can reach the writer. Contract-handling
+code using this operation must be rewritten when it adopts 3.0. Rule scope,
+false positives and bypass specimens need maintenance. Existing CLI
+migrations remain separate work.
+
+The underlying review specimen and diagnostic record show a
+`no-restricted-syntax` restriction catching direct `Object.assign` calls.
+The review also shows that `prefer-object-spread` alone misses assignment
+onto an existing result. These are evidence for the draft, not acceptance of
+the review's entire lint configuration or proof of a production rule.
+
+Required proof, not yet run on the foundation: the demonstrated direct
+mutation fails lint at error severity in every intended source/test file
+kind; valid contract construction passes; unrelated code outside the declared
+scope is unaffected; and runtime validation still rejects invalid results
+when static checks are bypassed. Inspect alias and computed-property variants
+and record coverage limits rather than claiming all mutation is prevented.
+Select the exact enforcement under these criteria in the revised text.
+
+## A16. Reject unnecessary generic type parameters in contract-handling code
+
+Status: accepted direction. Resolves the second additional lint-rule choice
+within Q8 and GATE-9a. Exact scope and qualification remain for the draft.
+
+Nathan: "Yes, make that a lint error in contract-handling code, preserve
+genuine generics and keep runtime validation mandatory. Make that durable."
+
+"That" refers to the foreground proposal to adopt
+`@typescript-eslint/no-unnecessary-type-parameters` at error severity.
+
+- Apply this lint error to contract-handling code. Declare its applicable
+  source/test files and boundaries explicitly in the revised text.
+- Preserve genuine generic relationships, including useful input/output
+  relationships and validator-backed helpers. Prove valid specimens pass;
+  do not replace runtime validation with a caller-chosen return type.
+- Keep runtime validation mandatory. This rule catches the demonstrated
+  generic conversion through array mutation; it does not prove that every
+  unchecked conversion or mutable alias is impossible.
+
+Reason and trade-off: catch the reviewed helper that returns an unchecked
+value as a caller-chosen type without using a type assertion. Some helper
+signatures may need rewriting during adoption. The decision is scoped to
+contract-handling code, preserves the accepted toolchain and does not select
+the review's other proposed lint rules. Existing CLI migrations remain
+separate work.
+
+The retained review's `h02-generic-identity.ts` specimen and
+`eslint-fixes-dot.txt` record show the named rule rejecting that specimen.
+This is prototype evidence, not current foundation qualification.
+
+Required proof, not yet run on the foundation: the generic conversion
+specimen fails lint with the named rule at error severity; useful generics
+and validator-backed helpers pass lint and compilation; coverage reaches
+the intended source/test file kinds; unrelated code outside the declared
+scope is unaffected; and runtime validation rejects invalid results when
+static checks are bypassed. Attribute any TypeScript 6 lint versus TypeScript
+7 compilation disagreement without weakening checks to obtain a pass.
+
+## A17. Keep the contract acceptance record beside the contract
+
+Status: accepted ownership decision for the Contract 3.0 acceptance record.
+Resolves that bounded part of Q9 and ROLL-9.
+
+Nathan: "Yes, keep the Contract 3.0 acceptance record beside the contract in
+agent-engineering, and leave existing research and planning in place. Make
+that durable."
+
+- Keep the final Contract 3.0 acceptance record beside the contract in the
+  agent-engineering repository's agent-cli-design skill.
+- Bind it to the exact accepted manifest hash and evidence of Nathan's
+  explicit acceptance. A hash, status field or author name alone does not
+  establish approval.
+- Leave existing research and planning in place. This does not relocate the
+  source packet, settle the post-vault owner of other records or authorise a
+  migration.
+
+Reason and trade-off: the contract and evidence identifying its accepted
+bytes travel together. Broader project history remains with its existing
+owner, so retain references rather than creating competing canonical copies.
+The exact filename and record format are engineering details for the draft.
+
+Required proof when acceptance occurs: the record resolves to the actual
+explicit approval; the manifest and every covered file match the approved
+hashes; subsequent changed bytes are not represented as accepted; and
+research/planning sources remain in place. No acceptance record asserting
+approval is created now: this decision chooses its future home, not acceptance
+of the current candidate or authority to implement it.
+
+## A18. Keep the contract patch number at zero
+
+Status: accepted direction. Resolves the patch-version choice within Q5,
+VER-1 and VER-2 for Contract 3.x.
+
+Nathan: "Yes, keep the contract patch number at zero and track
+implementation-only fixes in the CLI release version. Make that durable."
+
+- Use `3.<minor>.0` for Contract 3.x versions. A nonzero contract patch
+  number is not an admitted Contract 3.x version.
+- Track implementation-only fixes in the CLI release version. A fix that
+  changes neither the contract's format nor its meaning does not change
+  `contractVersion`.
+- Preserve A7 through A9: normal results declare the implemented contract
+  version, readers upgrade first, additive compatible changes use a minor,
+  breaking changes require a new major, and the emergency fallback retains
+  its 3.0.0 exception.
+
+Reason and trade-off: contract versions describe compatibility while CLI
+release versions identify implementation changes. The contract version alone
+cannot identify which implementation fix a CLI contains. This decision does
+not add a release-version field to the result envelope or choose its discovery
+location; use the CLI's release identity without conflating it with the
+contract version.
+
+Required proof, not yet run: an implementation-only fix leaves contract
+versioning unchanged while its release identity changes; readers reject
+nonzero Contract 3.x patch numbers; minor compatibility and the fallback
+exception still work. Exact malformed-version reporting remains to reconcile
+in the draft with inherited cause and guidance rules. No current release or
+runtime was changed by recording this decision.
+
+## A19. Preserve approval when lock acquisition is refused
+
+Status: accepted direction. Resolves the approval-consumption ordering in
+Q6 and CMD-15 for changing commands requiring a single-use grant.
+
+Nathan: "Yes, preserve approval on a lock refusal. Consume it only after
+exclusive lock acquisition and before the approved effect. Make that durable."
+
+- A lock refusal leaves the approval grant unconsumed.
+- Consume the grant only after exclusive lock acquisition and before the
+  approved effect. Successful consumption remains atomic and single-use.
+- Validate the grant for the exact operation, including current validity,
+  before consuming it. A later attempt cannot treat a previously checked
+  grant as still valid without the required checks.
+- Preserve recovery and no-replay rules. A crash after consumption does not
+  authorise reusing the grant, restoring it automatically or repeating an
+  effect whose outcome is uncertain.
+
+Reason and trade-off: contention does not spend an approval when the command
+cannot start the approved work. The ordering requires concurrency and crash
+proof; it does not guarantee that a grant is consumed only when the effect
+eventually succeeds. The approval add-on and state add-on must coordinate
+through the accepted base architecture, without changing their ownership.
+This decision does not introduce locks for otherwise lock-free inspection
+commands or settle their separate approval mechanics by implication.
+
+Required proof, not yet run: a held-lock refusal leaves the grant usable
+subject to its validity conditions; a stale, mismatched or consumed grant
+still refuses; concurrent attempts cannot consume one grant twice; no
+approved effect starts before successful validation and consumption; and
+crashes around consumption preserve truthful recovery state without grant
+restoration or automatic replay. Use isolated state, real concurrent
+processes and independent resource observations.
+
+## A20. Allow trusted human confirmation that an owner stopped
+
+Status: accepted direction. Resolves REC-7a's manual-stop evidence choice.
+Authority: Nathan replied "Agree" to the foreground question:
+
+"May an authorised person confirm that the old worker and its delegated writers
+have stopped when the CLI cannot verify that itself?"
+
+The recommendation presented with that question was trusted human confirmation
+through the approval mechanism, with recorded evidence. Exclusive takeover must
+still be guaranteed. The stated trade-off was that a mistaken confirmation
+risks overlapping work; the alternative could leave affected work blocked
+indefinitely.
+
+- Permit an authorised person's confirmation of the specific owner's and
+  delegated writers' stopped state through the trusted approval boundary.
+- Retain reason and evidence, bound to the exact owner and affected scope.
+- Use that confirmation only for the stopped-owner condition. It cannot waive
+  guaranteed exclusive takeover, override known live ownership, or authorise
+  blind lock-file deletion.
+- Preserve scoped blocking, the separate closure protocol and no automatic
+  replay. Automatic reclaim continues to require its runtime proofs under A13.
+- Keep the source unforgeable by the calling process under its own credentials;
+  a caller boolean, actor name or same-user writable attestation is insufficient.
+
+Required proof, not yet run: reject forged, stale, mismatched and consumed
+attestations; preserve protection when exclusive takeover cannot be guaranteed;
+revalidate exact ownership against replacement races; record valid human
+confirmation; show competing claimants cannot both acquire ownership; and prove
+no original effect is replayed. Human evidence is a trust decision, not a
+TypeScript or machine-liveness guarantee.
+
+This acceptance selects the manual-stop policy only. It does not accept the
+whole contract, qualify a real authority integration, or authorise implementation.
+
+## Requested repair guidance and diagnosis
+
+Nathan also requested repair hints so an agent can identify the next step,
+potentially unblock the operation and diagnose why it happened.
+
+Use the existing [guidance](next-steps.md) and [diagnostics](diagnostics.md)
+owners. Distinguish observed facts from suspected causes. Offer read-only
+inspection and identify any separately authorised repair. Neither a hint,
+diagnostic record nor suggested command proves an effect absent or grants
+permission to replay. Exact new fields or a new repair protocol were not
+accepted; the earlier TypeScript fragments were illustrative.
+
+Required proof, not yet run: changing or removing diagnostics does not change
+the recovery decision; repair hints do not bypass authority or replay rules.
+
+## Remaining work and next question
+
+The approval-ordering choice is settled by A19 and manual stop confirmation
+by A20. Re-check the affected wording and present the exact revised candidate
+for contract-wide acceptance.
+Unanswered wording is not accepted by implication. Present any remaining
+material product choice with concrete options and consequences; leave exact
+schema formats and routine engineering choices with the drafter where Nathan
+has already delegated them. The next contract-wide decision is acceptance of
+the exact revised, independently reviewed text, not approval of the current
+frozen candidate. No such acceptance is requested or recorded here.
+
+The TypeScript review separates remaining schema/type/lint engineering and
+missing implementation evidence from product choices. Do not turn a skill
+recommendation into a new accepted dependency or policy.
+Other B6 records and their repository-specific revisions retain their
+existing owners unless explicitly changed; this record does not settle the
+post-vault ownership question for them.
+
+Current proposed resolutions and remaining choices are listed in
+[decisions.md](decisions.md). Their implementation proofs remain outstanding;
+the post-vault planning owner is still undecided. Do not reopen accepted toolchain, single-CLI or
+base-plus-add-ons decisions. Check inherited requirements before promoting a
+review finding to a new product question.
+
+The next drafter must reconcile these decisions with the frozen text, address
+supported final-review findings, produce a new manifest and obtain review of
+changed wording. Keep implementation evidence labelled unrun. Nathan must
+accept the exact revised contract text before Contract 3.0 implementation.
+
+No instruction here authorises migration of planning records. Exact verbs such
+as `contract check`, `contract explain` and `template compose` remain examples.

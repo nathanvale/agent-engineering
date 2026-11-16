@@ -1,0 +1,52 @@
+{
+  "bindingVersion": 1,
+  "id": "human-discovery.negative",
+  "rule": "human-discovery",
+  "group": "P",
+  "kind": "negative",
+  "oracle": ["rules/human-discovery/negative"],
+  "verification": ["V-34", "V-43"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": ["human-discovery.negative/subject:run"],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": ["human-discovery.negative/subject", "3.0.0"]
+  },
+  "rows": [
+    {
+      "caseId": "human-discovery.negative/subject",
+      "passed": [],
+      "failed": {
+        "human-discovery": "HUMAN_DISCOVERY_INVALID"
+      },
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 0,
+    "failed": 1,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 1
+  },
+  "excluded": {
+    "exit-expected": "reads observed, which this mutation changes"
+  },
+  "harness": null,
+  "static": null,
+  "notes": "Human mode: the row judges real exit against expect, nonempty stdout on exit 0 and one stderr line on a nonzero exit (G18)."
+}

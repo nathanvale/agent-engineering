@@ -1,0 +1,115 @@
+{
+  "bindingVersion": 1,
+  "id": "no-replay.executed-pattern-budget",
+  "rule": "no-replay",
+  "group": "H",
+  "kind": "harness",
+  "oracle": [
+    "noReplayCases/executed-pattern-budget",
+    "rules/no-replay/requiredVariations/0",
+    "noReplayProtocol/sensitivityControl"
+  ],
+  "verification": ["V-44", "V-48"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [
+    "no-replay.executed-pattern-budget/cd-find:run",
+    "no-replay.executed-pattern-budget/subject:run"
+  ],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": ["no-replay.executed-pattern-budget/subject", "3.0.0"]
+  },
+  "rows": [
+    {
+      "caseId": "no-replay.executed-pattern-budget/discovery",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "no-replay.executed-pattern-budget/cd-find",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "exit-expected",
+        "cause-expected",
+        "pattern-syntax"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "no-replay.executed-pattern-budget/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "exit-expected",
+        "cause-expected"
+      ],
+      "failed": {
+        "pattern-budget": "PATTERN_BUDGET_EXCEEDED"
+      },
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 23,
+    "failed": 1,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 24
+  },
+  "excluded": {},
+  "harness": {
+    "rule": "no-replay",
+    "counter": {
+      "file": "no-replay.counter",
+      "before": "absent",
+      "after": "1\n"
+    },
+    "counterOwner": "no-replay.executed-pattern-budget/cd-find",
+    "additionalCounters": [
+      {
+        "file": "no-replay.input.counter",
+        "before": "absent",
+        "after": "1\n",
+        "owner": "no-replay.executed-pattern-budget/subject"
+      }
+    ],
+    "readerStderr": "",
+    "sensitivityControl": "Perturb the checker to run either target again after the budget refusal; that target's counter becomes 2\\n and the harness must fail. Both counters are compared."
+  },
+  "static": null,
+  "notes": "The command-discovery run increments its counter and emits the hostile pattern; the later input run carries the subject value and increments its own counter (B4)."
+}

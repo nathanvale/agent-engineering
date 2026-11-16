@@ -1,0 +1,124 @@
+{
+  "admissionVersion": 1,
+  "cli": "specimen",
+  "cases": [
+    {
+      "caseId": "provider-loading.negative/help",
+      "rules": [
+        "provider-loading",
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "exit-expected",
+        "cause-expected"
+      ],
+      "role": "help",
+      "mode": "machine",
+      "target": {
+        "kind": "run",
+        "program": "bun-runtime",
+        "args": ["../../../specimens/target.mjs", "--help", "--json"],
+        "cwd": ".",
+        "env": {
+          "SPECIMEN_TABLE": "help.table.json",
+          "SPECIMEN_PROVIDER": "unavailable"
+        }
+      },
+      "expect": {
+        "exitCode": 0,
+        "causeCode": "SUCCESS_UNCHANGED",
+        "outcome": "success",
+        "commandIdentity": "specimen.help"
+      },
+      "probe": {
+        "program": "bun-runtime",
+        "args": ["../../../specimens/probe.mjs"],
+        "cwd": ".",
+        "env": {
+          "SPECIMEN_STATE": "state.log"
+        },
+        "expectedStdout": ""
+      }
+    },
+    {
+      "caseId": "provider-loading.negative/list",
+      "rules": [
+        "provider-loading",
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "exit-expected",
+        "cause-expected"
+      ],
+      "role": "command",
+      "mode": "machine",
+      "target": {
+        "kind": "run",
+        "program": "bun-runtime",
+        "args": ["../../../specimens/target.mjs", "list", "--json"],
+        "cwd": ".",
+        "env": {
+          "SPECIMEN_TABLE": "list.table.json",
+          "SPECIMEN_PROVIDER": "unavailable"
+        }
+      },
+      "expect": {
+        "exitCode": 0,
+        "causeCode": "SUCCESS_UNCHANGED",
+        "outcome": "success",
+        "commandIdentity": "specimen.list"
+      },
+      "probe": {
+        "program": "bun-runtime",
+        "args": ["../../../specimens/probe.mjs"],
+        "cwd": ".",
+        "env": {
+          "SPECIMEN_STATE": "state.log"
+        },
+        "expectedStdout": ""
+      }
+    },
+    {
+      "caseId": "provider-loading.negative/subject",
+      "rules": [
+        "provider-loading",
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope"
+      ],
+      "role": "discovery",
+      "mode": "machine",
+      "target": {
+        "kind": "run",
+        "program": "bun-runtime",
+        "args": ["../../../specimens/target.mjs", "--discover", "--json"],
+        "cwd": ".",
+        "env": {
+          "SPECIMEN_TABLE": "subject.table.json",
+          "SPECIMEN_PROVIDER": "unavailable"
+        }
+      },
+      "expect": {
+        "exitCode": 0
+      },
+      "probe": {
+        "program": "bun-runtime",
+        "args": ["../../../specimens/probe.mjs"],
+        "cwd": ".",
+        "env": {
+          "SPECIMEN_STATE": "state.log"
+        },
+        "expectedStdout": ""
+      }
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "bindingVersion": 1,
+  "id": "navigation-effects.negative",
+  "rule": "navigation-effects",
+  "group": "F",
+  "kind": "negative",
+  "oracle": ["rules/navigation-effects/negative"],
+  "verification": ["V-43"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [
+    "navigation-effects.negative/subject:run",
+    "navigation-effects.negative/subject:probe"
+  ],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": ["navigation-effects.negative/subject", "3.0.0"]
+  },
+  "rows": [
+    {
+      "caseId": "navigation-effects.negative/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "exit-expected",
+        "cause-expected"
+      ],
+      "failed": {
+        "navigation-effects": "NAVIGATION_EFFECT"
+      },
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 8,
+    "failed": 1,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 9
+  },
+  "excluded": {},
+  "harness": null,
+  "static": null,
+  "notes": "The negative prints valid discovery but writes provider.init to state; only the probe sees it."
+}

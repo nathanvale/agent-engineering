@@ -1,0 +1,100 @@
+{
+  "bindingVersion": 1,
+  "id": "pattern-isolation.elapsed",
+  "rule": "pattern-isolation",
+  "group": "H",
+  "kind": "harness",
+  "oracle": [
+    "rules/pattern-isolation/requiredVariations/2",
+    "rules/pattern-isolation/validTwin"
+  ],
+  "verification": ["V-44"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [
+    "pattern-isolation.elapsed/cd-find:run",
+    "pattern-isolation.elapsed/subject:run"
+  ],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": ["pattern-isolation.elapsed/subject", "3.0.0"]
+  },
+  "rows": [
+    {
+      "caseId": "pattern-isolation.elapsed/discovery",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "pattern-isolation.elapsed/cd-find",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "exit-expected",
+        "cause-expected",
+        "pattern-syntax"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "pattern-isolation.elapsed/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "exit-expected",
+        "cause-expected"
+      ],
+      "failed": {
+        "pattern-budget": "PATTERN_BUDGET_EXCEEDED"
+      },
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 23,
+    "failed": 1,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 24
+  },
+  "excluded": {},
+  "harness": {
+    "rule": "pattern-isolation",
+    "sensitivityControl": "Run the pattern synchronously on the checker's own thread with no budget; the harness must fail, either on the 5,000 ms bound or because the engine's false non-match gives a wrong exit or cause (exit 0 instead of the bound exit-4 refusal).",
+    "assertion": "The checker's own budget ends the hostile match at PATTERN_MAX_MS (250 ms) and refuses; the checker exits 4 within 5,000 ms of start. On Bun 1.4.4 JavaScriptCore stops this match by itself after about 0.4 to 0.6 s and reports a false non-match, so a run that ends without the budget refusal is a wrong answer, not a pass (INPUT-2, V-44)."
+  },
+  "static": null,
+  "notes": null
+}

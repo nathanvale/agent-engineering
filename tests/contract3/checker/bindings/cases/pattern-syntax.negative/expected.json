@@ -1,0 +1,88 @@
+{
+  "bindingVersion": 1,
+  "id": "pattern-syntax.negative",
+  "rule": "pattern-syntax",
+  "group": "D",
+  "kind": "negative",
+  "oracle": ["rules/pattern-syntax/negative"],
+  "verification": ["V-44"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": ["pattern-syntax.negative/subject", "3.0.0", "pattern"]
+  },
+  "rows": [
+    {
+      "caseId": "pattern-syntax.negative/discovery",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "pattern-syntax.negative/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "version-major",
+        "version-newer",
+        "strict-keys",
+        "presence",
+        "result-correlation",
+        "effect-inventory",
+        "guidance-arm",
+        "retry-kind",
+        "done-outcome",
+        "metadata-values",
+        "json-values",
+        "effects-sets",
+        "effects-state",
+        "closed-union",
+        "available-order",
+        "station-duplicate",
+        "retry-policy",
+        "lost-result-inspect",
+        "template-token"
+      ],
+      "failed": {
+        "pattern-syntax": "PATTERN_SYNTAX_INVALID"
+      },
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 27,
+    "failed": 1,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 28
+  },
+  "excluded": {
+    "input-schema": "reads input, which this mutation changes"
+  },
+  "harness": null,
+  "static": null,
+  "notes": null
+}

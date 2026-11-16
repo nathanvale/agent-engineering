@@ -1,0 +1,92 @@
+{
+  "bindingVersion": 1,
+  "id": "station-duplicate.negative",
+  "rule": "station-duplicate",
+  "group": "D",
+  "kind": "negative",
+  "oracle": ["rules/station-duplicate/negative"],
+  "verification": ["V-10"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": [
+      "station-duplicate.negative/subject",
+      "3.0.0",
+      "TRANSIENT_NOT_STARTED"
+    ]
+  },
+  "rows": [
+    {
+      "caseId": "station-duplicate.negative/discovery",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "station-duplicate.negative/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "version-major",
+        "version-newer",
+        "strict-keys",
+        "presence",
+        "result-correlation",
+        "effect-inventory",
+        "guidance-arm",
+        "retry-kind",
+        "done-outcome",
+        "metadata-values",
+        "json-values",
+        "effects-sets",
+        "effects-state",
+        "closed-union",
+        "available-order",
+        "retry-policy",
+        "lost-result-missing",
+        "lost-result-target",
+        "lost-result-literals",
+        "input-schema",
+        "template-token"
+      ],
+      "failed": {
+        "station-duplicate": "STATION_DUPLICATE"
+      },
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 29,
+    "failed": 1,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 30
+  },
+  "excluded": {},
+  "harness": null,
+  "static": null,
+  "notes": null
+}

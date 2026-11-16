@@ -1,0 +1,28 @@
+{
+  "admissionVersion": 1,
+  "cli": "specimen",
+  "cases": [
+    {
+      "caseId": "format.broken-supported/subject",
+      "rules": [
+        "json-framing",
+        "version-malformed",
+        "version-major",
+        "version-newer",
+        "machine-stderr",
+        "presence"
+      ],
+      "role": "command",
+      "mode": "machine",
+      "target": {
+        "kind": "run",
+        "program": "bun-runtime",
+        "args": ["../../../specimens/target.mjs", "list", "--json"],
+        "cwd": ".",
+        "env": {
+          "SPECIMEN_TABLE": "subject.table.json"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+Usage: specimen [--json] <command> [arguments]
+
+Commands:
+  list     List notes.
+  show     Show one note.
+  find     Find notes.
+  preview  Preview one note change.
+  apply    Apply one previewed note change.
+  pending  Report unfinished changes.

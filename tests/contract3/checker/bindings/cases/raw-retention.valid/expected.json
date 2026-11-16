@@ -1,0 +1,61 @@
+{
+  "bindingVersion": 1,
+  "id": "raw-retention.valid",
+  "rule": "raw-retention",
+  "group": "H",
+  "kind": "harness-valid",
+  "oracle": ["rules/raw-retention/validTwin", "rules/raw-retention/negative"],
+  "verification": ["V-34"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": ["raw-retention.valid/subject:run"],
+  "checker": {
+    "exitCode": 0,
+    "outcome": "success",
+    "causeCode": "SUCCESS_UNCHANGED",
+    "failureClass": null,
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": "report",
+    "stderr": "",
+    "messageIncludes": []
+  },
+  "rows": [
+    {
+      "caseId": "raw-retention.valid/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "exit-expected",
+        "cause-expected"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 8,
+    "failed": 0,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 8
+  },
+  "excluded": {},
+  "harness": {
+    "rule": "raw-retention",
+    "assertion": "List every file in the temporary copy and in the checker's working directory before and after the run. The sets are equal; no file contains the target's stdout bytes.",
+    "sensitivityControl": "Perturb the checker to write the target's stdout beside the admission; the file-set assertion must fail."
+  },
+  "static": null,
+  "notes": null
+}

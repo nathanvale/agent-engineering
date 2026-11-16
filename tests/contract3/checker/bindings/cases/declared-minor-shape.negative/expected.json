@@ -1,0 +1,65 @@
+{
+  "bindingVersion": 1,
+  "id": "declared-minor-shape.negative",
+  "rule": "declared-minor-shape",
+  "group": "E",
+  "kind": "negative",
+  "oracle": ["rules/declared-minor-shape/negative"],
+  "verification": ["V-16"],
+  "reader": "test-minor-3.1.0",
+  "provisional": ["d3-reader", "fixture-minor-table"],
+  "admission": "admission.json",
+  "targetExecutions": [],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": [
+      "declared-minor-shape.negative/subject",
+      "3.0.0",
+      "fixtureNote"
+    ]
+  },
+  "rows": [
+    {
+      "caseId": "declared-minor-shape.negative/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "version-major",
+        "version-newer",
+        "result-correlation",
+        "guidance-arm",
+        "available-order"
+      ],
+      "failed": {
+        "declared-minor-shape": "DECLARED_MINOR_SHAPE"
+      },
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 7,
+    "failed": 1,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 8
+  },
+  "excluded": {
+    "strict-keys": "the same key is unlisted at the declared minor; strict-keys and declared-minor-shape would both read it",
+    "presence": "reads key presence, which the mutation changes"
+  },
+  "harness": null,
+  "static": null,
+  "notes": null
+}

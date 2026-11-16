@@ -1,0 +1,107 @@
+{
+  "bindingVersion": 1,
+  "id": "handoff-shape.negative.empty-inspect",
+  "rule": "handoff-shape",
+  "group": "E",
+  "kind": "variation-negative",
+  "oracle": ["rules/handoff-shape/validTwin"],
+  "verification": ["V-12", "V-34"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": [
+      "handoff-shape.negative.empty-inspect/subject",
+      "3.0.0",
+      "inspect"
+    ]
+  },
+  "rows": [
+    {
+      "caseId": "handoff-shape.negative.empty-inspect/discovery",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "handoff-shape.negative.empty-inspect/cd-apply",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "station-duplicate",
+        "retry-policy",
+        "input-schema"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "handoff-shape.negative.empty-inspect/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "version-major",
+        "version-newer",
+        "strict-keys",
+        "presence",
+        "result-correlation",
+        "guidance-arm",
+        "retry-kind",
+        "metadata-values",
+        "json-values",
+        "effects-sets",
+        "effects-state",
+        "attempted-effect",
+        "failure-data",
+        "available-order",
+        "available-target",
+        "station-fixed",
+        "retry-delay",
+        "binding-keys"
+      ],
+      "failed": {
+        "handoff-shape": "HANDOFF_INVALID"
+      },
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 32,
+    "failed": 1,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 33
+  },
+  "excluded": {
+    "closed-union": "reads handoff, which this mutation changes",
+    "inspection-target": "reads handoff, which this mutation changes",
+    "guidance-template": "reads handoff, which this mutation changes"
+  },
+  "harness": null,
+  "static": null,
+  "notes": "WIRE-9: inspect is a nonempty array; the valid twin text requires nonempty inspections."
+}

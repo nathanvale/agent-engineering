@@ -1,0 +1,105 @@
+{
+  "bindingVersion": 1,
+  "id": "strict-keys.negative.unknown-key.next-instruction",
+  "rule": "strict-keys",
+  "group": "E",
+  "kind": "variation-negative",
+  "oracle": ["rules/strict-keys/requiredVariations/0"],
+  "verification": ["V-34"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": [
+      "strict-keys.negative.unknown-key.next-instruction/subject",
+      "3.0.0",
+      "unlisted"
+    ]
+  },
+  "rows": [
+    {
+      "caseId": "strict-keys.negative.unknown-key.next-instruction/discovery",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "strict-keys.negative.unknown-key.next-instruction/cd-find",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "station-duplicate",
+        "retry-policy",
+        "input-schema"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "strict-keys.negative.unknown-key.next-instruction/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "version-major",
+        "version-newer",
+        "effect-inventory",
+        "guidance-arm",
+        "metadata-values",
+        "json-values",
+        "effects-sets",
+        "effects-state",
+        "failure-data",
+        "available-order",
+        "available-target",
+        "station-fixed",
+        "retry-delay",
+        "binding-keys"
+      ],
+      "failed": {
+        "strict-keys": "UNLISTED_KEY"
+      },
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 28,
+    "failed": 1,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 29
+  },
+  "excluded": {
+    "presence": "reads keyset, which this mutation changes",
+    "result-correlation": "reads next, which this mutation changes",
+    "retry-kind": "reads next, which this mutation changes",
+    "closed-union": "reads next, which this mutation changes",
+    "guidance-template": "reads next, which this mutation changes"
+  },
+  "harness": null,
+  "static": null,
+  "notes": null
+}

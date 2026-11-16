@@ -1,0 +1,87 @@
+{
+  "bindingVersion": 1,
+  "id": "cause-expected.negative",
+  "rule": "cause-expected",
+  "group": "P",
+  "kind": "negative",
+  "oracle": ["rules/cause-expected/negative"],
+  "verification": ["V-9"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": ["cause-expected.negative/subject:run"],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": ["cause-expected.negative/subject", "3.0.0", "causeCode"]
+  },
+  "rows": [
+    {
+      "caseId": "cause-expected.negative/discovery",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "cause-expected.negative/cd-show",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "station-duplicate",
+        "retry-policy",
+        "input-schema"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "cause-expected.negative/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "exit-expected",
+        "station-observed"
+      ],
+      "failed": {
+        "cause-expected": "EXPECTED_CAUSE_MISMATCH"
+      },
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 20,
+    "failed": 1,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 21
+  },
+  "excluded": {},
+  "harness": null,
+  "static": null,
+  "notes": "The specimen catalogue declares DOMAIN_NOTE_MISSING and the specimen emits it; the independent expectation for this brief is DOMAIN_PRECONDITION_UNMET at the same exit 3."
+}

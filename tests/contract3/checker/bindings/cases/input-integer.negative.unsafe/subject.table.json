@@ -1,0 +1,10 @@
+{
+  "argv": ["find", "--json", "abc", "--limit", "9007199254740993"],
+  "responses": [
+    {
+      "stdout": "subject.0.stdout",
+      "stderr": null,
+      "exit": 0
+    }
+  ]
+}

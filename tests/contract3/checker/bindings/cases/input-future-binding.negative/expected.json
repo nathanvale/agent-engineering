@@ -1,0 +1,92 @@
+{
+  "bindingVersion": 1,
+  "id": "input-future-binding.negative",
+  "rule": "input-future-binding",
+  "group": "F",
+  "kind": "negative",
+  "oracle": ["rules/input-future-binding/negative"],
+  "verification": ["V-44"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": [
+    "input-future-binding.negative/subject:run",
+    "input-future-binding.negative/subject:probe"
+  ],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_INVALID_INPUT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": ["input-future-binding.negative/subject", "3.0.0"]
+  },
+  "rows": [
+    {
+      "caseId": "input-future-binding.negative/discovery",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "version-copy",
+        "discovery-metadata",
+        "root-routes"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "input-future-binding.negative/cd-preview",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "station-duplicate",
+        "retry-policy",
+        "input-schema"
+      ],
+      "failed": {},
+      "notRun": {},
+      "timedOut": {}
+    },
+    {
+      "caseId": "input-future-binding.negative/subject",
+      "passed": [
+        "json-framing",
+        "version-malformed",
+        "strict-keys",
+        "result-correlation",
+        "machine-stderr",
+        "exit-envelope",
+        "station-observed"
+      ],
+      "failed": {
+        "input-future-binding": "FUTURE_BINDING_TOO_LATE"
+      },
+      "notRun": {},
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 19,
+    "failed": 1,
+    "not_run": 0,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 20
+  },
+  "excluded": {
+    "exit-expected": "reads observed, which this mutation changes",
+    "cause-expected": "reads observed, which this mutation changes"
+  },
+  "harness": null,
+  "static": null,
+  "notes": "--note becomes binding note in the apply step; list equals a route token (STEP-10), so it is refused before any effect. Binder reading: an argv value fault is USAGE_INVALID_INVOCATION (INPUT-2, CMD-9 step 3)."
+}

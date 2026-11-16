@@ -1,0 +1,10 @@
+{
+  "argv": ["list", "--json"],
+  "responses": [
+    {
+      "stdout": "list-internal.0.stdout",
+      "stderr": null,
+      "exit": 1
+    }
+  ]
+}

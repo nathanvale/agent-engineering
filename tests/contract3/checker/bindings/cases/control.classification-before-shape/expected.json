@@ -1,0 +1,60 @@
+{
+  "bindingVersion": 1,
+  "id": "control.classification-before-shape",
+  "rule": "version-major",
+  "group": "V",
+  "kind": "control-negative",
+  "oracle": ["additionalControls/classification-before-shape"],
+  "verification": ["V-16"],
+  "reader": "production-3.0.0",
+  "provisional": [],
+  "admission": "admission.json",
+  "targetExecutions": ["control.classification-before-shape/subject:run"],
+  "checker": {
+    "exitCode": 4,
+    "outcome": "refused",
+    "causeCode": "SCHEMA_UNSUPPORTED_CONTRACT",
+    "failureClass": "schema",
+    "effectClass": "inspect",
+    "transactionState": "unchanged",
+    "data": null,
+    "stderr": "",
+    "messageIncludes": [
+      "control.classification-before-shape/subject",
+      "2.0.0",
+      "config/agents/plugins/my-second-brain-playground/bin/cli-design-check"
+    ]
+  },
+  "rows": [
+    {
+      "caseId": "control.classification-before-shape/subject",
+      "passed": ["json-framing", "version-malformed", "machine-stderr"],
+      "failed": {
+        "version-major": "VERSION_UNSUPPORTED_MAJOR"
+      },
+      "notRun": {
+        "strict-keys": "blocked: version refusal; no other key of a refused version is interpreted (VER-10)",
+        "presence": "blocked: version refusal; no other key of a refused version is interpreted (VER-10)",
+        "exit-envelope": "blocked: version refusal; no other key of a refused version is interpreted (VER-10)"
+      },
+      "timedOut": {}
+    }
+  ],
+  "rowsUnbound": null,
+  "counts": {
+    "passed": 3,
+    "failed": 1,
+    "not_run": 3,
+    "skipped": 0,
+    "timed_out": 0,
+    "missing": 0,
+    "declared_unreachable": 0,
+    "total": 7
+  },
+  "excluded": {
+    "version-newer": "classification stops at the first refused class (VER-10 order); a later class is not admitted"
+  },
+  "harness": null,
+  "static": null,
+  "notes": "2.0.0 plus keys invalid under 3.0 stays an unsupported major; nothing is read as 3.0."
+}

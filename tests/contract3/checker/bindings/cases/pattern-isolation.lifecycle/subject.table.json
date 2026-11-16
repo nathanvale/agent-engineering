@@ -1,0 +1,19 @@
+{
+  "argv": [
+    "find",
+    "--json",
+    "abc",
+    "--code",
+    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  ],
+  "responses": [
+    {
+      "stdout": null,
+      "stderr": null,
+      "exit": 0,
+      "state": "input-run-started\n",
+      "hang": true
+    }
+  ],
+  "state": "lifecycle.state"
+}
