@@ -777,9 +777,8 @@ describe("rule sensitivity (checker-rule-disabled)", () => {
               checkerCommand(
                 expected.reader,
                 admissionPath(processCopy.root, id),
-                expected.reader === "test-minor-3.1.0"
-                  ? undefined
-                  : perturbed.cli,
+                perturbed.cli,
+                perturbed.reader,
               ),
             );
             const processed =

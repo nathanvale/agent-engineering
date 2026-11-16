@@ -12,7 +12,7 @@ import {
   writeFile,
 } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join, resolve } from "node:path";
+import { join, relative, resolve } from "node:path";
 import * as admissionModule from "../../../../src/domains/contract3-check/admission.ts";
 import * as observeModule from "../../../../src/domains/contract3-check/observe.ts";
 import * as judgeModule from "../../../../src/domains/contract3-check/judge.ts";
@@ -227,6 +227,8 @@ export async function perturbedChecker(
   replace: string,
 ): Promise<{
   cli: string;
+  /** The D3 reader specimen, copied so its imports resolve to the perturbed src/ (F4). */
+  reader: string;
   modules(): Promise<CheckerModules>;
   dispose(): Promise<void>;
 }> {
@@ -241,7 +243,10 @@ export async function perturbedChecker(
     text.replace(find, () => replace),
   );
   const domain = join(root, "src/domains/contract3-check");
+  const reader = join(root, relative(REPO_ROOT, READER));
+  await cp(READER, reader);
   return {
+    reader,
     cli: join(root, "src/cli.ts"),
     modules: async () => ({
       admission: (await import(
@@ -363,8 +368,9 @@ export function checkerCommand(
   reader: Expected["reader"],
   admission: string,
   script = join(REPO_ROOT, "src/cli.ts"),
+  readerScript = READER,
 ): string[] {
-  const entry = reader === "test-minor-3.1.0" ? READER : script;
+  const entry = reader === "test-minor-3.1.0" ? readerScript : script;
   return [
     process.execPath,
     "run",
