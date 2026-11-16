@@ -2,20 +2,6 @@
   "about": "Shrinking list. These avoid-word hits existed when the glossary check was introduced (16 November 2026). The check fails on any hit not listed here, and on any listed hit that no longer exists: remove or lower an entry in the same commit that fixes it. Never add an entry. When the list is empty, delete this file and the check is absolute.",
   "hits": [
     {
-      "file": "src/domains/contract3-check/admission.ts",
-      "term": "Admitted",
-      "surface": "public-identifier",
-      "text": "AdmissionLoad",
-      "count": 1
-    },
-    {
-      "file": "src/domains/contract3-check/admission.ts",
-      "term": "Admitted",
-      "surface": "public-identifier",
-      "text": "loadAdmission",
-      "count": 1
-    },
-    {
       "file": "src/domains/contract3-check/cross-rules.ts",
       "term": "Run binding",
       "surface": "visible-text",
@@ -27,6 +13,13 @@
       "term": "Run binding",
       "surface": "visible-text",
       "text": "${where}: bindings is ${present ? \"present although the station names no binding\" : \"absent although the station templates name a binding\"}.",
+      "count": 1
+    },
+    {
+      "file": "src/domains/contract3-check/cross-rules.ts",
+      "term": "Run binding",
+      "surface": "visible-text",
+      "text": "${where}: bindings must have exactly the names the station templates use (${[...declared].join(\", \") || \"none\"}).",
       "count": 1
     },
     {
@@ -80,30 +73,65 @@
     },
     {
       "file": "src/domains/contract3-check/observe.ts",
-      "term": "Admitted",
-      "surface": "public-identifier",
-      "text": "observeAdmission",
-      "count": 1
-    },
-    {
-      "file": "src/domains/contract3-check/observe.ts",
       "term": "Test harness",
       "surface": "comment",
       "text": "harness's component layer: each listed case observed once, in admission",
       "count": 1
     },
     {
-      "file": "src/domains/contract3-check/outcome.ts",
-      "term": "Admitted",
-      "surface": "public-identifier",
-      "text": "admissionResult",
+      "file": "tests/contract3/checker/bindings/BINDINGS.md",
+      "term": "Test harness",
+      "surface": "doc",
+      "text": "## How the harness must use them",
       "count": 1
     },
     {
-      "file": "src/domains/contract3-check/types.ts",
-      "term": "Admitted",
-      "surface": "public-identifier",
-      "text": "Admission",
+      "file": "tests/contract3/checker/bindings/BINDINGS.md",
+      "term": "Test harness",
+      "surface": "doc",
+      "text": "6. **Harness blocks** (`harness`): run the stated assertion and the stated",
+      "count": 1
+    },
+    {
+      "file": "tests/contract3/checker/bindings/BINDINGS.md",
+      "term": "Test harness",
+      "surface": "doc",
+      "text": "rowsUnbound, counts, excluded{rule: reason}, harness, static, notes }",
+      "count": 1
+    },
+    {
+      "file": "tests/contract3/checker/bindings/BINDINGS.md",
+      "term": "Test harness",
+      "surface": "doc",
+      "text": "the harness must fail. Where `harness.additionalCounters` is present",
+      "count": 1
+    },
+    {
+      "file": "tests/contract3/checker/bindings/BINDINGS.md",
+      "term": "Test harness",
+      "surface": "doc",
+      "text": "the harness must fail; restore and it matches again. Under the",
+      "count": 1
+    },
+    {
+      "file": "tests/contract3/checker/bindings/BINDINGS.md",
+      "term": "Test harness",
+      "surface": "doc",
+      "text": "| `cases/<id>/admission.json` | The admission the checker reads, unchanged by the harness                                         |",
+      "count": 1
+    },
+    {
+      "file": "tests/contract3/checker/bindings/BINDINGS.md",
+      "term": "Test harness",
+      "surface": "doc",
+      "text": "| `cases/<id>/expected.json`  | The binder's expected process result, component rows, exclusions and harness or static assertions |",
+      "count": 1
+    },
+    {
+      "file": "tests/contract3/checker/bindings/INTERFACE-REVIEW.md",
+      "term": "Accepted decision",
+      "surface": "doc",
+      "text": "## Binding decisions applied",
       "count": 1
     },
     {
@@ -111,6 +139,62 @@
       "term": "Accepted decision",
       "surface": "doc",
       "text": "[retained-2.json](../../retained-2.json) and Nathan's binding decisions of 16",
+      "count": 1
+    },
+    {
+      "file": "tests/contract3/checker/bindings/INTERFACE-REVIEW.md",
+      "term": "Test harness",
+      "surface": "doc",
+      "text": "### D2: probe program, with an independent harness readback",
+      "count": 1
+    },
+    {
+      "file": "tests/contract3/checker/bindings/INTERFACE-REVIEW.md",
+      "term": "Test harness",
+      "surface": "doc",
+      "text": "- Group F has frozen finding codes at the process layer. If the harness judged",
+      "count": 1
+    },
+    {
+      "file": "tests/contract3/checker/bindings/INTERFACE-REVIEW.md",
+      "term": "Test harness",
+      "surface": "doc",
+      "text": "- The harness still reads the same state file itself after the checker exits",
+      "count": 1
+    },
+    {
+      "file": "tests/contract3/checker/bindings/INTERFACE-REVIEW.md",
+      "term": "Test harness",
+      "surface": "doc",
+      "text": "The harness must pick these assertions from D1's outcome; no binding hardcodes",
+      "count": 1
+    },
+    {
+      "file": "tests/contract3/checker/bindings/INTERFACE-REVIEW.md",
+      "term": "Test harness",
+      "surface": "doc",
+      "text": "`checker-report.schema.json` item shape, `failed` rows included. The harness",
+      "count": 1
+    },
+    {
+      "file": "tests/contract3/checker/bindings/INTERFACE-REVIEW.md",
+      "term": "Test harness",
+      "surface": "doc",
+      "text": "`cwd: \".\"`; the harness copies `tests/contract3/checker/bindings/` and",
+      "count": 1
+    },
+    {
+      "file": "tests/contract3/checker/bindings/INTERFACE-REVIEW.md",
+      "term": "Test harness",
+      "surface": "doc",
+      "text": "action: bind the valid target case and the expected harness result; the",
+      "count": 1
+    },
+    {
+      "file": "tests/contract3/checker/bindings/INTERFACE-REVIEW.md",
+      "term": "Test harness",
+      "surface": "doc",
+      "text": "and its default is unstated; section 12 says the harness writes admissions to a",
       "count": 1
     }
   ]

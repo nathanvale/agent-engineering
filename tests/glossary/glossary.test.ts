@@ -47,6 +47,10 @@ type Term = {
 type Table = {
   readonly scope: readonly string[];
   readonly exempt: readonly string[];
+  // Real clause and decision ids a glossary-quote marker may name.
+  readonly quoteIds: readonly string[];
+  // Contract phrases (row titles) that count as quotes when double-quoted.
+  readonly quotes: readonly string[];
   readonly terms: readonly Term[];
 };
 type TextRecord = {
@@ -83,6 +87,8 @@ function parseTable(raw: unknown): Table {
   return {
     scope: strings(raw.scope, "scope"),
     exempt: strings(raw.exempt, "exempt"),
+    quoteIds: strings(raw.quoteIds, "quoteIds"),
+    quotes: strings(raw.quotes, "quotes"),
     terms: terms.map((entry, index) => {
       if (!isRecord(entry) || typeof entry.term !== "string")
         throw new Error(`terms[${index}] needs a term.`);
@@ -104,7 +110,11 @@ function parseTable(raw: unknown): Table {
           if (!surfaces.every(isSurface))
             throw new Error(`${where}.surfaces names an unknown surface.`);
           return {
-            pattern: new RegExp(item.pattern, "u"),
+            // Case-insensitive unless the table marks the pattern case-bound.
+            pattern: new RegExp(
+              item.pattern,
+              item.caseSensitive === true ? "u" : "iu",
+            ),
             surfaces: surfaces.filter(isSurface),
             pathsOnly:
               item.pathsOnly === undefined
@@ -263,7 +273,7 @@ function scanSource(file: string, text: string): TextRecord[] {
 const CLAUSE =
   /\b(?:LIFE|CMD|DISC|WIRE|STEP|REC|INPUT|VER|DIAG|GATE|ROLL|V)-\d+[a-z]?\b/u;
 const MARKER =
-  /glossary-quote: (?:(?:LIFE|CMD|DISC|WIRE|STEP|REC|INPUT|VER|DIAG|GATE|ROLL|V)-\d+[a-z]?|[BF]\d+)\b/u;
+  /glossary-quote: ((?:LIFE|CMD|DISC|WIRE|STEP|REC|INPUT|VER|DIAG|GATE|ROLL|V)-\d+[a-z]?|[BF]\d+)\b/u;
 
 // Wire names and code inside prose: backtick spans, UPPER_SNAKE cause codes,
 // and dotted identities such as <cli>.dispatch are removed before matching.
@@ -290,6 +300,36 @@ function inScope(file: string, patterns: readonly string[]): boolean {
   return patterns.some((pattern) => new Bun.Glob(pattern).match(file));
 }
 
+// Removes every allowed form, ignoring case, keeping offsets.
+function stripAllowed(text: string, allowed: readonly string[]): string {
+  let out = text;
+  for (const form of allowed) {
+    const rx = new RegExp(form.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&"), "giu");
+    out = out.replace(rx, (m) => " ".repeat(m.length));
+  }
+  return out;
+}
+
+// A glossary-quote marker excuses a line only when its id is a real clause
+// or decision id listed in the table (quoteIds).
+function marked(table: Table, text: string): boolean {
+  const id = MARKER.exec(text)?.[1];
+  return id !== undefined && table.quoteIds.includes(id);
+}
+
+function quoted(table: Table, text: string, at: number): boolean {
+  return quotedSpans(text).some(([start, end]) => {
+    if (at <= start || at >= end) return false;
+    const inner = text
+      .slice(start + 1, end - 1)
+      .trim()
+      .toLowerCase();
+    return (
+      CLAUSE.test(text) || table.quotes.some((q) => inner === q.toLowerCase())
+    );
+  });
+}
+
 function hitsIn(
   table: Table,
   file: string,
@@ -297,45 +337,44 @@ function hitsIn(
   lines: readonly string[] = [],
 ): Hit[] {
   const hits: Hit[] = [];
+  const ordered = [...records].sort((x, y) => x.line - y.line);
   for (const term of table.terms)
     for (const avoid of term.avoid) {
       if (avoid.pathsOnly.length > 0 && !inScope(file, avoid.pathsOnly))
         continue;
-      let qualifiedInFile = false;
+      let firstIsQualified: boolean | undefined;
       const found: Hit[] = [];
-      for (const record of records) {
+      for (const record of ordered) {
         if (!avoid.surfaces.includes(record.surface)) continue;
         if (
-          MARKER.test(record.text) ||
-          MARKER.test(lines[record.line - 2] ?? "")
+          marked(table, record.text) ||
+          marked(table, lines[record.line - 2] ?? "")
         )
           continue;
-        let text = record.surface.endsWith("identifier")
-          ? record.text
-          : withoutWire(record.text);
-        if (avoid.unlessAllowedForm)
-          for (const form of term.allowed)
-            text = text.split(form).join(" ".repeat(form.length));
-        if (
+        const identifier = record.surface.endsWith("identifier");
+        const candidates = identifier
+          ? [record.text, words(record.text)]
+          : [withoutWire(record.text)];
+        let match: RegExpExecArray | null = null;
+        let source = "";
+        for (const candidate of candidates) {
+          const text =
+            avoid.unlessAllowedForm || avoid.firstUsePerFile
+              ? stripAllowed(candidate, term.allowed)
+              : candidate;
+          match = avoid.pattern.exec(text);
+          if (match !== null) {
+            source = candidate;
+            break;
+          }
+        }
+        const qualified =
           avoid.firstUsePerFile &&
-          term.allowed.some((form) =>
-            record.text.toLowerCase().includes(form.toLowerCase()),
-          )
-        )
-          qualifiedInFile = true;
-        const match =
-          avoid.pattern.exec(text) ??
-          (record.surface.endsWith("identifier")
-            ? avoid.pattern.exec(words(record.text))
-            : null);
+          stripAllowed(record.text, term.allowed) !== record.text;
+        if (firstIsQualified === undefined && (qualified || match !== null))
+          firstIsQualified = qualified && match === null;
         if (match === null) continue;
-        if (
-          CLAUSE.test(record.text) &&
-          quotedSpans(record.text).some(
-            ([start, end]) => match.index > start && match.index < end,
-          )
-        )
-          continue;
+        if (!identifier && quoted(table, source, match.index)) continue;
         found.push({
           file,
           line: record.line,
@@ -345,9 +384,10 @@ function hitsIn(
           message: avoid.message,
         });
       }
-      if (avoid.firstUsePerFile) {
-        if (!qualifiedInFile && found[0] !== undefined) hits.push(found[0]);
-      } else hits.push(...found);
+      // firstUsePerFile: the first use in the file must be qualified; when it
+      // is not, every bare use in the file is reported.
+      if (!avoid.firstUsePerFile || firstIsQualified !== true)
+        hits.push(...found);
     }
   return hits;
 }
@@ -543,4 +583,170 @@ describe("glossary check proof", () => {
     ].join("\n");
     expect(terms("starters/contract3/src/kernel/probe.ts", source)).toEqual([]);
   });
+
+  // Repair round 1 (check-review.md). Each test was red before its fix.
+  const count = (file: string, text: string, term: string) =>
+    terms(file, text).filter((hit) => hit.startsWith(`${term} /`)).length;
+
+  test("R1 F2: the accepted admission file sense is not flagged in identifiers", () => {
+    const file = "src/domains/contract3-check/probe.ts";
+    expect(
+      count(
+        file,
+        "export function readAdmissionFile() {}\nexport function loadAdmission() {}\n",
+        "Admitted",
+      ),
+    ).toBe(0);
+    expect(
+      count(file, "export function admitCommands() {}\n", "Admitted"),
+    ).toBe(1);
+  });
+
+  test("R2 F3: a bare harness before the first test harness is reported, every one", () => {
+    const file = "tests/contract3/probe.test.ts";
+    const bareFirst =
+      "// the harness starts\n// the test harness owns it\n// the harness stops\nexport const a = 1;\n";
+    expect(count(file, bareFirst, "Test harness")).toBe(2);
+    const qualifiedFirst =
+      "// the test harness starts\n// the harness stops\nexport const a = 1;\n";
+    expect(count(file, qualifiedFirst, "Test harness")).toBe(0);
+  });
+
+  test("R3 case: capitalised forms are flagged", () => {
+    expect(
+      count(
+        "starters/contract3/src/kernel/probe.ts",
+        'throw new Error("Dispatched runs are refused.");\n',
+        "Handler entry",
+      ),
+    ).toBe(1);
+    expect(
+      count(
+        "tests/contract3/probe.test.ts",
+        'test("Before dispatch the deadline holds", () => {});\n',
+        "Handler entry",
+      ),
+    ).toBe(1);
+  });
+
+  test("R4 forms: dispatched in documents, dispatching, and plural bindings", () => {
+    expect(
+      count(
+        "starters/contract3/src/addons/state/DESIGN.md",
+        "The run was dispatched.\n",
+        "Handler entry",
+      ),
+    ).toBe(1);
+    expect(
+      count(
+        "starters/contract3/src/kernel/probe.ts",
+        "// checked before dispatching\nexport const a = 1;\n",
+        "Handler entry",
+      ),
+    ).toBe(1);
+    expect(
+      count(
+        "starters/contract3/src/kernel/probe.ts",
+        'throw new Error("Some bindings are missing.");\n',
+        "Run binding",
+      ),
+    ).toBe(1);
+  });
+
+  test("R5 glossary-quote: an id that names no real clause excuses nothing", () => {
+    const text = (id: string) =>
+      `// glossary-quote: ${id}\n// before dispatch the deadline is checked\nexport const a = 1;\n`;
+    expect(
+      count(
+        "starters/contract3/src/kernel/probe.ts",
+        text("LIFE-999"),
+        "Handler entry",
+      ),
+    ).toBe(1);
+    expect(
+      count(
+        "starters/contract3/src/kernel/probe.ts",
+        text("LIFE-6"),
+        "Handler entry",
+      ),
+    ).toBe(0);
+  });
+
+  test("R6 pathsOnly: every path-limited pattern names something that exists", () => {
+    const dead = table.terms.flatMap((term) =>
+      term.avoid.flatMap((avoid) =>
+        avoid.pathsOnly
+          .filter(
+            (pattern) =>
+              [
+                ...new Bun.Glob(pattern).scanSync({
+                  cwd: root,
+                  onlyFiles: true,
+                }),
+              ].length === 0,
+          )
+          .map((pattern) => `${term.term}: ${pattern}`),
+      ),
+    );
+    expect(dead).toEqual([]);
+  });
+
+  test("R7 quotes: a listed contract row title in double quotes is a quote", () => {
+    expect(
+      count(
+        "tests/contract3/probe.test.ts",
+        '// The lifecycle row "Deadline before operation dispatch" is read as before handler entry.\nexport const a = 1;\n',
+        "Handler entry",
+      ),
+    ).toBe(0);
+  });
+
+  test("R8 descriptor and installation: the bare forms are flagged, the accepted forms are not", () => {
+    const file = "starters/contract3/src/addons/diagnostics/probe.ts";
+    expect(
+      count(
+        file,
+        'throw new Error("The descriptor accepted no bytes.");\n',
+        "Descriptor",
+      ),
+    ).toBe(1);
+    expect(
+      count(
+        file,
+        'throw new Error("The file descriptor accepted no bytes.");\n',
+        "Descriptor",
+      ),
+    ).toBe(0);
+    expect(
+      count(
+        file,
+        "// issued by this installation for the run\nexport const a = 1;\n",
+        "State add-on factory and instance",
+      ),
+    ).toBe(1);
+    expect(
+      count(
+        file,
+        'throw new Error("Fixture hook installation failure.");\n',
+        "State add-on factory and instance",
+      ),
+    ).toBe(0);
+  });
+
+  // The frozen contract is present only in the engineering repository; in
+  // the template this test is visibly skipped (a stated limit).
+  const contract = join(root, "skills/agent-cli-design/references/contract-3");
+  test.skipIf(!existsSync(contract))(
+    "R5b every quote id is a clause in the frozen contract or a decision id",
+    () => {
+      const text = [...new Bun.Glob("*.md").scanSync({ cwd: contract })]
+        .map((name) => readFileSync(join(contract, name), "utf8"))
+        .join("\n");
+      const missing = table.quoteIds.filter(
+        (id) =>
+          !/^[BF]\d+$/u.test(id) && !new RegExp(`\\b${id}\\b`, "u").test(text),
+      );
+      expect(missing).toEqual([]);
+    },
+  );
 });
