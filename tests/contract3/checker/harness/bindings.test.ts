@@ -7,6 +7,7 @@
 
 import { afterAll, beforeAll, describe, expect, test } from "bun:test";
 import { BUDGETS } from "../../../../src/domains/contract3-check/budgets.ts";
+import { readFileSync } from "node:fs";
 import { readdir, readFile, stat } from "node:fs/promises";
 import { join } from "node:path";
 import {
@@ -22,6 +23,7 @@ import {
   type Manifest,
   minorsFor,
   perturbedChecker,
+  type ProcessRun,
   processProblems,
   REPO_ROOT,
   rowProblems,
@@ -220,14 +222,22 @@ describe("admitted bindings at both layers", () => {
 });
 
 function timingProblems(expected: Expected, elapsedMs: number): string[] {
+  // Binder bound: run budget + kill grace + 5,000 ms checker slack.
+  const blockedTargetBound =
+    BUDGETS.TARGET_RUN_MAX_MS + BUDGETS.TARGET_KILL_GRACE_MS + 5_000;
   const bounds: Record<string, number> = {
-    // Binder bound: run budget + kill grace + 5,000 ms checker slack.
-    "observer-exclusions":
-      BUDGETS.TARGET_RUN_MAX_MS + BUDGETS.TARGET_KILL_GRACE_MS + 5_000,
+    "observer-exclusions": blockedTargetBound,
     "pattern-isolation": 5_000,
   };
   const rule = expected.harness?.rule as string | undefined;
-  const bound = rule === undefined ? undefined : bounds[rule];
+  // B8: a binding that announces a blocked target run (harness.announce) is
+  // unsignalled in the main loop, so its target runs to TARGET_RUN_MAX_MS.
+  const bound =
+    expected.harness?.announce !== undefined
+      ? blockedTargetBound
+      : rule === undefined
+        ? undefined
+        : bounds[rule];
   return bound !== undefined && elapsedMs > bound
     ? [`checker took ${Math.round(elapsedMs)} ms, bound ${bound} ms`]
     : [];
@@ -577,58 +587,89 @@ describe("harness blocks and their sensitivity controls", () => {
   });
 
   test(
-    "pattern-isolation lifecycle: SIGTERM during the second target run ends the checker with 143 within 500 ms",
+    "pattern-isolation lifecycle: SIGTERM after the announcement ends the checker with 143 within 500 ms and no target survives",
     async () => {
-      const copy = await freshCopy();
-      try {
-        let signalledAt: number | null = null;
-        const run = await runChecker(
-          checkerCommand(
-            "production-3.0.0",
-            admissionPath(copy.root, "pattern-isolation.lifecycle"),
-          ),
-          (child) => {
-            const poll = setInterval(() => {
-              if (secondTargetRunning(child.pid)) {
-                clearInterval(poll);
-                signalledAt = performance.now();
-                child.kill("SIGTERM");
-              }
-            }, 5);
-            void child.exited.then(() => clearInterval(poll));
-          },
-        );
-        const finishedAt = performance.now();
-        receipt.lifecycle = {
-          exitCode: run.exitCode,
-          signal: run.signal,
-          signalled: signalledAt !== null,
-          msAfterSignal:
-            signalledAt === null ? null : Math.round(finishedAt - signalledAt),
-        };
-        // An explicit line for the hosted run: which path the binding took.
-        process.stdout.write(
-          `C3-LIFECYCLE binding=pattern-isolation.lifecycle platform=${process.platform}-${process.arch} path=${signalledAt === null ? "finished-before-signal" : "signal-during-second-run"} exit=${String(run.exitCode)} signal=${String(run.signal)} verdict=${signalledAt === null ? "UNPROVED" : "PROVED"}\n`,
-        );
-        if (signalledAt === null) {
-          // The binding's allowed finished path. The signal-during-second-run
-          // property was NOT observed: report it, never count it as proved.
-          expect(run.exitCode).toBe(4);
-          unprovedProperties.push({
-            id: "pattern-isolation.lifecycle",
-            reason:
-              "UNPROVED: the second target run ended before the poll saw it, so SIGTERM was not delivered during that run; the binding's allowed finished path (exit 4) was taken. Signal forwarding during a target run is proved separately by the SUPPORTING hanging-target test.",
-          });
-        } else {
-          expect(run.exitCode === 143 || run.signal === "SIGTERM").toBe(true);
-          expect(run.stdout).toBe("");
-          expect(finishedAt - signalledAt).toBeLessThan(500 + 250);
-        }
-      } finally {
-        await copy.dispose();
+      const result = await lifecycleRun();
+      const problems = lifecycleProblems(result);
+      receipt.lifecycle = {
+        announced: result.announced,
+        exitCode: result.run.exitCode,
+        signal: result.run.signal,
+        msAfterSignal: result.msAfterSignal,
+        targetPids: result.targetPids.length,
+        survivors: result.survivors.length,
+        problems,
+      };
+      const verdict = !result.announced
+        ? "UNPROVED"
+        : problems.length === 0
+          ? "PROVED"
+          : "FAILED";
+      // An explicit line for the hosted run: which path the binding took.
+      process.stdout.write(
+        `C3-LIFECYCLE binding=${LIFECYCLE_ID} platform=${process.platform}-${process.arch} path=${result.announced ? "signal-after-announcement" : "no-announcement"} exit=${String(result.run.exitCode)} signal=${String(result.run.signal)} msAfterSignal=${String(result.msAfterSignal)} survivors=${result.survivors.length} verdict=${verdict}\n`,
+      );
+      if (!result.announced) {
+        // B8: never signalled, so the property was not observed. Reported,
+        // never counted as passed.
+        unprovedProperties.push({
+          id: LIFECYCLE_ID,
+          reason:
+            "UNPROVED: the second target run's announcement (harness.announce) was never read, so SIGTERM was not sent while that run was in flight.",
+        });
+        return;
       }
+      if (problems.length > 0) {
+        // The main loop's unsignalled match is not enough: the binding failed.
+        const prior = outcomes.get(LIFECYCLE_ID)?.problems ?? [];
+        outcomes.set(LIFECYCLE_ID, {
+          matched: false,
+          problems: [...prior, ...problems.map((item) => `lifecycle: ${item}`)],
+        });
+      }
+      expect(problems).toEqual([]);
     },
     MINUTE,
+  );
+
+  test(
+    "pattern-isolation lifecycle sensitivity: a checker that ignores SIGTERM during a target run, or does not forward it, fails the assertion",
+    async () => {
+      // The binding's two named controls (B8), each in its own perturbed copy.
+      const controls = {
+        "ignore-sigterm-while-target-runs": [
+          "runner.ts",
+          '  process.on("SIGTERM", () => stop(143));\n',
+          '  process.on("SIGTERM", () => {\n    if (activeChild === null) stop(143);\n  });\n',
+        ],
+        "no-forwarding-to-target": [
+          "runner.ts",
+          '    if (child === null) process.exit(exitCode);\n    child.kill("SIGTERM");\n',
+          "    process.exit(exitCode);\n",
+        ],
+      } as const;
+      const measured: Record<string, unknown> = {};
+      for (const [name, [file, find, replace]] of Object.entries(controls)) {
+        const perturbed = await perturbedChecker(file, find, replace);
+        try {
+          const result = await lifecycleRun(perturbed.cli);
+          const problems = lifecycleProblems(result);
+          measured[name] = {
+            announced: result.announced,
+            exitCode: result.run.exitCode,
+            msAfterSignal: result.msAfterSignal,
+            survivors: result.survivors.length,
+            problems,
+          };
+          expect(result.announced).toBe(true);
+          expect(problems).not.toEqual([]);
+        } finally {
+          await perturbed.dispose();
+        }
+      }
+      receipt.lifecycleSensitivity = measured;
+    },
+    2 * MINUTE,
   );
 
   test(
@@ -670,7 +711,7 @@ describe("SUPPORTING (not a binding): signal forwarding while a target runs", ()
     async () => {
       const copy = await freshCopy();
       try {
-        let signalledAt = 0;
+        const sent = { at: 0, pids: [] as number[] };
         const run = await runChecker(
           checkerCommand(
             "production-3.0.0",
@@ -678,25 +719,25 @@ describe("SUPPORTING (not a binding): signal forwarding while a target runs", ()
           ),
           (child) => {
             setTimeout(() => {
-              signalledAt = performance.now();
+              sent.pids = targetProcesses(child.pid);
+              sent.at = performance.now();
               child.kill("SIGTERM");
             }, 1_000);
           },
         );
-        const elapsed = performance.now() - signalledAt;
-        const survivors = Bun.spawnSync(["ps", "-A", "-o", "command="])
-          .stdout.toString()
-          .split("\n")
-          .filter((line) => line.includes(copy.root));
+        const elapsed = performance.now() - sent.at;
+        const survivors = await survivingProcesses(sent.pids);
         receipt.signalForwarding = {
           exitCode: run.exitCode,
           signal: run.signal,
           msAfterSignal: Math.round(elapsed),
+          targetPids: sent.pids.length,
           survivors: survivors.length,
         };
         expect(run.exitCode === 143 || run.signal === "SIGTERM").toBe(true);
         expect(run.stdout).toBe("");
         expect(elapsed).toBeLessThan(500 + 250);
+        expect(sent.pids).not.toEqual([]);
         expect(survivors).toEqual([]);
       } finally {
         await copy.dispose();
@@ -706,20 +747,151 @@ describe("SUPPORTING (not a binding): signal forwarding while a target runs", ()
   );
 });
 
-function secondTargetRunning(checkerPid: number): boolean {
-  const table = Bun.spawnSync([
-    "ps",
-    "-A",
-    "-o",
-    "pid=,ppid=,command=",
-  ]).stdout.toString();
-  return table.split("\n").some((line) => {
-    const [, ppid, ...command] = line.trim().split(/\s+/);
-    return (
-      Number(ppid) === checkerPid &&
-      command.join(" ").includes("target.mjs find")
+const LIFECYCLE_ID = "pattern-isolation.lifecycle";
+
+interface LifecycleRun {
+  /** The harness read harness.announce before the checker ended. */
+  announced: boolean;
+  run: ProcessRun;
+  msAfterSignal: number | null;
+  /** Target processes under the checker when the announcement was read. */
+  targetPids: number[];
+  survivors: number[];
+}
+
+/**
+ * B8: run the lifecycle binding, poll its harness.announce file, and send
+ * SIGTERM only after reading the announced line. A run whose announcement
+ * never appears is unsignalled and reported as not announced.
+ */
+async function lifecycleRun(cli?: string): Promise<LifecycleRun> {
+  const copy = await freshCopy();
+  try {
+    const expected = await loadExpected(copy.root, LIFECYCLE_ID);
+    const announce = expected.harness?.announce;
+    if (
+      typeof announce !== "object" ||
+      announce === null ||
+      !("file" in announce) ||
+      typeof announce.file !== "string" ||
+      !("line" in announce) ||
+      typeof announce.line !== "string"
+    )
+      throw new Error(`${LIFECYCLE_ID} has no harness.announce { file, line }`);
+    const statePath = join(
+      copy.root,
+      "bindings/cases",
+      LIFECYCLE_ID,
+      announce.file,
     );
-  });
+    const line = announce.line;
+    const sent = { at: null as number | null, pids: [] as number[] };
+    const run = await runChecker(
+      checkerCommand(
+        expected.reader,
+        admissionPath(copy.root, LIFECYCLE_ID),
+        cli,
+      ),
+      (child) => {
+        const poll = setInterval(() => {
+          if (!announcedIn(statePath, line)) return;
+          clearInterval(poll);
+          sent.pids = targetProcesses(child.pid);
+          sent.at = performance.now();
+          child.kill("SIGTERM");
+        }, 5);
+        void child.exited.then(() => clearInterval(poll));
+      },
+    );
+    const finishedAt = performance.now();
+    const survivors = await survivingProcesses(sent.pids);
+    // Never leave a perturbed checker's orphaned target running.
+    for (const pid of survivors) process.kill(pid, "SIGKILL");
+    return {
+      announced: sent.at !== null,
+      run,
+      msAfterSignal: sent.at === null ? null : Math.round(finishedAt - sent.at),
+      targetPids: sent.pids,
+      survivors,
+    };
+  } finally {
+    await copy.dispose();
+  }
+}
+
+/** The binding's assertion on an announced run; empty means it holds. */
+function lifecycleProblems(result: LifecycleRun): string[] {
+  if (!result.announced) return [];
+  const { run } = result;
+  const problems: string[] = [];
+  if (!(run.exitCode === 143 || run.signal === "SIGTERM"))
+    problems.push(
+      `exit ${String(run.exitCode)} signal ${String(run.signal)}, expected 143`,
+    );
+  if (run.stdout !== "")
+    problems.push(`stdout ${run.stdout.length} chars, expected empty`);
+  if (result.msAfterSignal === null || result.msAfterSignal > 500)
+    problems.push(
+      `ended ${String(result.msAfterSignal)} ms after the signal, bound 500 ms`,
+    );
+  if (result.targetPids.length === 0)
+    problems.push("no target process found when the announcement was read");
+  if (result.survivors.length > 0)
+    problems.push(`${result.survivors.length} target process(es) survived`);
+  return problems;
+}
+
+function announcedIn(path: string, line: string): boolean {
+  try {
+    return readFileSync(path, "utf8").split("\n").includes(line);
+  } catch {
+    return false;
+  }
+}
+
+/** Specimen target processes descended from the checker, by process id. */
+function targetProcesses(checkerPid: number): number[] {
+  const rows = Bun.spawnSync(["ps", "-A", "-o", "pid=,ppid=,command="])
+    .stdout.toString()
+    .split("\n")
+    .map((row) => row.trim().split(/\s+/))
+    .filter((cells) => cells.length >= 3)
+    .map(([pid, ppid, ...command]) => ({
+      pid: Number(pid),
+      ppid: Number(ppid),
+      command: command.join(" "),
+    }));
+  const descendants = new Set([checkerPid]);
+  for (let grew = true; grew; ) {
+    grew = false;
+    for (const row of rows)
+      if (descendants.has(row.ppid) && !descendants.has(row.pid)) {
+        descendants.add(row.pid);
+        grew = true;
+      }
+  }
+  return rows
+    .filter(
+      (row) => descendants.has(row.pid) && row.command.includes("target.mjs"),
+    )
+    .map((row) => row.pid);
+}
+
+/** Processes still alive after a short reaping grace (an exited child may linger until reaped). */
+async function survivingProcesses(pids: number[]): Promise<number[]> {
+  const alive = () =>
+    pids.filter((pid) => {
+      try {
+        process.kill(pid, 0);
+        return true;
+      } catch {
+        return false;
+      }
+    });
+  const deadline = performance.now() + 250;
+  while (alive().length > 0 && performance.now() < deadline)
+    await Bun.sleep(10);
+  return alive();
 }
 
 async function listing(roots: string[]): Promise<string[]> {
