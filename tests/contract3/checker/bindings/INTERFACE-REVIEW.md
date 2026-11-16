@@ -328,3 +328,16 @@ they differ.
   (`harness.additionalCounters`).
 - **G16, tightened (B5).** Under option (i), a refusing binding's `expect`
   carries only the fields an admitted rule consumes.
+
+## Addendum 3: repair round 2 (B6 to B8)
+
+- **B6.** The four `builtins` negatives also drop the removed identity from
+  `availablePaths`, so only DISC-5 is broken (WIRE-6a absence forbids nothing).
+- **B7.** `effects-sets.negative.overlap.remaining-uncertain` overlaps
+  `index.write`, not the attempted effect, so attempted-effect membership is
+  not broken too.
+- **B8.** In `pattern-isolation.lifecycle` the second target run writes
+  `input-run-started` to `lifecycle.state` and then blocks. The test harness
+  signals only after reading it; without the announcement the property is
+  UNPROVED and the binding is not counted as passed. Its process block is the
+  unsignalled run: the target times out and its rows are `timed_out`.
