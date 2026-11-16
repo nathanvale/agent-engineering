@@ -8,15 +8,15 @@ of 20), [checker-expectations.json](../../checker-expectations.json),
 [checker-report.schema.json](../../checker-report.schema.json),
 [CHECKER_EXPECTATIONS.md](../../CHECKER_EXPECTATIONS.md),
 [expectations.json](../../expectations.json),
-[retained-2.json](../../retained-2.json) and Nathan's binding decisions of 16
+[retained-2.json](../../retained-2.json) and Nathan's accepted decisions of 16
 November 2026 (B1, B2, B3, F01). No checker code, kernel or `src/` file was
 read. Status: review only; every observation stays `not_run`.
 
 ## Verdict
 
-The proposed admission document and report can express every rule, format case,
+The proposed admission file and report can express every rule, format case,
 no-replay case and additional control, with three stops and a set of binder
-interpretations. Binding proceeds against the interface as written plus the
+interpretations. The binder proceeds against the interface as written plus the
 interpretations below. Each interpretation is a proposal to the implementer; a
 disagreement changes the named cases, not the method.
 
@@ -28,7 +28,7 @@ disagreement changes the named cases, not the method.
 | Negative stopped                       | `fallback-version` (contract and oracle disagree, G14), `diagnostics-absent` (G13), `minor-meaning` (review only, no detectable negative)                                            |
 
 Counted by rule: `fallback-version` sits in two rows, so the rows sum to 94. The exact case totals
-live in `MANIFEST.json` once binding completes.
+live in `MANIFEST.json` once every case is bound.
 
 ## Gaps and ambiguities
 
@@ -43,9 +43,9 @@ not its entry point. Blocks the row half of all 93 negatives and the
 `broken-supported` format case. Binder action: every expected file carries the
 process expectation (exit, cause, `data: null`, empty checker stderr, message
 substrings) and a separate component expectation (the full row set). The
-implementer must expose one pure judgement that takes the admission, the
+implementer must expose one pure judgement that takes the parsed admission file, the
 observations and the supported-minor table and returns rows in the
-`checker-report.schema.json` item shape, `failed` rows included. The harness
+`checker-report.schema.json` item shape, `failed` rows included. The test harness
 asserts the component rows against that entry point and the process fields
 against the real CLI. Neither substitutes for the other.
 
@@ -58,25 +58,25 @@ Binder action, bound in `BINDINGS.md`:
    blocks every row on that case except `json-framing`, the version rules and
    `machine-stderr` (VER-10: no other key of a refused version is interpreted).
 3. A cross-observation row whose discovery or command-discovery case is not
-   admitted, or is itself refused, is `not_run`.
-4. Otherwise rules evaluate independently. A negative admits only rules whose
+   listed, or is itself refused, is `not_run`.
+4. Otherwise rules evaluate independently. A negative lists only rules whose
    input does not include the mutated location; each excluded rule is listed
    in that case's expected file with its reason. The binder never predicts a
    collateral `failed` row.
 
 **G3. Captured fields.** `Captured.stdout` and `stderr` read as content, while
-section 3 calls them files. Bound as file paths relative to the admission
+section 3 calls them files. Bound as file paths relative to the admission file's
 directory.
 
-**G4. Default working directory and where admissions run.** `cwd` is optional
-and its default is unstated; section 12 says the harness writes admissions to a
+**G4. Default working directory and where admission files run.** `cwd` is optional
+and its default is unstated; section 12 says the test harness writes admission files to a
 fresh temporary directory, which breaks relative specimen paths and leaves the
 no-replay counter path machine-specific. Binder action: every run case states
-`cwd: "."`; the harness copies `tests/contract3/checker/bindings/` and
+`cwd: "."`; the test harness copies `tests/contract3/checker/bindings/` and
 `tests/contract3/checker/specimens/` together into one fresh temporary
 directory, preserving their relative layout, verifies every file against
-`MANIFEST.json`, and runs the admission there. Counter and state files are
-relative paths inside that copy, so admissions stay byte-identical.
+`MANIFEST.json`, and runs the admission file there. Counter and state files are
+relative paths inside that copy, so admission files stay byte-identical.
 
 **G5. Stop after refusal versus later captured cases.** Rule 9 stops further
 runs; it does not say whether later captured cases are judged. Binder action:
@@ -96,15 +96,15 @@ command-discovery `PublicStation` guidance and `repairAction`; `binding-keys`
 needs those templates to know the exact required names. Section 9 lists all
 three as "each envelope alone". Binder action: `template-token` and
 `binding-placement` rows attach to the command-discovery case; `binding-keys`
-attaches to the command case with its command-discovery case admitted earlier.
+attaches to the command case with its command-discovery case listed earlier.
 
 **G8. The process input rules cannot be told apart by argv.** `input-case`,
 `input-required`, `input-option`, `input-presence`, `input-repeat`,
 `input-string`, `input-integer`, `input-constraints`, `input-hidden`,
 `input-dash` and `input-deadline` all reduce to one three-way agreement: the
 checker's reading of argv under the projected schema, the observed process
-result and `expect`. Binder action: each argv case admits exactly one input
-rule, which owns the finding; no negative admits a second input rule.
+result and `expect`. Binder action: each argv case lists exactly one input
+rule, which owns the finding; no negative lists a second input rule.
 
 **G9. No channel for parsed values.** `input-repeat` (order preserved) and
 parts of `input-integer` (precision loss) need what the target parsed, which no
@@ -114,14 +114,14 @@ conditional on the probe applying to these P rules as well as group F.
 Alternative for the implementer: an `expect.data` field compared at
 `/result/data`.
 
-**G10. `token-argv` has no process link.** No admission field links a rendered
+**G10. `token-argv` has no process link.** No admission file field links a rendered
 step to a later run, and the checker cannot observe a shell. Binder action:
 judged on a real run as element-for-element agreement between the emitted
 `args` and the declared template after substitution, with element count
-preserved. The negative splits one bound value into two elements and does not
-admit `guidance-template`.
+preserved. The negative splits one run binding value into two elements and does not
+list `guidance-template`.
 
-**G11. `station-required` refuses a correct target.** An incomplete admission
+**G11. `station-required` refuses a correct target.** An incomplete admission file
 fails the row and so refuses with `SCHEMA_INVALID_INPUT`, although the target
 is not broken. Accepted for now; the binder binds it that way and flags the
 cause as a candidate for `DOMAIN_PRECONDITION_UNMET` review.
@@ -129,12 +129,12 @@ cause as a candidate for `DOMAIN_PRECONDITION_UNMET` review.
 **G12. Checker-defect negatives.** The negatives of `open-cause` ("checker
 rejects it"), `no-replay`, `observer-exclusions`, `raw-retention` and
 `pattern-isolation` describe a broken checker, not a broken target. Binder
-action: bind the valid target case and the expected harness result; the
-negative is a disposable checker perturbation run by the harness.
+action: bind the valid target case and the expected test harness result; the
+negative is a disposable checker perturbation run by the test harness.
 
 **G13. `diagnostics-absent` cannot be judged.** Nothing in the wire, discovery
-or admission tells the checker that the target lacks the diagnostics add-on.
-Stopped. Needs an admitted independent fact, for example
+or admission file tells the checker that the target lacks the diagnostics add-on.
+Stopped. Needs a listed independent fact, for example
 `expect.diagnostics: "absent" | "present"`.
 
 **G14. The fallback is not identifiable on the wire.** `fallback-version`'s
@@ -156,14 +156,14 @@ nonempty stderr or spawn failure makes it `not_run` with a reason. Never
 `passed`.
 
 **G16. Required fields for P rules.** Section 3 makes `expect` optional. Binder
-action: every case admitting `exit-expected` carries `expect.exitCode`, every
-case admitting `cause-expected` carries `expect.causeCode`, and every F rule
+action: every case listing `exit-expected` carries `expect.exitCode`, every
+case listing `cause-expected` carries `expect.causeCode`, and every F rule
 case carries a probe. The checker's behaviour on a missing value stays open;
-no binding exercises it.
+no bound case exercises it.
 
 **G17. `expect.commandIdentity` has no owning rule.** Binder action: used only
 on `dispatch`, `command-selection`, `input-dash` (identity before operand
-parse) and `input-deadline` (B1), where that rule owns a mismatch.
+parse) and `input-deadline` (accepted decision B1), where that rule owns a mismatch.
 
 **G18. Human-mode criteria.** `Expected` has no stream expectations. Binder
 action: a human-mode row judges real exit against `expect.exitCode`, nonempty
@@ -183,23 +183,23 @@ binder writes nothing there.
 
 **G21. Repository gates.** Fallow reports any loose specimen program as an
 unused file outside every boundary zone. Binder action: each specimen program
-starts with reasoned file-level `fallow-ignore-file` comments; JSON bindings
+starts with reasoned file-level `fallow-ignore-file` comments; JSON bound-case files
 are kept Biome-formatted; target byte files use the `.stdout` and `.stderr`
 extensions, which Biome ignores, so their bytes stay exact.
 
 ## Rulings
 
-### D2: probe program, with an independent harness readback
+### D2: probe program, with an independent test harness readback
 
 Ruling: adopt the probe.
 
-- Group F has frozen finding codes at the process layer. If the harness judged
+- Group F has frozen finding codes at the process layer. If the test harness judged
   them, the checker would only ever report `not_run`, and the
   `checker-rule-disabled` control could never go RED for these five rules.
-- The probe is admitted by the test author, runs once after its case under the
+- The probe is listed by the test author, runs once after its case under the
   same no-shell, empty-environment, null-stdin and budget rules, and is counted
   in the fixed execution total, so it adds no replay path.
-- The harness still reads the same state file itself after the checker exits
+- The test harness still reads the same state file itself after the checker exits
   and compares it with the binder's expected bytes. The probe is never the only
   witness of a target effect.
 - G15 fixes how a probe result maps to rows.
@@ -210,9 +210,9 @@ Ruling: accept the proposal.
 
 1. The supported-minor table is a constructor argument of the domain. The
    production entry passes exactly `["3.0.0"]`, and no argv token, environment
-   variable or admission key can change it.
+   variable or admission file key can change it.
 2. The reader specimen at `specimens/reader-3.1/` accepts the same invocation
-   and admission as the application command and prints the same envelope. It is
+   and admission file as the application command and prints the same envelope. It is
    never registered in `src/commands.ts`.
 3. A production-reader case binds the same `3.1.0` bytes as
    `VERSION_UNSUPPORTED_MINOR`, so the fixture table cannot leak into production
@@ -221,13 +221,13 @@ Ruling: accept the proposal.
    needs T1's agreement before use. Every case that depends on it is marked
    `provisional: fixture-minor-table`.
 
-Rejected alternative: an admission key selecting supported minors. It would let
+Rejected alternative: an admission file key selecting supported minors. It would let
 any caller make the released checker accept a minor that VER-15 confines to test
 fixtures.
 
-### D1: binding independent of the envelope major
+### D1: bound cases independent of the envelope major
 
-D1 stays with Nathan. Every binding asserts only values with one meaning in
+D1 stays with Nathan. Every bound case asserts only values with one meaning in
 both majors: real exit, `outcome`, `effectClass`, `transactionState`,
 `failureClass`, `causeCode`, `data` (`null` or the row report), empty checker
 stderr, and message substrings. These assertions are deliberately not bound,
@@ -243,10 +243,10 @@ because they differ between option (a), a 2.0.0 envelope, and option (b), a
 | Strict key set of envelope and result | the 2.0 tables                      | WIRE-5 and WIRE-7                  |
 | Self-check by a 2.0 or 3.0 checker    | the kept 2.0 checker judges it      | the 3.0 checker judges it          |
 
-The harness must pick these assertions from D1's outcome; no binding hardcodes
-either.
+The test harness must pick these assertions once D1 is decided; no bound case
+hardcodes either.
 
-## Binding decisions applied
+## Accepted decisions applied
 
 - B1: `--deadline-ms` on a command without deadline support is refused with
   that command's identity; a malformed deadline value is refused as
@@ -257,25 +257,25 @@ either.
 - B3: no specimen command declares approval, so `DOMAIN_AUTHORITY_REQUIRED` is
   not exercised. Recorded as not applicable rather than bound.
 - F01: a station template whose substituted `args` cannot satisfy the target
-  schema for any binding value is a declaration fault. Bound as a
+  schema for any run binding value is a declaration fault. Bound as a
   `step-arguments` variation on the command-discovery case.
 
 ## Budgets
 
 Section 10 leaves thirteen numbers open. They are bound with reasons in
 `BINDINGS.md` and as data in `BUDGETS.json`. One comes from frozen text
-(`TARGET_JSON_MAX_DEPTH` 64, LIFE-7 step 2, counted per B2) and one from the
+(`TARGET_JSON_MAX_DEPTH` 64, LIFE-7 step 2, counted per accepted decision B2) and one from the
 frozen 500 ms stopping bound (`TARGET_KILL_GRACE_MS`, LIFE-3 and LIFE-11); the
 others are stated engineering numbers.
 
-## Addendum: found while binding
+## Addendum: found while writing the bound cases
 
 Added after the review commit; the review above is otherwise unchanged except
 for table formatting required by `bun run format:check`.
 
 **G22. No rule owns a budget refusal.** Section 4 rule 7 and section 10 refuse
-an over-budget stream or admission with `SCHEMA_INVALID_INPUT`, but no rule id
-carries the component row. The four `budget.*` bindings bind the process
+an over-budget stream or admission file with `SCHEMA_INVALID_INPUT`, but no rule id
+carries the component row. The four `budget.*` bound cases bind the process
 result only and mark `rowsUnbound`.
 
 **G23. Pattern size budgets.** Whether an oversize pattern or subject is
@@ -285,8 +285,8 @@ fails; the subject-size case widens the declared `maxLength` so a length
 refusal cannot pre-empt the budget.
 
 **G24. Execution count is not observable in general.** Only a counter shows
-how many times a target ran. Binder action: the no-replay bindings carry a
-counter; every other binding lists its expected executions in
+how many times a target ran. Binder action: the no-replay bound cases carry a
+counter; every other bound case lists its expected executions in
 `targetExecutions` as an unobserved expectation.
 
 **G17, refined.** `expect.commandIdentity` is carried on every run case, but
@@ -297,39 +297,39 @@ negatives in all).
 **Binder readings with a choice behind them.** These are bound and flagged in
 their cases' notes; a different reading changes only those cases.
 
-- An invalid caller value destined to become a binding is an argv value fault:
+- An invalid future binding (a caller value destined to become a run binding) is an argv value fault:
   `USAGE_INVALID_INVOCATION` (INPUT-2; CMD-9 step 3 allows usage or schema).
-- An invalid generated binding found at creation, before any dependent effect,
+- An invalid generated run binding found at creation, before any dependent effect,
   is `INTERNAL_RESULT_UNCHANGED`.
 
 ## Addendum 2: corrections after the checker review (repair round 1)
 
 Applied through the generator on 16 November 2026 after the contract review
-of the checker at `63d711a` (its B1 to B5) and the coordinator's decision on
+of the checker at `63d711a` (its review items B1 to B5, not the accepted decisions of the same numbers) and the foundation coordinator's decision on
 S1 (option (i)). The text above is unchanged; these entries supersede it where
 they differ.
 
-- **G2, rule 1 narrowed (B2).** A framing failure blocks rows that read
+- **G2, rule 1 narrowed (review item B2).** A framing failure blocks rows that read
   envelope content. Rules that judge whether an envelope is produced
   (`dispatch`, the navigation rules in machine mode, `machine-stderr`) are
   still judged, and the framing failure is their evidence (DISC-1, LIFE-1).
   `dispatch.negative.machine-help` was already bound this way.
-- **G23, extended (B3).** `--code` `maxLength` is widened to 64 in every
+- **G23, extended (review item B3).** `--code` `maxLength` is widened to 64 in every
   pattern-budget context (`pattern-budget.valid` and `.negative`, both
-  pattern-budget no-replay bindings, `pattern-isolation.elapsed` and
-  `.lifecycle`). No binding now assumes the checker checks length before
+  pattern-budget no-replay bound cases, `pattern-isolation.elapsed` and
+  `.lifecycle`). No bound case now assumes the checker checks length before
   matching the pattern, or the reverse.
-- **Budget reason (B1).** On Bun 1.4.4, JavaScriptCore ends `(a+)+b` on 40
+- **Budget reason (review item B1).** On Bun 1.4.4, JavaScriptCore ends `(a+)+b` on 40
   characters after about 0.4 to 0.6 s with a false non-match. The bound
   refusal is unchanged and right by INPUT-2 and V-44. The pattern-isolation
   sensitivity control fails either by the time bound or by a wrong exit or
   cause.
-- **G24 (B4).** The pattern-budget no-replay pair also counts its input run
+- **G24 (review item B4).** The pattern-budget no-replay pair also counts its input run
   (`harness.additionalCounters`).
-- **G16, tightened (B5).** Under option (i), a refusing binding's `expect`
-  carries only the fields an admitted rule consumes.
+- **G16, tightened (review item B5).** Under option (i), a refusing bound case's `expect`
+  carries only the fields a listed rule consumes.
 
-## Addendum 3: repair round 2 (B6 to B8)
+## Addendum 3: repair round 2 (review items B6 to B8)
 
 - **B6.** The four `builtins` negatives also drop the removed identity from
   `availablePaths`, so only DISC-5 is broken (WIRE-6a absence forbids nothing).
@@ -339,5 +339,5 @@ they differ.
 - **B8.** In `pattern-isolation.lifecycle` the second target run writes
   `input-run-started` to `lifecycle.state` and then blocks. The test harness
   signals only after reading it; without the announcement the property is
-  UNPROVED and the binding is not counted as passed. Its process block is the
+  UNPROVED and the bound case is not counted as passed. Its process block is the
   unsignalled run: the target times out and its rows are `timed_out`.
