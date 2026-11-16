@@ -37,7 +37,7 @@ export async function runCheck(
   if (load.kind === "invalid")
     return admissionResult(
       "invalid-input",
-      `The admission is invalid: ${load.problems.slice(0, 8).join(" ")} No target ran.`,
+      `The admission file is invalid: ${load.problems.slice(0, 8).join(" ")} No target ran.`,
     );
   const observations = await observeAdmission(load.admission, minors);
   const judgement = await judgeObservations(

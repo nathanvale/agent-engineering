@@ -1,5 +1,5 @@
 // SUPPORTING TESTS (T6 Phase 2a). The provisional D1 adapter maps the
-// major-agnostic checker outcome onto the host CLI's 2.0 result shape.
+// major-agnostic checker result onto the host CLI's 2.0 result shape.
 // Expected tuples are restated from INTERFACE.md section 6 (independent of
 // the adapter's table). Not bound cases; no V row is proved here.
 

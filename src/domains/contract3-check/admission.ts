@@ -9,7 +9,7 @@ import { NOT_COMMAND_JUDGED, ruleSpec } from "./rules.ts";
 import { canonical } from "./templates.ts";
 import type {
   Admission,
-  AdmittedCase,
+  ListedCase,
   CapturedTarget,
   Expected,
   Json,
@@ -60,7 +60,7 @@ class Problems {
   strict(object: JsonObject, allowed: readonly string[], path: string): void {
     for (const key of Object.keys(object))
       if (!allowed.includes(key))
-        this.add(`${path}/${key} is not an admission key.`);
+        this.add(`${path}/${key} is not an admission file key.`);
   }
 }
 
@@ -268,9 +268,9 @@ function readCase(
   value: Json | undefined,
   index: number,
   base: string,
-  earlier: AdmittedCase[],
+  earlier: ListedCase[],
   problems: Problems,
-): AdmittedCase | null {
+): ListedCase | null {
   const path = `/cases/${index}`;
   if (!isObject(value)) {
     problems.add(`${path} must be an object.`);
@@ -305,7 +305,7 @@ function readCase(
   const probe = readProbe(value.probe, base, `${path}/probe`, problems);
   if (probe !== undefined && target?.kind !== "run")
     problems.add(`${path}/probe needs a run target.`);
-  const admitted: AdmittedCase = {
+  const listed: ListedCase = {
     caseId: typeof caseId === "string" ? caseId : "",
     rules,
     role: role ?? "command",
@@ -319,23 +319,23 @@ function readCase(
     normalize: readNormalize(value.normalize, `${path}/normalize`, problems),
   };
   const expected = readExpect(value.expect, `${path}/expect`, problems);
-  if (expected !== undefined) admitted.expect = expected;
-  if (typeof value.selector === "string") admitted.selector = value.selector;
-  if (probe !== undefined) admitted.probe = probe;
+  if (expected !== undefined) listed.expect = expected;
+  if (typeof value.selector === "string") listed.selector = value.selector;
+  if (probe !== undefined) listed.probe = probe;
   if (value.sameAs !== undefined) {
     const twin = earlier.find((item) => item.caseId === value.sameAs);
     if (
       twin === undefined ||
-      twin.role !== admitted.role ||
-      twin.mode !== admitted.mode ||
-      canonical(twin.target) !== canonical(admitted.target)
+      twin.role !== listed.role ||
+      twin.mode !== listed.mode ||
+      canonical(twin.target) !== canonical(listed.target)
     )
       problems.add(
         `${path}/sameAs must name an earlier case with the same role, mode and target.`,
       );
-    else admitted.sameAs = twin.caseId;
+    else listed.sameAs = twin.caseId;
   }
-  return target === null ? null : admitted;
+  return target === null ? null : listed;
 }
 
 function parseAdmission(value: unknown, base: string): AdmissionLoad {
@@ -343,7 +343,7 @@ function parseAdmission(value: unknown, base: string): AdmissionLoad {
   if (!isObject(value))
     return {
       kind: "invalid",
-      problems: ["The admission root must be a JSON object."],
+      problems: ["The admission file's root must be a JSON object."],
     };
   const root = value;
   problems.strict(root, ["admissionVersion", "cli", "cases"], "");
@@ -361,14 +361,14 @@ function parseAdmission(value: unknown, base: string): AdmissionLoad {
     problems.add(`/cases must hold 1 to ${BUDGETS.ADMISSION_MAX_CASES} cases.`);
     return { kind: "invalid", problems: problems.list };
   }
-  const admitted: AdmittedCase[] = [];
+  const listedCases: ListedCase[] = [];
   cases.forEach((item, index) => {
-    const parsed = readCase(item, index, base, admitted, problems);
-    if (parsed !== null) admitted.push(parsed);
+    const parsed = readCase(item, index, base, listedCases, problems);
+    if (parsed !== null) listedCases.push(parsed);
   });
   if (problems.list.length > 0 || cli === null)
     return { kind: "invalid", problems: problems.list };
-  return { kind: "ok", admission: { cli, cases: admitted } };
+  return { kind: "ok", admission: { cli, cases: listedCases } };
 }
 
 async function exists(
@@ -416,7 +416,7 @@ export async function loadAdmission(path: string): Promise<AdmissionLoad> {
       return {
         kind: "invalid",
         problems: [
-          `The admission exceeds ${BUDGETS.ADMISSION_MAX_BYTES} bytes.`,
+          `The admission file exceeds ${BUDGETS.ADMISSION_MAX_BYTES} bytes.`,
         ],
       };
     text = await file.text();
@@ -430,7 +430,10 @@ export async function loadAdmission(path: string): Promise<AdmissionLoad> {
   try {
     value = JSON.parse(text);
   } catch {
-    return { kind: "invalid", problems: ["The admission is not valid JSON."] };
+    return {
+      kind: "invalid",
+      problems: ["The admission file is not valid JSON."],
+    };
   }
   const parsed = parseAdmission(value, dirname(absolute));
   if (parsed.kind !== "ok") return parsed;

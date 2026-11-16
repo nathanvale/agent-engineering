@@ -3,7 +3,7 @@
 
 import { ruleSpec } from "./rules.ts";
 import type { Collector } from "./collector.ts";
-import type { AdmittedCase, Finding, Observation } from "./types.ts";
+import type { ListedCase, Finding, Observation } from "./types.ts";
 
 export type RowStatus = "passed" | "failed" | "not_run" | "timed_out";
 
@@ -174,7 +174,7 @@ export class Book {
     };
   }
 
-  rows(cases: readonly AdmittedCase[]): ReportRow[] {
+  rows(cases: readonly ListedCase[]): ReportRow[] {
     return cases.flatMap((item) =>
       item.rules.map((ruleId) => this.row(item.caseId, ruleId)),
     );

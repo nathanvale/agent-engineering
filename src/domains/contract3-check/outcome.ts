@@ -1,4 +1,4 @@
-// The checker's own outcome (INTERFACE.md section 6), independent of which
+// The checker's own result (INTERFACE.md section 6), independent of which
 // contract major wraps it. Messages are bounded and redacted (VER-11).
 
 import type { ReportRow } from "./book.ts";
