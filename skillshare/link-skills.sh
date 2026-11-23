@@ -3,7 +3,7 @@
 # to the dedicated folder Skillshare syncs. It owns only a live link whose text is exactly
 # <dedicated folder>/<its own name>. Safe only while no other installer writes these folders.
 set -euo pipefail
-R="$HOME/.local/share/agent-engineering"
+R="${XDG_DATA_HOME:-$HOME/.local/share}/my-agent-dojo/agent-engineering"
 case "${1:-}" in
 link)
   todo=""
