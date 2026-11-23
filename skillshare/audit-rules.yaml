@@ -1,0 +1,9 @@
+rules:
+  - id: prompt-injection-1
+    enabled: false
+  - id: local-prompt-injection-1
+    severity: CRITICAL
+    pattern: prompt-injection
+    message: "SYSTEM: prompt override detected (local copy of prompt-injection-1)"
+    regex: '(?im)^\s*(SYSTEM|OVERRIDE|IGNORE|ADMIN|ROOT):'
+    exclude: '^\s*root:\s*(root|main|track|document\.querySelector\("\.carousel"\)),\s*$'

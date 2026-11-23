@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "modern-web-guidance": {
+      "source": "github.com/GoogleChrome/modern-web-guidance/skills/modern-web-guidance",
+      "commit": "2b4aa13a72dd47cd135b06ce5abfccd92e19b24f",
+      "tree_hash": "94cd548883b7cd735ee0d2bdd723c68a212a0933"
+    }
+  }
+}
