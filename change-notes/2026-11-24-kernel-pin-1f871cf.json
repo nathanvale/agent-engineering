@@ -2,6 +2,6 @@
   "kind": "none",
   "breaking": false,
   "affects": [],
-  "summary": "Moved the kernel Pin from 426e5db to 1f871cf, where the kernel keeps its diagnostics log under my-agent-dojo; this command-line tool installs no add-ons, so its behaviour did not change.",
+  "summary": "Moved the kernel Pin to 1f871cf, where the kernel keeps its diagnostics log under my-agent-dojo; this command-line tool installs no add-ons, so its behaviour did not change.",
   "action": null
 }
