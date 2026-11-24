@@ -29,19 +29,19 @@ returned ok; the split proved the pane existed, not that its shell was at a
 prompt. The same pane was ready in 5ms in one run and 220ms in another, so the
 race passed every local check and failed a native receipt-backed run with a
 misclassified unknown startup effect. (Admitted with single-package evidence
-on 2026-08-24; two call sites witnessed.)
+by explicit instruction on 2026-08-24; two call sites witnessed.)
 ## Tests wait on events
 
 bun-typescript-template PR #6 repaired sleep and load races in b077b0b,
 4386b03 and 2b2907a (a race test caught its planted fault in 48 of 50 runs).
-The user asked for flaky-test repairs in four other sessions across other projects
+Flaky-test repairs were needed in four other sessions across other projects
 and Herdr work. A laptop at load 38 to 120 failed timing bounds that a quiet
 Mac mini passed.
 
 ## Independent oracle: regression RED
 
-The user restated "prove regression tests fail before and pass after" for a bug
-fix that the new-or-disputed wording did not cover.
+The rule was restated as "prove regression tests fail before and pass after"
+for a bug fix that the new-or-disputed wording did not cover.
 
 ## Rules with no recorded evidence
 
