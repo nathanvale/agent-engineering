@@ -44,7 +44,7 @@ We recommend **Option A** because it satisfies trust-boundary isolation, namespa
 2. **Namespace reservation and slug grammar.** Top-level `$XDG_STATE_HOME/my-agent-dojo/` is reserved exclusively for this suite namespace. Domain slugs live strictly under `my-agent-dojo/domains/<domain>/`, never at `$XDG_STATE_HOME/<domain>/`, making tool and domain roots disjoint by construction. Every `<domain>` and `<coordinator-slug>` must match `^[a-z0-9][a-z0-9-]*$`. Relative XDG environment paths are refused.
 3. **Mixed-domain hosting rule.** When one coordinator or run spans a private domain and the open-source `my-agent-dojo` domain, host its coordinator folder and raw runs under that private domain (`domains/<private-domain>/`). A coordinator touching only open-source `my-agent-dojo` work lives under `domains/my-agent-dojo/`. Never write private domain evidence into `domains/my-agent-dojo/`. A single coordinator must not span two distinct private domains; split such work into separate coordinators, one per private domain.
 4. **Glossary ownership.** `agent-engineering/GLOSSARY.md` is the single public canonical owner of shared open-source storage vocabulary. Private tracker glossaries and machine adapter files link to it rather than copying diverging definitions.
-5. **Forward-only cutover.** Active coordinators finish in place under legacy flat `$XDG_STATE_HOME` paths. New coordinators use `$XDG_STATE_HOME/my-agent-dojo/domains/<domain>/`. Legacy directory cleanup runs later as a separate, explicitly approved pass.
+5. **Forward-only cutover.** Active coordinators finish in place under legacy pre-cutover paths (both at the `$XDG_STATE_HOME` root and as legacy children inside `$XDG_STATE_HOME/my-agent-dojo/`). New coordinators use `$XDG_STATE_HOME/my-agent-dojo/domains/<domain>/`. Legacy directory cleanup runs later as a separate, explicitly approved pass.
 
 ## Consequences
 
@@ -89,7 +89,7 @@ We recommend **Option A** because it satisfies trust-boundary isolation, namespa
 
 ### Implementation confirmation (verified when the follow-up CLI lands)
 
-- **Namespace and permission check.** A read-only hygiene check verifies that `$XDG_STATE_HOME/my-agent-dojo/domains/` and its subdirectories use mode `0700`, user-scoped state files use mode `0600`, all slugs match `^[a-z0-9][a-z0-9-]*$`, relative XDG paths are refused, and no new un-namespaced coordinator or dated proof directories appear at the root of `$XDG_STATE_HOME`.
+- **Namespace and permission check.** A read-only hygiene check verifies that `$XDG_STATE_HOME/my-agent-dojo/domains/` and its subdirectories use mode `0700`, user-scoped state files use mode `0600`, all slugs match `^[a-z0-9][a-z0-9-]*$`, relative XDG paths are refused, no new un-namespaced coordinator or dated proof directories appear at the root of `$XDG_STATE_HOME`, and no new child directory other than `domains/` appears under `$XDG_STATE_HOME/my-agent-dojo/`.
 - **Harness-state isolation review.** No first-party script or CLI writes inside another harness's vendor state directory.
 - **First-party tool scoping check.** Each first-party multi-domain tool test suite verifies domain records stay inside `$XDG_STATE_HOME/<tool>/<domain>/`.
 
