@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: accepted
 ---
 
 # Local state and domain storage boundaries
