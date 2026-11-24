@@ -14,16 +14,16 @@ Decision question: how should concurrent coordinators acquire and release exclus
 
 ## Decision drivers
 
-1. **Host-wide mutual exclusion.** Prevent two concurrent coordinators in the same or different domains from silently claiming the same repository branch, Git worktree, or localhost port, including under simultaneous startup.
+1. **Host-wide mutual exclusion.** Prevent two concurrent coordinators in the same or different domains from silently claiming the same repository branch, Git worktree, or localhost port, including under simultaneous startup and pending-then-created worktree paths.
 2. **Crash and reboot safety.** Ensure transient acquisition locks clear automatically on process crash or reboot, while durable lease records survive reboot so active and paused work is never stolen silently.
 3. **Human-gated reclaim.** Require explicit human confirmation before reclaiming resources held by an `active` or `paused` coordinator, even when its heartbeat is stale or its process has died.
 4. **Recovery-first bounded retention.** Keep local state bounded over time while guaranteeing that unresolved recovery evidence is never pruned, regardless of whether outcomes were already promoted.
-5. **Contract 3 alignment.** Align locking mechanisms and recovery references with `agent-cli-kernel` Command Contract 3 (`Admission lock` and `Journal` invariants) without overloading single-command transaction stores with multi-hour coordinator lifecycles.
+5. **Contract 3 alignment.** Align locking mechanisms, canonical scope keys, and recovery journal discovery with `agent-cli-kernel` Command Contract 3 (`Admission lock` and `Journal` invariants) without overloading single-tool transaction stores with multi-hour coordinator lifecycles.
 
 ## Considered options
 
-- **Option A.** Separate transient acquisition locking in `$XDG_RUNTIME_DIR` (reusing the `agent-cli-kernel` OS locking mechanism semantics) from durable atomic `lease.json` records in `$XDG_STATE_HOME`, paired with recovery-first 30-day `runs/` pruning keyed to `settled_at` and a 30-day stopped-coordinator archive ceiling.
-- **Option B.** Reuse `agent-cli-kernel`'s single-tool state-seam `admission.lock` and per-tool store directly for host-wide coordinator leases and retention.
+- **Option A.** Separate transient acquisition locking in `$XDG_RUNTIME_DIR` (reusing the `agent-cli-kernel` OS locking mechanism) from durable atomic `lease.json` records in `$XDG_STATE_HOME`, paired with kernel-aligned worktree key sets, recovery-first 30-day `runs/` pruning keyed to `settled_at`, and a 30-day stopped-coordinator archive ceiling.
+- **Option B.** Reuse `agent-cli-kernel`'s single-tool state store (`admission.lock`) directly for host-wide coordinator leases and retention.
 - **Option C.** Keep uncoordinated per-coordinator `lease.json` files inside `$XDG_STATE_HOME` without a host-wide acquisition lock and prune runs by filesystem modification time after 30 days.
 
 ## Decision
@@ -34,7 +34,7 @@ We recommend **Option A** because it satisfies host-wide mutual exclusion, crash
 
 ### 1. Separation of runtime locks and durable leases
 
-- **Transient acquisition lock (`$XDG_RUNTIME_DIR`).** Lease creation, status changes, and reclaim acquire one host-wide exclusive lock at `$XDG_RUNTIME_DIR/my-agent-dojo/coordinator-lease.lock` (directory mode `0700`, lock file mode `0600`) using the same OS locking mechanism qualified in `agent-cli-kernel` (`O_EXLOCK | O_CLOEXEC | O_NOFOLLOW` on Darwin; `flock(LOCK_EX | LOCK_NB)` with `O_CLOEXEC | O_NOFOLLOW` on Linux). The lock is held only during conflict scanning and atomic lease writing, and the operating system releases it automatically on process exit or crash. When `$XDG_RUNTIME_DIR` is unset (the default on macOS), the tool falls back to a verified per-user `0700` directory under `$TMPDIR/my-agent-dojo-runtime-<uid>/` and logs the fallback per XDG Base Directory Specification v0.8.
+- **Transient acquisition lock (`$XDG_RUNTIME_DIR`).** Lease creation, heartbeat updates, status transitions, and reclaim acquire one host-wide exclusive lock at `$XDG_RUNTIME_DIR/my-agent-dojo/coordinator-lease.lock` (directory mode `0700`, lock file mode `0600`) using the same non-blocking OS locking mechanism qualified in `agent-cli-kernel` (`O_EXLOCK | O_NONBLOCK | O_CLOEXEC | O_NOFOLLOW` on Darwin; `flock(LOCK_EX | LOCK_NB)` with `O_CLOEXEC | O_NOFOLLOW` on Linux). Contended callers retry with bounded polling (default 2000 ms timeout, 10 ms interval) and return a structured `lock-busy` refusal if the bound expires. The lock is held only during conflict scanning and atomic lease writing, and the operating system releases it automatically on process exit or crash. When `$XDG_RUNTIME_DIR` is unset (the default on macOS), the tool falls back to a verified per-user `0700` directory under `$TMPDIR/my-agent-dojo-runtime-<uid>/` and logs the fallback per XDG Base Directory Specification v0.8.
 - **Durable coordinator lease (`$XDG_STATE_HOME`).** Each coordinator stores its durable lease at `$XDG_STATE_HOME/my-agent-dojo/domains/<domain>/coordinators/<slug>/lease.json` (mode `0600`). Every write creates a unique sibling temp file with `O_WRONLY | O_CREAT | O_EXCL | O_NOFOLLOW` (mode `0600`), calls `fsync`, atomically renames over `lease.json`, and calls `fsync` on the parent directory. Storing `lease.json` in `$XDG_STATE_HOME` ensures active and paused claims survive logout and reboot for recovery.
 
 ### 2. Lease schema, claim exclusivity, and cross-domain conflict discovery
@@ -46,7 +46,7 @@ Each `lease.json` (schema version `1`) records:
 - Resource claims:
   - `repos`: canonical repository identifiers touched by the coordinator (shared read access is allowed; exclusivity applies to branches and worktrees).
   - `branches`: repository-scoped pairs `{ repo_id, branch }` (exclusive host-wide).
-  - `worktrees`: canonical paths resolved to filesystem `inode:<dev>:<ino>` when present or normalized absolute paths when pending creation, matching `agent-cli-kernel`'s canonical scope keys (exclusive host-wide).
+  - `worktrees`: entries `{ path, keys }` where `keys` is the canonical key set produced by `agent-cli-kernel`'s `pathKeys()` algorithm: for an existing path, both `inode:<dev>:<ino>` and `name:<parentdev>:<parentino>/<folded-basename>` after symlink resolution and NFC case folding; for a pending path that does not yet exist, `name:<ancestor-dev>:<ancestor-ino>/<folded-remaining-path>` anchored to the nearest existing ancestor after resolving ancestor symlinks. At conflict scan time, each stored worktree entry also re-evaluates fresh `pathKeys(path)` and unions them with its stored `keys`; any non-empty key-set intersection is a conflict. This catches pending-then-created races, symlink aliases, and case-insensitive volume aliases.
   - `ports`: host-scoped pairs `{ host: "127.0.0.1" | "::1", port }` (exclusive host-wide).
 
 While holding the runtime acquisition lock, the acquiring coordinator scans only the machine-local `lease.json` metadata files across `$XDG_STATE_HOME/my-agent-dojo/domains/*/coordinators/*/lease.json` within the same OS user's `0700` boundary. It never reads another domain's wikis, notes, handoffs, or run logs. Inside per-domain Linux VMs, only that VM's domain directory exists, so the same scan stays single-domain automatically.
@@ -56,22 +56,23 @@ While holding the runtime acquisition lock, the acquiring coordinator scans only
 - **`active`.** Holds all declared `branches`, `worktrees`, and `ports` exclusively. No other coordinator may acquire an overlapping resource without explicit human confirmation.
 - **`paused`.** Retains all declared `branches`, `worktrees`, and any still-declared `ports` exclusively so paused work cannot be silently overwritten. Reclaiming a `paused` lease requires explicit human confirmation under `confirm-active-and-paused`. A coordinator may release ephemeral localhost ports before transitioning to `paused` by removing them from `ports`.
 - **`stopped`.** Sets `stopped_at` and releases all resource claims immediately. A `stopped` lease never blocks new acquisitions.
+- **Heartbeat guard.** Heartbeat updates to `updated_at` run under the runtime acquisition lock and verify that `lease.json` still belongs to the caller's `conversation_id` and is not `stopped`. A stale live process whose lease was reclaimed by human confirmation is refused and cannot overwrite the new owner's lease.
 - **Staleness and orphan detection.** A non-stopped lease is flagged as `stale` during conflict inspection when `now - updated_at > stale_after_seconds` or when `host` matches the current host, `pid` is non-null, and `kill(pid, 0)` reports the process is gone. Staleness is reported to the operator as diagnostic evidence (`heartbeat-expired` or `pid-not-running`) with a repair command; it never authorizes silent takeover. Only an explicit human-confirmed reclaim transitions an orphaned lease to `stopped` and records the new owner.
 
 ### 4. Recovery-first retention and pruning
 
 - **Recovery protection overrides promotion.** A run directory at `runs/<date-slug>/` is never eligible for pruning while any unresolved recovery case references it, even if its outcomes were already promoted.
 - **Authoritative recovery references.** Before marking any run eligible for pruning, the hygiene check inspects two machine-readable sources:
-  1. A local marker file `runs/<date-slug>/RECOVERY-OPEN.json` (mode `0600`, holding `recovery_id`, `run_id`, `opened_at`, `owner`, `reason`), created when a recovery case opens and removed only by the recovery owner once closure is verified.
-  2. Unresolved Command Contract 3 state journals under `$XDG_STATE_HOME/<tool>/operations/<op-id>/` that reference the run ID.
-- **30-day run retention clock.** Each run records `runs/<date-slug>/run-status.json` (mode `0600`) containing `created_at`, `settled_at`, `promoted_at`, and `promoted_to`. A run is **settled** only when `settled_at` is a non-null timestamp confirming execution ended and no action remains pending. The 30-day retention clock starts at `settled_at`, never at the folder name or filesystem modification time. Runs without `settled_at` remain protected.
-- **Designated disk-hygiene owner.** Pruning is owned by the Super Coordinator's scheduled hygiene sweep (backed by a future `agent-engineering` CLI hygiene command) and executes deletion only after explicit human confirmation. Workers never prune historical runs silently.
-- **Stopped coordinator retention and archive ceiling.** A `coordinators/<slug>/` folder stays intact while `status` is `active` or `paused`. Once `status` is `stopped` and durable outcomes are promoted, the folder stays for at most 30 days from `stopped_at`, after which the hygiene sweep archives compact metadata (`lease.json` and `decisions.tsv`) to `$XDG_STATE_HOME/my-agent-dojo/domains/<domain>/archives/coordinators/<slug>.tar.gz` (directory `0700`, archive `0600`) or removes the folder on human confirmation. A `stopped` coordinator with unpromoted outcomes is flagged in the hygiene sweep after 14 days so unpromoted folders cannot grow unboundedly.
+  1. A local marker file `runs/<date-slug>/RECOVERY-OPEN.json` (mode `0600`, holding `recovery_id`, `run_id`, `opened_at`, `owner`, `reason`), written when a recovery case opens and removed only by the recovery owner once closure is verified.
+  2. Unresolved Command Contract 3 state journals across both unscoped tool stores (`$XDG_STATE_HOME/<tool>/operations/<op-id>/`) and first-party domain-scoped tool stores (`$XDG_STATE_HOME/<tool>/<domain>/operations/<op-id>/`). A run links its Command Contract 3 operations in `runs/<date-slug>/run-status.json` (`operation_ids`); any `op-id` still present under `operations/` in either root protects the run.
+- **30-day run retention clock.** Each run records `runs/<date-slug>/run-status.json` (mode `0600`) containing `created_at`, `settled_at`, `promoted_at`, `promoted_to`, and `operation_ids`. The owning coordinator (or operator-approved hygiene repair flow) writes `settled_at` once execution ends and no action remains pending. The 30-day retention clock starts at `settled_at`, never at the folder name or filesystem modification time. Runs without `settled_at` remain protected from pruning and are flagged in the hygiene sweep after 14 days so crashed runs cannot accumulate silently.
+- **Designated disk-hygiene owner.** Pruning and archiving are owned by the scheduled hygiene sweep owner (backed by a future `agent-engineering` CLI hygiene command) and execute deletion or archive-and-removal only after explicit human confirmation. Workers never prune historical runs or coordinator folders silently.
+- **Stopped coordinator retention and archive ceiling.** A `coordinators/<slug>/` folder stays intact while `status` is `active` or `paused`. Once `status` is `stopped` and durable outcomes are promoted, the folder stays for at most 30 days from `stopped_at`. After 30 days, and only with explicit human confirmation, the hygiene sweep either archives compact metadata (`lease.json` and decision logs) to `$XDG_STATE_HOME/my-agent-dojo/domains/<domain>/archives/coordinators/<slug>.tar.gz` (directory `0700`, archive `0600`) before removing the folder, or deletes the folder outright. A `stopped` coordinator with unpromoted outcomes is flagged in the hygiene sweep after 14 days so unpromoted folders cannot grow unboundedly.
 
 ## Consequences
 
-- **Positive.** Eliminates simultaneous lease creation races across domains on one host. Protects active, paused, and orphaned work from silent takeover while still surfacing dead coordinators clearly. Guarantees recovery evidence survives until explicitly closed, while giving settled runs and stopped coordinators a concrete 30-day ceiling.
-- **Negative.** Cross-domain conflict checks read lease metadata across domain directories on a shared host (bounded to same-user `0700` metadata only, never domain payloads). Operators must confirm reclaim of crashed coordinators instead of automatic stealing.
+- **Positive.** Eliminates simultaneous lease creation races and pending-then-created worktree alias races across domains on one host. Protects active, paused, and orphaned work from silent takeover while surfacing dead coordinators clearly and blocking stale heartbeat overwrites. Guarantees recovery evidence across both unscoped and domain-scoped Contract 3 stores survives until explicitly closed, while bounding settled runs, unsettled runs, and stopped coordinators.
+- **Negative.** Cross-domain conflict checks read lease metadata across domain directories on a shared host (bounded to same-user `0700` metadata only, never domain payloads). Operators must confirm reclaim of crashed coordinators and confirm hygiene deletions or archives instead of silent automation.
 - **Neutral.** On macOS, where `$XDG_RUNTIME_DIR` is unset by default, the runtime lock uses the per-user `$TMPDIR` fallback until macOS provides a native runtime directory or work moves to Linux VMs.
 
 ## Options and tradeoffs
@@ -80,21 +81,21 @@ While holding the runtime acquisition lock, the acquiring coordinator scans only
 
 | Driver | Option A (runtime lock + atomic state lease + recovery-first pruning) | Option B (reuse kernel per-tool `admission.lock`) | Option C (uncoordinated leases + mtime pruning) |
 | --- | --- | --- | --- |
-| Host-wide mutual exclusion | Strong. Single OS lock serializes cross-domain claim checks and atomic writes. | Fails. Kernel `admission.lock` is per-tool and process-scoped via `state-seam.ts`, not host-wide across domains. | Fails. Simultaneous starts race and silently claim identical worktrees or ports. |
-| Crash and reboot safety | Strong. OS clears runtime lock on crash; `lease.json` survives reboot in `$XDG_STATE_HOME`. | Partial. Putting locks inside `$XDG_STATE_HOME` mixes transient locks with durable state. | Weak. No lock cleanup guarantees; torn JSON writes risk corrupting lease state. |
-| Human-gated reclaim | Strong. Both `active` and `paused` require explicit human confirmation; staleness flags without stealing. | Misaligned. Kernel `state-seam.ts` forgets run identity when a CLI invocation exits. | Weak. Unspecified `paused` and orphan rules invite silent takeover or permanent deadlock. |
-| Recovery-first bounded retention | Strong. Explicit `RECOVERY-OPEN.json` and Contract 3 `operations/` checks override promotion; `settled_at` anchors 30-day clock. | Partial. Covers single-tool Contract 3 journals only, not cross-harness coordinator `runs/`. | Fails. Filesystem `mtime` drifts on backups or reads and ignores open recovery cases. |
-| Contract 3 alignment | Strong. Reuses Darwin `O_EXLOCK`/Linux `flock` semantics, canonical inode scope keys, and `operations/` journal checks. | Overloads a single-command transaction store with multi-hour coordinator orchestration. | Ignores Contract 3 locking and journal invariants. |
+| Host-wide mutual exclusion | Strong. Single OS lock serializes cross-domain claim checks, key-set intersections, and atomic writes. | Fails. Kernel `admission.lock` provides cross-process OS locking only within one tool's store root, not host-wide across domains. | Fails. Simultaneous starts race and silently claim identical worktrees or ports. |
+| Crash and reboot safety | Strong. OS clears runtime lock on crash; `lease.json` survives reboot in `$XDG_STATE_HOME`. | Partial. Placing lock files inside `$XDG_STATE_HOME` mixes logout-scoped locks with durable state. | Weak. No lock cleanup guarantees; torn JSON writes risk corrupting lease state. |
+| Human-gated reclaim | Strong. Both `active` and `paused` require explicit human confirmation; staleness flags without stealing; heartbeats guard against overwriting reclaims. | Misaligned. Kernel `state-seam.ts` holds run identity in a process-local map that forgets runs when a CLI invocation exits. | Weak. Unspecified `paused` and orphan rules invite silent takeover or permanent deadlock. |
+| Recovery-first bounded retention | Strong. `RECOVERY-OPEN.json` and both unscoped and domain-scoped Contract 3 `operations/` checks override promotion; `settled_at` anchors the 30-day clock. | Partial. Covers single-tool Contract 3 journals only, not cross-harness coordinator `runs/`. | Fails. Filesystem `mtime` drifts on backups or reads and ignores open recovery cases. |
+| Contract 3 alignment | Strong. Reuses Darwin `O_EXLOCK | O_NONBLOCK` and Linux `flock` semantics, `pathKeys()`/`currentKeys()` scope keys, and `operations/` journal discovery. | Overloads a single-command transaction store with multi-hour coordinator orchestration. | Ignores Contract 3 locking, scope, and journal invariants. |
 
 ### Option A
 
-- **Good.** Proven in throwaway multi-process Bun prototype: simultaneous cross-domain claims yield exactly one winner and one conflict refusal, permissions enforce `0700`/`0600`, paused and stale leases block silent takeover, stopped leases release immediately, and recovery markers override promotion during 30-day pruning.
+- **Good.** Proven in multi-process Bun prototype: simultaneous cross-domain claims yield one winner and one conflict refusal, pending-then-created and symlink-aliased worktrees conflict via key-set intersection, stale heartbeats cannot overwrite reclaims, permissions enforce `0700`/`0600`, and both unscoped and domain-scoped Contract 3 `operations/` journals protect runs alongside `RECOVERY-OPEN.json`.
 - **Bad.** Requires maintaining one small host-wide lease schema and hygiene sweep alongside per-tool Contract 3 stores.
 
 ### Option B
 
 - **Good.** Reuses existing `agent-cli-kernel` state store directories with zero new files.
-- **Bad.** `state-seam.ts` is designed for short-lived, single-process CLI transactions inside one tool's `$XDG_STATE_HOME/<tool>/` store; bending it into a multi-domain, multi-hour coordinator registry conflates tool state with domain operational state.
+- **Bad.** While `coordination.ts` uses cross-process OS locking inside one tool's store root, `state-seam.ts` tracks active run identity in a process-local map for short-lived CLI commands. Bending a per-tool transaction store into a host-wide multi-domain coordinator registry conflates tool runtime state with domain operational state.
 
 ### Option C
 
@@ -103,11 +104,17 @@ While holding the runtime acquisition lock, the acquiring coordinator scans only
 
 ## Confirmation
 
-Before this ADR moves from `proposed` to `accepted` and when the future `agent-engineering` storage CLI implements these contracts:
+### Design acceptance gate (moves status from `proposed` to `accepted`)
 
-- **Concurrent acquisition test.** Two parallel processes racing to claim the same `{ repo_id, branch }`, canonical worktree inode, or localhost port across different domains produce exactly one `ok` result and one `resource-conflict` refusal with `human_confirmation_required: true`.
-- **Lifecycle and staleness test.** An `active`, `paused`, or `stale` lease blocks silent takeover; a `stopped` lease releases claims immediately; explicit human-confirmed reclaim transitions the prior holder cleanly.
-- **Recovery-first pruning test.** With an injectable clock, runs with `RECOVERY-OPEN.json`, unresolved Contract 3 `operations/` references, missing `settled_at`, or age under 30 days are never pruned; only settled runs at or past 30 days with zero open recovery references become eligible.
+- Independent cross-model design review passes with zero P0 and zero P1 findings across ADR 0001, ADR 0002, `GLOSSARY.md`, and the companion specification.
+- Multi-process prototype demonstrates mutual exclusion, pending-then-created worktree key-set conflict detection, heartbeat reclaim protection, and scoped/unscoped journal recovery protection.
+- Decision authority (Nathan) explicitly approves transitioning ADR 0002 to `accepted`.
+
+### Implementation confirmation (verified when the follow-up CLI lands)
+
+- **Concurrent acquisition and worktree key-set test.** Two parallel processes racing to claim the same `{ repo_id, branch }`, worktree (including a pending-then-created path and a symlink alias), or localhost port across different domains produce one `ok` result and one `resource-conflict` refusal (`human_confirmation_required: true`), and contention past the lock timeout returns `lock-busy`.
+- **Lifecycle, heartbeat, and staleness test.** An `active`, `paused`, or `stale` lease blocks silent takeover with a structured conflict; a stale live holder's heartbeat cannot overwrite a human-confirmed reclaim; a `stopped` lease releases claims immediately.
+- **Recovery-first pruning test.** With an injectable clock, runs carrying `RECOVERY-OPEN.json`, runs whose `operation_ids` appear in either `<tool>/operations/` or `<tool>/<domain>/operations/`, unsettled runs (`settled_at: null`, flagged after 14 days), and settled runs under 30 days are never pruned; only settled runs at or past 30 days with zero open recovery references become eligible.
 - **Permission and XDG validation test.** Relative `$XDG_STATE_HOME` or `$XDG_RUNTIME_DIR` paths are refused; created directories verify `0700` and created JSON/lock files verify `0600`.
 
 ### Revisit triggers
@@ -119,5 +126,5 @@ Before this ADR moves from `proposed` to `accepted` and when the future `agent-e
 
 - [ADR 0001: Local state and domain storage boundaries](0001-local-state-and-domain-storage-boundaries.md)
 - [Public storage glossary](../../GLOSSARY.md)
-- `agent-cli-kernel` state add-on locking and scope model (`coordination.ts`, `scope.ts`, `store.ts`)
+- `agent-cli-kernel` state add-on locking, scope, and journal model (`coordination.ts`, `scope.ts`, `store.ts`)
 - XDG Base Directory Specification v0.8 (`https://specifications.freedesktop.org/basedir/latest/`)

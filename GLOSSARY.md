@@ -11,31 +11,31 @@ A private or open-source context of work with its own trust boundary, guidance, 
 _Avoid_: space, tenant, workspace (when a trust boundary is meant)
 
 **Domain home**:
-The private Git repository that holds one private domain's durable wiki, instructions, optional domain CLI, links to public and private skill repositories, and private terms, with zero raw run logs or live scratch.
+The private Git repository that holds one private domain's durable wiki, instructions, optional domain CLI, links to skill repositories, and private terms, excluding raw run logs and live scratch.
 _Avoid_: home repo (unqualified), vault
 
 **Harness state**:
-Vendor-owned local storage written by one agent harness (such as transcripts, vendor scratch, and native board state) that is never shared or mutated across harnesses.
+Vendor-owned local storage written by one agent harness (such as transcripts, vendor scratch, and native board data) that belongs solely to that harness.
 _Avoid_: state (unqualified), coordinator state
 
 **Tool runtime state**:
-Machine-local operational state owned by an installed CLI or daemon under `$XDG_STATE_HOME/<tool>/`, including Command Contract 3 journals and diagnostics, scoped by `<domain>` subdirectory for first-party multi-domain tools on a shared host.
+Machine-local operational state owned by an installed CLI or daemon, including Command Contract 3 journals and diagnostics.
 _Avoid_: state (unqualified), domain state
 
 **Domain operational state**:
-Machine-local, uncommitted storage under `$XDG_STATE_HOME/my-agent-dojo/domains/<domain>/` holding one domain's cross-harness coordinator folders (`coordinators/<slug>/`), raw run or wiki logs (`runs/<date-slug>/`), and coordinator archives (`archives/coordinators/`).
+Machine-local, uncommitted storage holding one domain's cross-harness coordinator records, raw run logs, and coordinator archives.
 _Avoid_: state (unqualified), vault state, durable memory
 
 ### Leases and recovery
 
 **Coordinator lease**:
-The durable machine-local `lease.json` record inside a coordinator folder declaring its owning conversation, harness, host, process identity, heartbeat, lifecycle status (`active`, `paused`, or `stopped`), and claimed repositories, branches, worktrees, and ports.
+A durable machine-local ownership record declaring a coordinator's identity, lifecycle status, and claimed host resources.
 _Avoid_: lock (unqualified), coordination lock (reserved for Command Contract 3)
 
 **Acquisition lock**:
-The transient operating-system exclusive lock under `$XDG_RUNTIME_DIR/my-agent-dojo/` that serializes host-wide conflict checks and atomic coordinator lease updates and clears automatically on crash or reboot.
+A transient operating-system exclusive lock that serializes host-wide coordinator lease conflict checks and updates.
 _Avoid_: lease (for a transient runtime lock)
 
 **Recovery case**:
-An unresolved incident requiring preserved raw run evidence for diagnosis or repair, marked by a run-local `RECOVERY-OPEN.json` file or an open Command Contract 3 `operations/` journal record.
+An unresolved incident whose raw run evidence must remain preserved for diagnosis or repair.
 _Avoid_: incident log, open ticket (for local recovery protection)
