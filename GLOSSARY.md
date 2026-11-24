@@ -19,8 +19,12 @@ Vendor-owned local storage written by one agent harness (such as transcripts, ve
 _Avoid_: state (unqualified), coordinator state
 
 **Tool runtime state**:
-Machine-local operational state owned by an installed CLI or daemon, including Command Contract 3 journals and diagnostics.
+Machine-local operational state that an installed CLI or daemon writes for its own runs, including Command Contract 3 journals and diagnostics. Durable records worth backing up are tool data, not tool runtime state.
 _Avoid_: state (unqualified), domain state
+
+**Suite root**:
+The folder inside one XDG base directory that holds one folder for each component of a multi-tool suite: `<base>/<suite>/` by default, or the absolute folder named by the suite's root setting.
+_Avoid_: base directory (for the XDG base itself), home (unqualified)
 
 **Domain operational state**:
 Machine-local, uncommitted storage holding one domain's cross-harness coordinator records, raw run logs, and coordinator archives.
