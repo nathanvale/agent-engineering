@@ -4,6 +4,8 @@ A Bun command-line tool on the CLI kernel.
 
 Source packet: `https://github.com/nathanvale/agent-engineering`
 
+Baseline engineering rules for coding agents live in [docs/engineering-rules.md](docs/engineering-rules.md).
+
 ```sh
 bun install --frozen-lockfile
 bun run start -- --help
