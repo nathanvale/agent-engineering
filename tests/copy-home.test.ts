@@ -67,30 +67,6 @@ function processAlive(pid: number): boolean {
   }
 }
 
-function hasDaemonForRemotes(remotesDir: string): boolean {
-  const marker = `--base-path=${remotesDir}`;
-  const result = Bun.spawnSync(["ps", "-axo", "pid=,command="], {
-    stdout: "pipe",
-    stderr: "pipe",
-    timeout: 5_000,
-    killSignal: "SIGKILL",
-  });
-  if (result.exitCode !== 0) {
-    throw new Error(
-      `ps failed with exit ${String(result.exitCode)}: ${result.stderr.toString().trim()}`,
-    );
-  }
-  const selfPid = String(process.pid);
-  for (const line of result.stdout.toString().split("\n")) {
-    const match = /^\s*(\d+)\s+(.*)$/.exec(line);
-    if (!match) continue;
-    const [, pid, command] = match;
-    if (pid === selfPid || command === undefined) continue;
-    if (command.includes(marker)) return true;
-  }
-  return false;
-}
-
 async function waitUntil(
   check: () => boolean,
   timeoutMs: number,
@@ -221,6 +197,7 @@ describe("copy-home check", () => {
     const ran = runWithFixture(
       ["--loss"],
       [
+        'cat "$FIXTURE/daemon.pid"',
         'bun run "$CLI_PATH" copy-home check --homes "$FIXTURE/homes.json" --remote --json > "$FIXTURE/loss.json"',
         'touch "$FIXTURE/stamp"',
         'bun run "$CLI_PATH" copy-home check --homes "$FIXTURE/homes.json" --remote --json > /dev/null',
@@ -232,35 +209,37 @@ describe("copy-home check", () => {
 
     expect(existsSync(ran.folder)).toBe(false);
     expect(ran.exitCode).toBe(0);
-    expect(
-      await waitUntil(
-        () => !hasDaemonForRemotes(join(ran.folder, "remotes")),
-        5_000,
-      ),
-    ).toBe(true);
 
     const lines = ran.stdout.split("\n");
-    expect(Number(lines[0])).toBe(0);
-    const envelope = parseJson(lines.slice(1).join("\n"));
+    const daemonPid = Number(lines[0]?.trim());
+    expect(Number.isSafeInteger(daemonPid) && daemonPid > 0).toBe(true);
+    expect(await waitUntil(() => !processAlive(daemonPid), 5_000)).toBe(true);
+    expect(processAlive(daemonPid)).toBe(false);
+
+    expect(Number(lines[1])).toBe(0);
+    const envelope = parseJson(lines.slice(2).join("\n"));
     const data: unknown = Reflect.get(
       Object(Reflect.get(Object(envelope), "result")),
       "data",
     );
     const copies: unknown = Reflect.get(Object(data), "copies");
-    const verdicts = (Array.isArray(copies) ? copies : [])
-      .map((entry) => ({
-        path: String(Reflect.get(Object(entry), "path")),
-        verdict: String(
-          Reflect.get(Object(Reflect.get(Object(entry), "loss")), "verdict"),
-        ),
-      }))
+    const lossEntries = (Array.isArray(copies) ? copies : [])
+      .map((entry) => {
+        const loss: unknown = Reflect.get(Object(entry), "loss");
+        const reasons: unknown = Reflect.get(Object(loss), "reasons");
+        return {
+          path: String(Reflect.get(Object(entry), "path")),
+          verdict: String(Reflect.get(Object(loss), "verdict")),
+          reasons: Array.isArray(reasons) ? reasons.map((r) => String(r)) : [],
+        };
+      })
       .filter((entry) => entry.path.includes("/loss/"))
-      .sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0))
-      .map((entry) => entry.verdict);
+      .sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0));
 
+    const verdicts = lossEntries.map((entry) => entry.verdict);
     expect(verdicts).toEqual([
-      "nothing-found",
-      "work-found",
+      "unknown",
+      "unknown",
       "work-found",
       "work-found",
       "work-found",
@@ -269,23 +248,28 @@ describe("copy-home check", () => {
       "unknown",
       "work-found",
     ]);
+    expect(lossEntries[0]?.reasons).toContain("working tree not inspected");
+    expect(lossEntries[1]?.reasons).toContain("working tree not inspected");
   });
 
   test("loss without --remote is unknown", async () => {
     const ran = runWithFixture(
       ["--loss"],
-      'bun run "$CLI_PATH" copy-home check --homes "$FIXTURE/homes.json" --json',
+      [
+        'cat "$FIXTURE/daemon.pid"',
+        'bun run "$CLI_PATH" copy-home check --homes "$FIXTURE/homes.json" --json',
+      ].join("\n"),
     );
     expect(existsSync(ran.folder)).toBe(false);
     expect(ran.exitCode).toBe(0);
-    expect(
-      await waitUntil(
-        () => !hasDaemonForRemotes(join(ran.folder, "remotes")),
-        5_000,
-      ),
-    ).toBe(true);
 
-    const envelope = parseJson(ran.stdout);
+    const lines = ran.stdout.split("\n");
+    const daemonPid = Number(lines[0]?.trim());
+    expect(Number.isSafeInteger(daemonPid) && daemonPid > 0).toBe(true);
+    expect(await waitUntil(() => !processAlive(daemonPid), 5_000)).toBe(true);
+    expect(processAlive(daemonPid)).toBe(false);
+
+    const envelope = parseJson(lines.slice(1).join("\n"));
     const data: unknown = Reflect.get(
       Object(Reflect.get(Object(envelope), "result")),
       "data",
@@ -315,6 +299,7 @@ describe("copy-home check", () => {
     const ran = runWithFixture(
       ["--loss"],
       [
+        'cat "$FIXTURE/daemon.pid"',
         'BAD_DIR="$XDG_STATE_HOME/my-agent-dojo/agent-coordination/personal/coordinators/bad"',
         'mkdir -p "$BAD_DIR"',
         'printf "{not valid json" > "$BAD_DIR/lease.json"',
@@ -323,14 +308,14 @@ describe("copy-home check", () => {
     );
     expect(existsSync(ran.folder)).toBe(false);
     expect(ran.exitCode).toBe(0);
-    expect(
-      await waitUntil(
-        () => !hasDaemonForRemotes(join(ran.folder, "remotes")),
-        5_000,
-      ),
-    ).toBe(true);
 
-    const envelope = parseJson(ran.stdout);
+    const lines = ran.stdout.split("\n");
+    const daemonPid = Number(lines[0]?.trim());
+    expect(Number.isSafeInteger(daemonPid) && daemonPid > 0).toBe(true);
+    expect(await waitUntil(() => !processAlive(daemonPid), 5_000)).toBe(true);
+    expect(processAlive(daemonPid)).toBe(false);
+
+    const envelope = parseJson(lines.slice(1).join("\n"));
     const data: unknown = Reflect.get(
       Object(Reflect.get(Object(envelope), "result")),
       "data",
@@ -376,26 +361,20 @@ describe("copy-home check", () => {
       );
       expect(ready).toBe(true);
 
-      const remotesDir = join(folder, "remotes");
       const daemonPid = Number(
         readFileSync(join(folder, "daemon.pid"), "utf8").trim(),
       );
       expect(processAlive(daemonPid)).toBe(true);
-      expect(hasDaemonForRemotes(remotesDir)).toBe(true);
 
       process.kill(child.pid, "SIGKILL");
       await child.exited;
 
       const cleaned = await waitUntil(
-        () =>
-          !processAlive(daemonPid) &&
-          !hasDaemonForRemotes(remotesDir) &&
-          !existsSync(folder),
+        () => !processAlive(daemonPid) && !existsSync(folder),
         5_000,
       );
       expect(cleaned).toBe(true);
       expect(processAlive(daemonPid)).toBe(false);
-      expect(hasDaemonForRemotes(remotesDir)).toBe(false);
       expect(existsSync(folder)).toBe(false);
     } finally {
       killQuietly(child.pid);

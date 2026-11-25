@@ -1,22 +1,29 @@
 import { createHash } from "node:crypto";
-import { lstatSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import {
+  existsSync,
+  lstatSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { join } from "node:path";
 import { initFixtureRepo, runFixtureGit } from "./copy-home-loss-fixture.ts";
 
-export type PlantedTriggerCase = {
+export type NoExecutionCase = {
   readonly name: string;
-  readonly expectedKey: string;
   readonly plant: (
     copyDir: string,
     markerScript: string,
-    subSource: string,
+    partialRemoteUrl: string,
+    missingCommitSha: string,
   ) => void;
 };
 
 function setupFilterRepo(
   copyDir: string,
   filterName: string,
-  filterAttr: "clean" | "process",
+  filterAttr: "clean" | "process" | undefined,
   markerScript: string,
 ): void {
   initFixtureRepo(copyDir);
@@ -33,45 +40,47 @@ function setupFilterRepo(
   writeFileSync(join(copyDir, "data.txt"), "hello\n");
   runFixtureGit(copyDir, ["add", "--", ".gitattributes", "data.txt"]);
   runFixtureGit(copyDir, ["commit", "--quiet", "-m", "add filter"]);
-  runFixtureGit(copyDir, [
-    "config",
-    `filter.${filterName}.${filterAttr}`,
-    markerScript,
-  ]);
+  if (filterAttr !== undefined) {
+    runFixtureGit(copyDir, [
+      "config",
+      `filter.${filterName}.${filterAttr}`,
+      markerScript,
+    ]);
+  }
   writeFileSync(join(copyDir, "data.txt"), "world\n");
 }
 
-function setupSubmoduleCleanFilterRepo(
+function setupPartialCloneRepo(
   copyDir: string,
-  markerScript: string,
-  subSource: string,
+  partialRemoteUrl: string,
+  missingCommitSha: string,
 ): void {
-  initFixtureRepo(copyDir);
-  runFixtureGit(copyDir, [
-    "remote",
-    "add",
-    "origin",
-    "https://127.0.0.1:1/repo.git",
-  ]);
-  runFixtureGit(copyDir, [
-    "-c",
-    "protocol.file.allow=always",
-    "submodule",
-    "add",
+  runFixtureGit(join(copyDir, ".."), [
+    "clone",
     "--quiet",
-    subSource,
-    "deps/sub",
+    partialRemoteUrl,
+    copyDir,
   ]);
-  runFixtureGit(copyDir, ["commit", "--quiet", "-m", "add submodule"]);
-  const subWorkDir = join(copyDir, "deps", "sub");
-  runFixtureGit(subWorkDir, ["config", "filter.subtrap.clean", markerScript]);
-  writeFileSync(join(subWorkDir, "data.txt"), "world\n");
+  runFixtureGit(copyDir, ["config", "core.repositoryformatversion", "1"]);
+  runFixtureGit(copyDir, ["config", "extensions.partialClone", "origin"]);
+  runFixtureGit(copyDir, ["config", "remote.origin.promisor", "true"]);
+  writeFileSync(
+    join(copyDir, ".git", "refs", "tags", "missing-remote-commit"),
+    `${missingCommitSha}\n`,
+  );
+  const objFile = join(
+    copyDir,
+    ".git",
+    "objects",
+    missingCommitSha.slice(0, 2),
+    missingCommitSha.slice(2),
+  );
+  if (existsSync(objFile)) rmSync(objFile, { force: true });
 }
 
-export const plantedTriggerCases: readonly PlantedTriggerCase[] = [
+export const noExecutionCases: readonly NoExecutionCase[] = [
   {
     name: "fsmonitor-copy",
-    expectedKey: "core.fsmonitor",
     plant: (copyDir, markerScript) => {
       initFixtureRepo(copyDir);
       runFixtureGit(copyDir, [
@@ -85,21 +94,18 @@ export const plantedTriggerCases: readonly PlantedTriggerCase[] = [
   },
   {
     name: "clean-filter-copy",
-    expectedKey: "filter.trap.clean",
     plant: (copyDir, markerScript) => {
       setupFilterRepo(copyDir, "trap", "clean", markerScript);
     },
   },
   {
     name: "process-filter-copy",
-    expectedKey: "filter.proctrap.process",
     plant: (copyDir, markerScript) => {
       setupFilterRepo(copyDir, "proctrap", "process", markerScript);
     },
   },
   {
     name: "gitproxy-copy",
-    expectedKey: "core.gitproxy",
     plant: (copyDir, markerScript) => {
       initFixtureRepo(copyDir);
       runFixtureGit(copyDir, [
@@ -113,7 +119,6 @@ export const plantedTriggerCases: readonly PlantedTriggerCase[] = [
   },
   {
     name: "remote-vcs-copy",
-    expectedKey: "remote.origin.vcs",
     plant: (copyDir) => {
       initFixtureRepo(copyDir);
       runFixtureGit(copyDir, [
@@ -126,56 +131,15 @@ export const plantedTriggerCases: readonly PlantedTriggerCase[] = [
     },
   },
   {
-    name: "submodule-clean-filter-copy",
-    expectedKey: "filter.subtrap.clean",
-    plant: (copyDir, markerScript, subSource) => {
-      setupSubmoduleCleanFilterRepo(copyDir, markerScript, subSource);
+    name: "partial-clone-copy",
+    plant: (copyDir, _markerScript, partialRemoteUrl, missingCommitSha) => {
+      setupPartialCloneRepo(copyDir, partialRemoteUrl, missingCommitSha);
     },
   },
   {
-    name: "ssh-command-copy",
-    expectedKey: "core.sshcommand",
+    name: "global-filter-copy",
     plant: (copyDir, markerScript) => {
-      initFixtureRepo(copyDir);
-      runFixtureGit(copyDir, [
-        "remote",
-        "add",
-        "origin",
-        "ssh://127.0.0.1:1/repo.git",
-      ]);
-      runFixtureGit(copyDir, ["config", "core.sshCommand", markerScript]);
-    },
-  },
-  {
-    name: "credential-helper-copy",
-    expectedKey: "credential.helper",
-    plant: (copyDir, markerScript) => {
-      initFixtureRepo(copyDir);
-      runFixtureGit(copyDir, [
-        "remote",
-        "add",
-        "origin",
-        "https://127.0.0.1:1/repo.git",
-      ]);
-      runFixtureGit(copyDir, [
-        "config",
-        "credential.helper",
-        `!${markerScript}`,
-      ]);
-    },
-  },
-  {
-    name: "unknown-alias-key-copy",
-    expectedKey: "alias.x",
-    plant: (copyDir, markerScript) => {
-      initFixtureRepo(copyDir);
-      runFixtureGit(copyDir, [
-        "remote",
-        "add",
-        "origin",
-        "https://127.0.0.1:1/repo.git",
-      ]);
-      runFixtureGit(copyDir, ["config", "alias.x", `!${markerScript}`]);
+      setupFilterRepo(copyDir, "globaltrap", undefined, markerScript);
     },
   },
 ];

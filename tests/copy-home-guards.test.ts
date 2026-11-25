@@ -4,6 +4,7 @@ import {
   existsSync,
   lstatSync,
   mkdirSync,
+  readdirSync,
   realpathSync,
   rmSync,
   utimesSync,
@@ -21,7 +22,7 @@ import {
   copyLossVerdict,
   fingerprintTree,
   listFromData,
-  plantedTriggerCases,
+  noExecutionCases,
   runCheckJson,
 } from "./support/copy-home-test-helpers.ts";
 import { testFolder } from "./support/test-folder.ts";
@@ -29,31 +30,55 @@ import { testFolder } from "./support/test-folder.ts";
 setDefaultTimeout(60_000);
 
 describe("copy-home check guards", () => {
-  test("never executes planted Git config triggers, leaves fixture untouched, and reports unknown", () => {
+  test("never executes planted Git triggers or fetches packs with --remote and leaves fixture untouched", async () => {
     const sandbox = realpathSync.native(testFolder("copy-home-git-safe-"));
+    let stopDaemon: (() => void) | undefined;
     try {
       const reposDir = join(sandbox, "repos");
+      const remotesDir = join(sandbox, "remotes");
       const noCopyDir = join(sandbox, "no-copy");
       const scriptsDir = join(sandbox, "scripts");
-      const subSource = join(sandbox, "sub-source");
-      mkdirSync(reposDir, { recursive: true });
-      mkdirSync(noCopyDir, { recursive: true });
-      mkdirSync(scriptsDir, { recursive: true });
+      for (const dir of [reposDir, remotesDir, noCopyDir, scriptsDir]) {
+        mkdirSync(dir, { recursive: true });
+      }
       initFixtureRepo(join(reposDir, "anchor-repo"));
 
-      initFixtureRepo(subSource);
-      writeFileSync(
-        join(subSource, ".gitattributes"),
-        "*.txt filter=subtrap\n",
-      );
-      writeFileSync(join(subSource, "data.txt"), "hello\n");
-      runFixtureGit(subSource, ["add", "--", ".gitattributes", "data.txt"]);
-      runFixtureGit(subSource, [
+      const partialSeed = join(sandbox, "partial-seed");
+      initFixtureRepo(partialSeed, "base");
+      const partialBare = join(remotesDir, "partial.git");
+      runFixtureGit(sandbox, [
+        "clone",
+        "--quiet",
+        "--bare",
+        partialSeed,
+        partialBare,
+      ]);
+      writeFileSync(join(partialSeed, "extra.txt"), "extra\n");
+      runFixtureGit(partialSeed, ["add", "--", "extra.txt"]);
+      runFixtureGit(partialSeed, [
         "commit",
         "--quiet",
         "-m",
-        "add sub filter attr",
+        "missing-on-client",
       ]);
+      const missingCommitSha = runFixtureGit(partialSeed, [
+        "rev-parse",
+        "HEAD",
+      ]);
+      writeFileSync(join(partialSeed, "tip.txt"), "tip\n");
+      runFixtureGit(partialSeed, ["add", "--", "tip.txt"]);
+      runFixtureGit(partialSeed, ["commit", "--quiet", "-m", "remote-tip"]);
+      runFixtureGit(partialSeed, [
+        "push",
+        "--quiet",
+        partialBare,
+        "HEAD:refs/heads/other",
+      ]);
+      rmSync(partialSeed, { recursive: true, force: true });
+
+      const daemon = await startLocalGitDaemon(remotesDir);
+      stopDaemon = daemon.stop;
+      const partialRemoteUrl = `git://127.0.0.1:${String(daemon.port)}/partial.git`;
 
       const markerPath = join(sandbox, "marker-written");
       const markerScript = join(scriptsDir, "trap.sh");
@@ -70,11 +95,21 @@ describe("copy-home check guards", () => {
       );
       chmodSync(remoteHelper, 0o755);
 
-      const targets = plantedTriggerCases.map((entry) => {
+      const copyDirs = noExecutionCases.map((entry) => {
         const copyDir = join(noCopyDir, entry.name);
-        entry.plant(copyDir, markerScript, subSource);
-        return { copyDir, expectedKey: entry.expectedKey };
+        entry.plant(copyDir, markerScript, partialRemoteUrl, missingCommitSha);
+        return copyDir;
       });
+      const partialPackDir = join(
+        noCopyDir,
+        "partial-clone-copy",
+        ".git",
+        "objects",
+        "pack",
+      );
+      const packsBefore = existsSync(partialPackDir)
+        ? readdirSync(partialPackDir)
+        : [];
 
       const homesFile = join(sandbox, "homes.json");
       writeFileSync(
@@ -93,26 +128,30 @@ describe("copy-home check guards", () => {
           2,
         )}\n`,
       );
+      const globalFilterConfig = `[filter "globaltrap"]\n\tclean = ${markerScript}\n`;
       const envMap = {
-        ...writeFixtureEnv(sandbox),
+        ...writeFixtureEnv(sandbox, globalFilterConfig),
         PATH: `${scriptsDir}:${process.env.PATH ?? ""}`,
       };
       const before = fingerprintTree(sandbox);
       const { exitCode, data } = runCheckJson(homesFile, envMap, ["--remote"]);
       const after = fingerprintTree(sandbox);
+      const packsAfter = existsSync(partialPackDir)
+        ? readdirSync(partialPackDir)
+        : [];
 
       expect(exitCode).toBe(3);
       expect(after).toBe(before);
       expect(existsSync(markerPath)).toBe(false);
-      for (const { copyDir, expectedKey } of targets) {
+      expect(packsAfter).toEqual(packsBefore);
+      for (const copyDir of copyDirs) {
         expect(copyLossVerdict(data, copyDir)).toBe("unknown");
-        expect(
-          copyLossReasons(data, copyDir).some((reason) =>
-            reason.toLowerCase().includes(expectedKey),
-          ),
-        ).toBe(true);
       }
+      expect(
+        copyLossReasons(data, join(noCopyDir, "partial-clone-copy")),
+      ).toContain("partial clone ancestry not checked");
     } finally {
+      stopDaemon?.();
       rmSync(sandbox, { recursive: true, force: true });
     }
   });
@@ -318,7 +357,7 @@ describe("copy-home check guards", () => {
       expect(copyLossVerdict(data, outerWork)).toBe("work-found");
       expect(
         copyLossReasons(data, outerWork).some((reason) =>
-          reason.includes("uncommitted or untracked changes"),
+          reason.includes("local commits with no remote configured"),
         ),
       ).toBe(true);
       expect(copyLossVerdict(data, outerUnreadable)).toBe("unknown");

@@ -6,13 +6,6 @@ import type {
   ProgramsCapability,
 } from "agent-cli-kernel";
 import {
-  isAllowedConfigKey,
-  parseNullConfigKeys,
-  resolveGitConfigFiles,
-} from "./git-config.ts";
-import {
-  type CopyKind,
-  compareText,
   isInsidePath,
   parseGitmodulesPaths,
   parseLsRemoteShas,
@@ -36,17 +29,7 @@ function systemEmptyDirCandidates(): readonly string[] {
   ];
 }
 
-const safeGitEnvArgs = [
-  "GIT_OPTIONAL_LOCKS=0",
-  "GIT_TERMINAL_PROMPT=0",
-  "GIT_CONFIG_NOSYSTEM=1",
-  "GIT_SSH_COMMAND=ssh -o BatchMode=yes",
-  "GIT_ASKPASS=",
-  "SSH_ASKPASS=",
-  "GIT_EXTERNAL_DIFF=",
-] as const;
-
-const isolatedTransportEnvArgs = [
+const isolatedGitEnvArgs = [
   "-u",
   "GIT_DIR",
   "-u",
@@ -59,8 +42,15 @@ const isolatedTransportEnvArgs = [
   "GIT_CONFIG_PARAMETERS",
   "-u",
   "GIT_CONFIG_COUNT",
-  ...safeGitEnvArgs,
+  "GIT_OPTIONAL_LOCKS=0",
+  "GIT_TERMINAL_PROMPT=0",
+  "GIT_CONFIG_NOSYSTEM=1",
   "GIT_CONFIG_GLOBAL=/dev/null",
+  "GIT_SSH_COMMAND=ssh -o BatchMode=yes",
+  "GIT_ASKPASS=",
+  "SSH_ASKPASS=",
+  "GIT_EXTERNAL_DIFF=",
+  "GIT_NO_LAZY_FETCH=1",
 ] as const;
 
 const safeGitConfigArgs = [
@@ -90,13 +80,11 @@ const safeGitConfigArgs = [
   "protocol.ext.allow=never",
 ] as const;
 
-export type LocalConfigCheck =
-  | { readonly ok: true }
-  | { readonly ok: false; readonly reason: string };
-
 export type LsRemoteResult =
   | { readonly ok: true; readonly shas: readonly string[] }
   | { readonly ok: false; readonly reason: string };
+
+export type AncestryResult = "ancestor" | "not-ancestor" | "unknown";
 
 export type GitRunner = {
   readonly worktreeList: (
@@ -107,38 +95,16 @@ export type GitRunner = {
     repoPath: string,
     filePath: string,
   ) => Promise<readonly string[]>;
-  readonly checkLocalConfig: (
-    repoPath: string,
-    kind: CopyKind,
-  ) => Promise<LocalConfigCheck>;
-  readonly statusPorcelain: (repoPath: string) => Promise<{
-    readonly ok: boolean;
-    readonly dirty: boolean;
-    readonly reason?: string;
-  }>;
-  readonly hasStash: (
-    repoPath: string,
-  ) => Promise<{ readonly ok: boolean; readonly present: boolean }>;
-  readonly localCommitShas: (
-    repoPath: string,
-  ) => Promise<{ readonly ok: boolean; readonly shas: readonly string[] }>;
-  readonly remotes: (
-    repoPath: string,
-  ) => Promise<{ readonly ok: boolean; readonly names: readonly string[] }>;
-  readonly effectiveRemoteUrl: (
-    repoPath: string,
-    remote: string,
-  ) => Promise<string | undefined>;
   readonly lsRemoteShas: (
     effectiveUrl: string,
     emptyTransportDir: string | undefined,
   ) => Promise<LsRemoteResult>;
-  readonly commitExists: (repoPath: string, sha: string) => Promise<boolean>;
-  readonly hasUncontainedCommits: (
-    repoPath: string,
-    localShas: readonly string[],
-    remoteShas: readonly string[],
-  ) => Promise<{ readonly ok: boolean; readonly uncontained: boolean }>;
+  readonly isAncestor: (
+    gitDir: string,
+    emptyTransportDir: string | undefined,
+    localSha: string,
+    remoteTip: string,
+  ) => Promise<AncestryResult>;
 };
 
 function hasGitAncestor(dir: string): boolean {
@@ -180,22 +146,6 @@ export function findEmptyTransportDir(
   return undefined;
 }
 
-function parseLocalRefShas(stdout: string): Set<string> {
-  const shas = new Set<string>();
-  for (const rawLine of stdout.split("\n")) {
-    const line = rawLine.trim();
-    const space = line.indexOf(" ");
-    if (space === -1) continue;
-    const refName = line.slice(0, space);
-    if (refName.startsWith("refs/remotes/") || refName === "refs/stash") {
-      continue;
-    }
-    const sha = line.slice(space + 1).trim();
-    if (sha.length > 0) shas.add(sha);
-  }
-  return shas;
-}
-
 export function createGitRunner(
   programs: ProgramsCapability,
   envExecutable: ParsedPath | undefined,
@@ -221,33 +171,36 @@ export function createGitRunner(
     }
   }
 
-  async function execGit(
+  async function execMainCheckoutGit(
     repoPath: string,
     args: readonly string[],
-    timeoutMilliseconds = localGitTimeoutMs,
   ): Promise<ProgramResult | undefined> {
     return execEnvGit(
-      safeGitEnvArgs,
+      isolatedGitEnvArgs,
       ["-C", repoPath, ...safeGitConfigArgs, ...args],
-      timeoutMilliseconds,
+      localGitTimeoutMs,
     );
   }
 
   return {
     async worktreeList(repoPath) {
-      const res = await execGit(repoPath, ["worktree", "list", "--porcelain"]);
+      const res = await execMainCheckoutGit(repoPath, [
+        "worktree",
+        "list",
+        "--porcelain",
+      ]);
       if (res === undefined || res.exitCode !== 0) return undefined;
       return parseWorktreePorcelain(res.stdout);
     },
 
     async stageGitlinks(repoPath) {
-      const res = await execGit(repoPath, ["ls-files", "--stage"]);
+      const res = await execMainCheckoutGit(repoPath, ["ls-files", "--stage"]);
       if (res === undefined || res.exitCode !== 0) return new Set();
       return parseStageGitlinks(res.stdout);
     },
 
     async gitmodulesPaths(repoPath, filePath) {
-      const res = await execGit(repoPath, [
+      const res = await execMainCheckoutGit(repoPath, [
         "config",
         "--file",
         filePath,
@@ -258,99 +211,6 @@ export function createGitRunner(
       return parseGitmodulesPaths(res.stdout);
     },
 
-    async checkLocalConfig(repoPath, kind) {
-      const configFiles = resolveGitConfigFiles(repoPath, kind);
-      if (configFiles === undefined) {
-        return { ok: false, reason: "cannot read repository git config" };
-      }
-      const disallowed = new Set<string>();
-      for (const configFile of configFiles) {
-        const res = await execEnvGit(isolatedTransportEnvArgs, [
-          "config",
-          "--file",
-          configFile,
-          "--list",
-          "--null",
-          "--no-includes",
-        ]);
-        if (res === undefined || res.exitCode !== 0) {
-          return { ok: false, reason: "cannot read repository git config" };
-        }
-        for (const key of parseNullConfigKeys(res.stdout)) {
-          if (!isAllowedConfigKey(key)) disallowed.add(key);
-        }
-      }
-      if (disallowed.size > 0) {
-        const names = [...disallowed].sort(compareText);
-        return {
-          ok: false,
-          reason: `disallowed repository git config key(s): ${names.join(", ")}`,
-        };
-      }
-      return { ok: true };
-    },
-
-    async statusPorcelain(repoPath) {
-      const res = await execGit(repoPath, [
-        "status",
-        "--porcelain=v1",
-        "--untracked-files=normal",
-        "--ignore-submodules=all",
-      ]);
-      if (res === undefined || res.exitCode !== 0) {
-        return { ok: false, dirty: false, reason: "git status failed" };
-      }
-      return { ok: true, dirty: res.stdout.trim().length > 0 };
-    },
-
-    async hasStash(repoPath) {
-      const res = await execGit(repoPath, ["stash", "list"]);
-      if (res === undefined || res.exitCode !== 0) {
-        return { ok: false, present: false };
-      }
-      return { ok: true, present: res.stdout.trim().length > 0 };
-    },
-
-    async localCommitShas(repoPath) {
-      const refsRes = await execGit(repoPath, [
-        "for-each-ref",
-        "--format=%(refname) %(if)%(*objectname)%(then)%(*objectname)%(else)%(objectname)%(end)",
-        "refs/",
-      ]);
-      if (refsRes === undefined || refsRes.exitCode !== 0) {
-        return { ok: false, shas: [] };
-      }
-      const shas = parseLocalRefShas(refsRes.stdout);
-      const headRes = await execGit(repoPath, [
-        "rev-parse",
-        "--verify",
-        "-q",
-        "HEAD^{commit}",
-      ]);
-      const headSha =
-        headRes?.exitCode === 0 ? headRes.stdout.trim() : undefined;
-      if (headSha !== undefined && headSha.length > 0) shas.add(headSha);
-      return { ok: true, shas: [...shas] };
-    },
-
-    async remotes(repoPath) {
-      const res = await execGit(repoPath, ["remote"]);
-      if (res === undefined || res.exitCode !== 0) {
-        return { ok: false, names: [] };
-      }
-      const names = res.stdout
-        .split("\n")
-        .map((line) => line.trim())
-        .filter((line) => line.length > 0);
-      return { ok: true, names };
-    },
-
-    async effectiveRemoteUrl(repoPath, remote) {
-      const res = await execGit(repoPath, ["ls-remote", "--get-url", remote]);
-      if (res === undefined || res.exitCode !== 0) return undefined;
-      return res.stdout.trim();
-    },
-
     async lsRemoteShas(effectiveUrl, emptyTransportDir) {
       if (emptyTransportDir === undefined) {
         return {
@@ -359,7 +219,7 @@ export function createGitRunner(
         };
       }
       const res = await execEnvGit(
-        isolatedTransportEnvArgs,
+        isolatedGitEnvArgs,
         [
           "-C",
           emptyTransportDir,
@@ -376,30 +236,25 @@ export function createGitRunner(
       return { ok: true, shas: parseLsRemoteShas(res.stdout) };
     },
 
-    async commitExists(repoPath, sha) {
-      const res = await execGit(repoPath, [
-        "rev-parse",
-        "--verify",
-        "-q",
-        `${sha}^{commit}`,
-      ]);
-      return res !== undefined && res.exitCode === 0;
-    },
-
-    async hasUncontainedCommits(repoPath, localShas, remoteShas) {
-      if (localShas.length === 0) return { ok: true, uncontained: false };
-      if (remoteShas.length === 0) return { ok: true, uncontained: true };
-      const res = await execGit(repoPath, [
-        "rev-list",
-        "--max-count=1",
-        ...localShas,
-        "--not",
-        ...remoteShas,
-      ]);
-      if (res === undefined || res.exitCode !== 0) {
-        return { ok: false, uncontained: false };
-      }
-      return { ok: true, uncontained: res.stdout.trim().length > 0 };
+    async isAncestor(gitDir, emptyTransportDir, localSha, remoteTip) {
+      if (emptyTransportDir === undefined) return "unknown";
+      const res = await execEnvGit(
+        [...isolatedGitEnvArgs, `GIT_DIR=${gitDir}`],
+        [
+          "-C",
+          emptyTransportDir,
+          ...safeGitConfigArgs,
+          "merge-base",
+          "--is-ancestor",
+          localSha,
+          remoteTip,
+        ],
+        localGitTimeoutMs,
+      );
+      if (res === undefined) return "unknown";
+      if (res.exitCode === 0) return "ancestor";
+      if (res.exitCode === 1) return "not-ancestor";
+      return "unknown";
     },
   };
 }

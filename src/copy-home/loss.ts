@@ -1,6 +1,13 @@
 import { lstatSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import type { GitRunner } from "./git.ts";
+import {
+  applyInsteadOf,
+  type ParsedCopyGitConfig,
+  readCopyGitConfig,
+  resolveGitDirs,
+} from "./git-config.ts";
+import { readCopyRefsAndStash } from "./git-refs.ts";
 import type { LeaseLoadResult } from "./leases.ts";
 import {
   type CopyKind,
@@ -55,27 +62,29 @@ function findOtherFileInUnit(
   return findOtherFileInDir(unitDir, copiesInUnit);
 }
 
-type RemoteTipSummary = {
-  readonly presentTips: readonly string[];
+type RemoteTipsResult = {
+  readonly tips: ReadonlySet<string>;
   readonly anyProblem: boolean;
-  readonly anyTipMissing: boolean;
 };
 
 async function collectRemoteTips(
   git: GitRunner,
-  copyPath: string,
-  remoteNames: readonly string[],
+  config: Extract<ParsedCopyGitConfig, { readonly ok: true }>,
   emptyTransportDir: string | undefined,
   unknown: string[],
-): Promise<RemoteTipSummary> {
-  const presentTips = new Set<string>();
+): Promise<RemoteTipsResult> {
+  const tips = new Set<string>();
   let anyProblem = false;
-  let anyTipMissing = false;
 
-  for (const remote of remoteNames) {
-    const effectiveUrl = await git.effectiveRemoteUrl(copyPath, remote);
-    if (effectiveUrl === undefined || !isNetworkRemoteUrl(effectiveUrl)) {
-      unknown.push(`remote ${remote} effective URL is not a network URL`);
+  for (const remote of config.remotes) {
+    if (remote.vcs !== undefined || remote.url === undefined) {
+      unknown.push(`remote ${remote.name} effective URL is not a network URL`);
+      anyProblem = true;
+      continue;
+    }
+    const effectiveUrl = applyInsteadOf(remote.url, config.insteadOfRules);
+    if (!isNetworkRemoteUrl(effectiveUrl)) {
+      unknown.push(`remote ${remote.name} effective URL is not a network URL`);
       anyProblem = true;
       continue;
     }
@@ -84,63 +93,125 @@ async function collectRemoteTips(
       emptyTransportDir,
     );
     if (!remoteResult.ok) {
-      unknown.push(`${remoteResult.reason} for ${remote}`);
+      unknown.push(`${remoteResult.reason} for ${remote.name}`);
       anyProblem = true;
       continue;
     }
     for (const sha of remoteResult.shas) {
-      if (await git.commitExists(copyPath, sha)) presentTips.add(sha);
-      else anyTipMissing = true;
+      tips.add(sha);
     }
   }
-  return {
-    presentTips: [...presentTips],
-    anyProblem,
-    anyTipMissing,
-  };
+  return { tips, anyProblem };
 }
 
-async function assessGitRemotes(
-  git: GitRunner,
-  copyPath: string,
-  localShas: readonly string[],
-  emptyTransportDir: string | undefined,
-  workFound: string[],
-  unknown: string[],
-): Promise<void> {
+async function checkLocalRefContained(params: {
+  readonly git: GitRunner;
+  readonly gitDir: string;
+  readonly emptyTransportDir: string | undefined;
+  readonly localSha: string;
+  readonly remoteTips: ReadonlySet<string>;
+  readonly hasPartialClone: boolean;
+}): Promise<"contained" | "unpushed" | "undecided"> {
+  if (params.remoteTips.has(params.localSha)) return "contained";
+  if (params.remoteTips.size === 0) return "unpushed";
+  if (params.hasPartialClone) return "undecided";
+
+  let anyUndecided = false;
+  for (const tip of params.remoteTips) {
+    const verdict = await params.git.isAncestor(
+      params.gitDir,
+      params.emptyTransportDir,
+      params.localSha,
+      tip,
+    );
+    if (verdict === "ancestor") return "contained";
+    if (verdict === "unknown") anyUndecided = true;
+  }
+  return anyUndecided ? "undecided" : "unpushed";
+}
+
+async function checkAllLocalRefs(params: {
+  readonly git: GitRunner;
+  readonly gitDir: string;
+  readonly emptyTransportDir: string | undefined;
+  readonly localShas: readonly string[];
+  readonly remoteTips: ReadonlySet<string>;
+  readonly hasPartialClone: boolean;
+  readonly anyProblem: boolean;
+}): Promise<{ readonly anyUnpushed: boolean; readonly anyUndecided: boolean }> {
+  let anyUnpushed = false;
+  let anyUndecided = false;
+  for (const localSha of params.localShas) {
+    const status = await checkLocalRefContained({
+      git: params.git,
+      gitDir: params.gitDir,
+      emptyTransportDir: params.emptyTransportDir,
+      localSha,
+      remoteTips: params.remoteTips,
+      hasPartialClone: params.hasPartialClone,
+    });
+    if (status === "unpushed") {
+      if (params.anyProblem) anyUndecided = true;
+      else anyUnpushed = true;
+    } else if (status === "undecided") {
+      anyUndecided = true;
+    }
+  }
+  return { anyUnpushed, anyUndecided };
+}
+
+async function assessGitRemotes(params: {
+  readonly git: GitRunner;
+  readonly gitDir: string;
+  readonly config: Extract<ParsedCopyGitConfig, { readonly ok: true }>;
+  readonly localShas: readonly string[];
+  readonly emptyTransportDir: string | undefined;
+  readonly workFound: string[];
+  readonly unknown: string[];
+}): Promise<void> {
+  const {
+    git,
+    gitDir,
+    config,
+    localShas,
+    emptyTransportDir,
+    workFound,
+    unknown,
+  } = params;
   if (localShas.length === 0) return;
-  const remotes = await git.remotes(copyPath);
-  if (!remotes.ok) {
-    unknown.push("git remote failed");
+  if (config.hasInclude) {
+    unknown.push("repository git config uses includes");
     return;
   }
-  if (remotes.names.length === 0) {
+  if (config.remotes.length === 0) {
     workFound.push("local commits with no remote configured");
     return;
   }
 
-  const tips = await collectRemoteTips(
+  const { tips, anyProblem } = await collectRemoteTips(
     git,
-    copyPath,
-    remotes.names,
+    config,
     emptyTransportDir,
     unknown,
   );
-  const containment = await git.hasUncontainedCommits(
-    copyPath,
+  const { anyUnpushed, anyUndecided } = await checkAllLocalRefs({
+    git,
+    gitDir,
+    emptyTransportDir,
     localShas,
-    tips.presentTips,
-  );
-  if (!containment.ok) {
-    unknown.push("git rev-list failed");
-    return;
-  }
-  if (!containment.uncontained) return;
+    remoteTips: tips,
+    hasPartialClone: config.hasPartialClone,
+    anyProblem,
+  });
 
-  if (tips.anyTipMissing) {
-    unknown.push("remote tip missing locally");
-  } else if (!tips.anyProblem) {
+  if (anyUnpushed) {
     workFound.push("local ref not contained in any live remote tip");
+  } else if (anyUndecided && !anyProblem) {
+    unknown.push(
+      config.hasPartialClone
+        ? "partial clone ancestry not checked"
+        : "remote ancestry could not be decided",
+    );
   }
 }
 
@@ -153,40 +224,49 @@ async function assessGitCopy(
   workFound: string[],
   unknown: string[],
 ): Promise<void> {
-  const configCheck = await git.checkLocalConfig(copyPath, kind);
-  if (!configCheck.ok) {
-    unknown.push(configCheck.reason);
-    return;
-  }
-
   if (kind !== "bare") {
-    const status = await git.statusPorcelain(copyPath);
-    if (!status.ok) unknown.push(status.reason ?? "git status failed");
-    else if (status.dirty) workFound.push("uncommitted or untracked changes");
+    unknown.push("working tree not inspected");
   }
 
-  const stash = await git.hasStash(copyPath);
-  if (!stash.ok) unknown.push("git stash list failed");
-  else if (stash.present) workFound.push("stash present");
-
-  const local = await git.localCommitShas(copyPath);
-  if (!local.ok) {
-    unknown.push("git for-each-ref failed");
+  const dirs = resolveGitDirs(copyPath, kind);
+  if (dirs === undefined) {
+    unknown.push("cannot resolve repository git directory");
     return;
+  }
+
+  const config = readCopyGitConfig(dirs);
+  if (!config.ok) {
+    unknown.push(config.reason);
+    return;
+  }
+  if (config.hasUnsupportedRefStorage) {
+    unknown.push("unsupported git ref storage");
+    return;
+  }
+
+  const refs = readCopyRefsAndStash(dirs);
+  if (!refs.ok) {
+    unknown.push(refs.reason);
+    return;
+  }
+  if (refs.hasStash) {
+    workFound.push("stash present");
   }
 
   if (!checkRemote) {
     unknown.push("remote not checked");
     return;
   }
-  await assessGitRemotes(
+
+  await assessGitRemotes({
     git,
-    copyPath,
-    local.shas,
+    gitDir: dirs.gitDir,
+    config,
+    localShas: refs.shas,
     emptyTransportDir,
     workFound,
     unknown,
-  );
+  });
 }
 
 export async function assessLoss(params: {
