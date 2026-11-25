@@ -22,7 +22,7 @@ Decision question: where should each skill live so one source serves Claude Code
 
 ## Considered options
 
-- **Option A.** First-match placement across five skill homes (repository `.agents/skills/`, installed package, private project-group plugin, private vendored third-party plugin, and maintainer public or private skills plugin) with dual manifests, dual typed-only markers, and zero floating skills.
+- **Option A.** First-match placement across five skill homes (repository `.agents/skills/` or `skills/`, installed package, private project-group plugin, private vendored third-party plugin, and maintainer public or private skills plugin) with dual manifests, dual typed-only markers, and zero floating skills.
 - **Option B.** One global plugin holding every skill, including repository-only and package skills.
 - **Option C.** Copy every needed skill into each repository that uses it.
 
@@ -34,10 +34,10 @@ We choose **Option A** because it satisfies all five decision drivers.
 
 Every skill is placed by the first rule that matches:
 
-1. A skill that describes only one repository lives in that repository's `.agents/skills/`, regardless of who owns the repository.
+1. A skill that describes only that repository's own code or workflow, and that the repository's own skill process keeps there, lives in that repository in `.agents/skills/` or `skills/` (with any `.claude/skills/` link). This covers the maintainer's repositories and team repositories whose owners keep the skill.
 2. A skill shipped by a package (for example `agent-cli-kernel`) comes from the installed package version and upgrades with that package. Never copy the skill.
-3. The maintainer's own skills for one project group whose repository is not owned by the maintainer alone live in a private plugin for that project group.
-4. A skill written by a third party lives in the private plugin of vendored third-party skills.
+3. The maintainer's own skills for a project group whose repositories the maintainer does not own live in a private plugin for that project group, when the skill is not repository-local under rule 1.
+4. A skill written by a third party lives in the private plugin of vendored third-party skills. Third-party skills stay unchanged, with their licence and source commit kept beside them.
 5. Every other skill lives in the maintainer's public skills plugin (`nathanvale-skills`) or the maintainer's private skills plugin, chosen by privacy.
 
 The maintainer keeps the map from these private plugin roles to concrete plugin names privately.
@@ -45,10 +45,12 @@ The maintainer keeps the map from these private plugin roles to concrete plugin 
 ### Cross-harness plugin contract
 
 - **Zero floating skills.** No `SKILL.md` sits in any harness user skills folder.
-- **Dual static manifests.** Each plugin home (rules 3 to 5) is an installable plugin carrying `.claude-plugin/plugin.json` (read by Claude Code and Codex) and `plugin.json` (read by Antigravity).
+- **Installed in all three harnesses.** Each plugin home (rules 3 to 5) is installed in Claude Code, Codex, and Antigravity.
+- **Dual static manifests.** Each plugin home carries `.claude-plugin/plugin.json` (read by Claude Code and Codex) and `plugin.json` (read by Antigravity).
 - **Dual typed-only markers.** Each typed-only skill sets `disable-model-invocation: true` in `SKILL.md` frontmatter (read by Claude Code and Antigravity) and `policy.allow_implicit_invocation: false` in `agents/openai.yaml` (read by Codex).
 - **Enabled plugins for typed-only skills.** Do not place typed-only skills in a turned-off plugin. A turned-off Antigravity or Codex plugin's skills cannot be invoked by typing.
 - **Project-only wiring.** Each harness activates a project-group plugin differently. Claude Code enables the plugin in `.claude/settings.local.json`. Codex sets `enabled = false` in user settings and `enabled = true` in the trusted project's `.codex/config.toml`. Antigravity loads a plugin folder placed in the project's `.agents/plugins/`.
+- **True archival.** Archiving a skill removes it at its source (its plugin or folder), not by a settings toggle, so all three harnesses lose it together. The maintainer, 25 November 11:23: "it has to be a true archival".
 
 ## Consequences
 
@@ -91,12 +93,15 @@ The maintainer keeps the map from these private plugin roles to concrete plugin 
 
 ### Implementation confirmation
 
-An automated guard enforces four rules and exits non-zero on any failure. The guard was proven in throwaway homes, and its repository home is undecided.
+An automated guard enforces seven rules and exits non-zero on any failure. Guard placement stays open. The current proposal runs drift and manifest rules in each plugin repository's check (later the starter kit's skills layer) and runs the home-folder rule as a read-only doctor command.
 
-- `floating-skill`: catches any `SKILL.md` in any of the three harnesses' user skills folders.
-- `typed-drift`: catches any skill declared typed-only that is missing either `disable-model-invocation: true` or `agents/openai.yaml` with `policy.allow_implicit_invocation: false`.
-- `auto-drift`: catches any automatic skill that carries either typed-only marker.
-- `undeclared`: catches any plugin skill missing from the declaration file.
+- `floating-skill`: catches a `SKILL.md` in any harness's user skills folder (Claude Code, the shared agents folder, Codex, or Antigravity).
+- `outside-home`: catches a plugin skill that is not in one of the plugin homes.
+- `missing-manifest`: catches a plugin home that lacks either `.claude-plugin/plugin.json` or `plugin.json`.
+- `name-clash`: catches a repository skill that shares a name with a plugin skill.
+- `typed-drift`: catches a declared typed-only skill that misses either `disable-model-invocation: true` or `agents/openai.yaml` with `policy.allow_implicit_invocation: false`.
+- `auto-drift`: catches an automatic skill that carries either typed-only marker.
+- `undeclared`: catches a plugin skill that has no row in its repository's declaration file.
 
 ### Revisit triggers
 
@@ -107,7 +112,8 @@ An automated guard enforces four rules and exits non-zero on any failure. The gu
 ## Open questions
 
 - **Third-party typed-only skills in Codex.** Codex ignores `disable-model-invocation: true`, so third-party skills without `agents/openai.yaml` still appear in Codex's automatic listing. Options are turning those skills off by name with `[[skills.config]]` or asking upstream authors to add `agents/openai.yaml`.
-- **Private mapping and guard home.** Concrete plugin names, skill-to-group membership, and the repository home for the guard remain for the maintainer to assign.
+- **Guard placement.** Final placement for the seven guard rules stays open. The proposed split runs drift and manifest rules in each plugin repository's check (later the starter kit's skills layer) and runs the home-folder rule as a read-only doctor command.
+- **Private mapping.** Concrete plugin names and skill-to-group membership remain for the maintainer to assign privately.
 
 ## References
 

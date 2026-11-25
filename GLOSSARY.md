@@ -47,7 +47,7 @@ _Avoid_: incident log, open ticket (for local recovery protection)
 ### Skills
 
 **Skill home**:
-One of the five allowed locations where an agent skill may live: a repository's `.agents/skills/`, an installed package version, a private project-group plugin, the private plugin of vendored third-party skills, or the maintainer's public or private skills plugin.
+One of the five allowed locations where an agent skill may live: a repository's `.agents/skills/` or `skills/`, an installed package version, a private project-group plugin, the private plugin of vendored third-party skills, or the maintainer's public or private skills plugin.
 _Avoid_: skill location (unqualified), skill repo (when a package or plugin is meant)
 
 **Floating skill**:
