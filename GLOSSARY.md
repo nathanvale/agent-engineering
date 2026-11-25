@@ -43,3 +43,21 @@ _Avoid_: lease (for a transient runtime lock)
 **Recovery case**:
 An unresolved incident whose raw run evidence must remain preserved for diagnosis or repair.
 _Avoid_: incident log, open ticket (for local recovery protection)
+
+### Skills
+
+**Skill home**:
+One of the five allowed locations where an agent skill may live: a repository's `.agents/skills/`, an installed package version, a private project-group plugin, the private plugin of vendored third-party skills, or the maintainer's public or private skills plugin.
+_Avoid_: skill location (unqualified), skill repo (when a package or plugin is meant)
+
+**Floating skill**:
+A `SKILL.md` file placed directly in a harness's user skills folder outside any repository, package, or installable plugin.
+_Avoid_: loose skill, user skill, global skill
+
+**Typed-only skill**:
+A skill hidden from automatic model selection across harnesses by explicit invocation markers and loaded only when the user invokes it by name.
+_Avoid_: manual skill, hidden skill, disabled skill
+
+**Automatic skill**:
+A skill whose name and description appear in the harness's initial skill listing so the model can load it without an explicit slash or dollar command.
+_Avoid_: implicit skill, default skill, always-on skill
