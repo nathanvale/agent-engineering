@@ -98,7 +98,7 @@ The maintainer keeps the map from these private plugin roles to concrete plugin 
 An automated guard enforces seven rules and exits non-zero on any failure. Guard placement stays open. The current proposal runs drift and manifest rules in each plugin repository's check (later the starter kit's skills layer) and runs the home-folder rule as a read-only doctor command.
 
 - `floating-skill`: catches a `SKILL.md` in any harness's user skills folder (Claude Code, the shared agents folder, Codex, or Antigravity).
-- `outside-home`: catches a plugin skill that is not in one of the plugin homes. The connectors plugin counts as a permitted home.
+- `outside-home`: catches a plugin skill that is not in one of the plugin homes or the connectors plugin (the one named exception).
 - `missing-manifest`: catches a plugin home that lacks either `.claude-plugin/plugin.json` or `plugin.json`.
 - `name-clash`: catches a repository skill that shares a name with a plugin skill.
 - `typed-drift`: catches a declared typed-only skill that misses either `disable-model-invocation: true` or `agents/openai.yaml` with `policy.allow_implicit_invocation: false`.
