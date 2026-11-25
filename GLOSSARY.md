@@ -61,3 +61,29 @@ _Avoid_: manual skill, hidden skill, disabled skill
 **Automatic skill**:
 A skill whose name and description appear in the harness's initial skill listing so the model can load it without an explicit slash or dollar command.
 _Avoid_: implicit skill, default skill, always-on skill
+
+### Agent copies
+
+**Agent copy**:
+A repository checkout, linked Git worktree, bare repository, dependency tree, package cache, virtual environment, or non-Git project tree created on disk by an agent, harness, or build tool.
+_Avoid_: clone (when worktrees or bulk copies are included), checkout (unqualified), temp repo
+
+**Copy home**:
+The single designated folder and lifecycle rule assigned to one kind of agent copy, defining its maker, time to live, cleanup trigger, and guard check.
+_Avoid_: copy location, workspace folder, staging directory
+
+**Throwaway copy**:
+A temporary agent copy created inside a fresh `mktemp -d` folder under the system temp directory for one bounded job, deleted by its maker after saving evidence and never kept longer than 72 hours.
+_Avoid_: scratch repo, temp clone (unqualified), backup clone
+
+**Tool-owned home**:
+A registered directory managed by an external tool whose storage path cannot be redirected, where the tool controls creation and cleanup and the guard accepts copies inside it.
+_Avoid_: vendor folder, external repo dir, unmanaged worktree
+
+**Stray copy**:
+An agent copy found outside its designated copy home, including a copy inside a no-copy folder, an unregistered copy inside `<repo>/.worktrees/`, or a nested Git copy inside another copy or bulk folder.
+_Avoid_: orphan repo, leftover clone, rogue checkout
+
+**Loss check**:
+A read-only assessment of a copy folder (or an entire throwaway `mktemp -d` folder) that advises the maintainer whether deleting it would lose work, reporting `nothing-found`, `work-found`, or `unknown` with reasons, without deleting anything.
+_Avoid_: delete check, safe-to-delete flag, cleanup verdict
