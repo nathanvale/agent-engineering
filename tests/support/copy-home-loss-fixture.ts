@@ -136,6 +136,54 @@ async function waitForDaemon(port: number, timeoutMs: number): Promise<void> {
   throw new Error(`git daemon on 127.0.0.1:${String(port)} did not listen`);
 }
 
+export async function startLocalGitDaemon(remotesDir: string): Promise<{
+  readonly port: number;
+  readonly pid: number;
+  readonly stop: () => void;
+}> {
+  const port = allocatePort();
+  const gitDaemonBinary = join(
+    runFixtureGit(remotesDir, ["--exec-path"]),
+    "git-daemon",
+  );
+  const daemon = Bun.spawn(
+    [
+      gitDaemonBinary,
+      "--listen=127.0.0.1",
+      `--port=${String(port)}`,
+      "--export-all",
+      "--reuseaddr",
+      `--base-path=${remotesDir}`,
+      remotesDir,
+    ],
+    {
+      stdin: "ignore",
+      stdout: "ignore",
+      stderr: "ignore",
+      detached: false,
+    },
+  );
+  const stop = () => {
+    try {
+      process.kill(daemon.pid, "SIGTERM");
+    } catch {
+      return;
+    }
+    try {
+      process.kill(daemon.pid, "SIGKILL");
+    } catch {
+      return;
+    }
+  };
+  try {
+    await waitForDaemon(port, 5_000);
+  } catch (error) {
+    stop();
+    throw error;
+  }
+  return { port, pid: daemon.pid, stop };
+}
+
 function createLossCases(
   root: string,
   remotesDir: string,
@@ -247,30 +295,9 @@ export async function buildLossFixture(
   rmSync(case06Prep, { recursive: true, force: true });
   rmSync(seed, { recursive: true, force: true });
 
-  const port = allocatePort();
-  const gitDaemonBinary = join(
-    runFixtureGit(root, ["--exec-path"]),
-    "git-daemon",
-  );
-  const daemon = Bun.spawn(
-    [
-      gitDaemonBinary,
-      "--listen=127.0.0.1",
-      `--port=${String(port)}`,
-      "--export-all",
-      "--reuseaddr",
-      `--base-path=${remotesDir}`,
-      remotesDir,
-    ],
-    {
-      stdin: "ignore",
-      stdout: "ignore",
-      stderr: "ignore",
-      detached: false,
-    },
-  );
+  const daemon = await startLocalGitDaemon(remotesDir);
   writeFileSync(join(root, "daemon.pid"), `${String(daemon.pid)}\n`);
-  await waitForDaemon(port, 5_000);
+  const port = daemon.port;
 
   const { case07Bare, forgeUrl, case09 } = createLossCases(
     root,

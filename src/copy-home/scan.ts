@@ -1,11 +1,11 @@
-import { readdirSync, realpathSync } from "node:fs";
-import { homedir } from "node:os";
+import { mkdtempSync, readdirSync, realpathSync, rmSync } from "node:fs";
+import { homedir, tmpdir } from "node:os";
 import { isAbsolute, join } from "node:path";
 import type { ParsedPath, ProgramsCapability } from "agent-cli-kernel";
 import { createGitRunner, type GitRunner } from "./git.ts";
 import { type LoadedHomes, loadHomes } from "./homes.ts";
 import { loadLeases } from "./leases.ts";
-import { assessLoss } from "./loss.ts";
+import { assessLoss, propagateUnitLosses } from "./loss.ts";
 import {
   buildSummary,
   type CheckReport,
@@ -18,6 +18,7 @@ import {
   isInsidePath,
   matchMostSpecificRoot,
   type ResolvedRoot,
+  throwawayUnitDir,
 } from "./rules.ts";
 import { type DetectedCopy, safeLstat, walkAllTargets } from "./walk.ts";
 
@@ -48,19 +49,11 @@ function codexWorktreesRoot(): string {
 function collectMainCheckoutsInParent(
   parent: string,
   mainCheckouts: Set<string>,
-  findings: Finding[],
 ): void {
   let entries: readonly string[];
   try {
     entries = readdirSync(parent);
-  } catch (error) {
-    const code = errorCode(error);
-    if (code === "ENOENT") return;
-    findings.push({
-      kind: "scan-incomplete",
-      path: parent,
-      reason: `Cannot read repositories directory (${code ?? "error"}).`,
-    });
+  } catch {
     return;
   }
   for (const name of entries) {
@@ -81,11 +74,10 @@ function collectMainCheckoutsInParent(
 
 function discoverMainCheckouts(
   repoParents: readonly string[],
-  findings: Finding[],
 ): readonly string[] {
   const mainCheckouts = new Set<string>();
   for (const parent of repoParents) {
-    collectMainCheckoutsInParent(parent, mainCheckouts, findings);
+    collectMainCheckoutsInParent(parent, mainCheckouts);
   }
   return [...mainCheckouts];
 }
@@ -161,20 +153,27 @@ function classifyRegisteredWorktree(
   findings: Finding[],
 ): ClassificationResult {
   const taskHome = join(wtInfo.mainCheckout, ".worktrees");
-  if (isInsidePath(copyPath, taskHome) && copyPath !== taskHome) {
+  const matched = matchMostSpecificRoot(copyPath, roots);
+  const inTaskHome = isInsidePath(copyPath, taskHome) && copyPath !== taskHome;
+  const overriddenByRoot =
+    matched !== undefined && matched.path.length >= taskHome.length;
+  if (inTaskHome && !overriddenByRoot) {
     return { home: "repository", verdict: "ok", throwawayRoot: undefined };
   }
-  const matched = matchMostSpecificRoot(copyPath, roots);
   if (matched?.role === "toolOwned") {
     return { home: "toolOwned", verdict: "ok", throwawayRoot: undefined };
   }
   if (exceptions.has(copyPath)) {
     return { home: "exception", verdict: "ok", throwawayRoot: undefined };
   }
+  const reason =
+    inTaskHome && matched !== undefined
+      ? `Registered worktree of ${wtInfo.mainCheckout} sits in ${matched.role} root ${matched.path}.`
+      : `Registered worktree of ${wtInfo.mainCheckout} sits outside ${taskHome}.`;
   findings.push({
     kind: "stray-worktree",
     path: copyPath,
-    reason: `Registered worktree of ${wtInfo.mainCheckout} sits outside ${taskHome}.`,
+    reason,
   });
   return {
     home: matched?.role ?? "unmatched",
@@ -284,110 +283,139 @@ export async function runCopyHomeCheck(options: {
   const loaded: LoadedHomes = loadHomes(options.homesPath);
   if (!loaded.ok) return loaded;
 
-  const git = createGitRunner(options.programs, options.envExecutable);
-  const findings: Finding[] = [...loaded.initialFindings];
-  const mainCheckoutsList = discoverMainCheckouts(
-    loaded.repositories,
-    findings,
-  );
-  const mainCheckouts = new Set(mainCheckoutsList);
-  const exemptSubmodules = new Set<string>();
-  const registeredWorktrees = new Map<string, RegisteredWorktreeInfo>();
-
-  for (const mainCheckout of mainCheckoutsList) {
-    await collectExemptSubmodules(mainCheckout, git, exemptSubmodules);
-    await collectRegisteredWorktrees(
-      mainCheckout,
-      git,
-      registeredWorktrees,
-      findings,
-    );
-  }
-
-  const allRoots: ResolvedRoot[] = [...loaded.roots];
-  for (const mainCheckout of mainCheckoutsList) {
-    allRoots.push({
-      role: "noCopy",
-      path: join(mainCheckout, ".claude", "worktrees"),
-    });
-  }
-  const codexRoot = codexWorktreesRoot();
+  const emptyHooksDir = mkdtempSync(join(tmpdir(), "copy-home-hooks-"));
   try {
-    allRoots.push({ role: "noCopy", path: realpathSync.native(codexRoot) });
-  } catch (error) {
-    const code = errorCode(error);
-    if (code !== "ENOENT") {
-      findings.push({
-        kind: "scan-incomplete",
-        path: codexRoot,
-        reason: `Cannot resolve Codex worktrees root (${code ?? "error"}).`,
+    const git = createGitRunner(
+      options.programs,
+      options.envExecutable,
+      emptyHooksDir,
+    );
+    const findings: Finding[] = [...loaded.initialFindings];
+    const mainCheckoutsList = discoverMainCheckouts(loaded.repositories);
+    const mainCheckouts = new Set(mainCheckoutsList);
+    const exemptSubmodules = new Set<string>();
+    const registeredWorktrees = new Map<string, RegisteredWorktreeInfo>();
+
+    for (const mainCheckout of mainCheckoutsList) {
+      await collectExemptSubmodules(mainCheckout, git, exemptSubmodules);
+      await collectRegisteredWorktrees(
+        mainCheckout,
+        git,
+        registeredWorktrees,
+        findings,
+      );
+    }
+
+    const allRoots: ResolvedRoot[] = [...loaded.roots];
+    for (const mainCheckout of mainCheckoutsList) {
+      allRoots.push({
+        role: "noCopy",
+        path: join(mainCheckout, ".claude", "worktrees"),
       });
     }
-    allRoots.push({ role: "noCopy", path: codexRoot });
+    const codexRoot = codexWorktreesRoot();
+    try {
+      allRoots.push({ role: "noCopy", path: realpathSync.native(codexRoot) });
+    } catch (error) {
+      const code = errorCode(error);
+      if (code !== "ENOENT") {
+        findings.push({
+          kind: "scan-incomplete",
+          path: codexRoot,
+          reason: `Cannot resolve Codex worktrees root (${code ?? "error"}).`,
+        });
+      }
+      allRoots.push({ role: "noCopy", path: codexRoot });
+    }
+
+    const walkTargets = [
+      ...loaded.repositories,
+      ...mainCheckoutsList,
+      ...registeredWorktrees.keys(),
+      ...allRoots.map((root) => root.path),
+      ...loaded.exceptions.map((entry) => entry.path),
+    ];
+
+    const detected = walkAllTargets(walkTargets, findings);
+    const exceptionsMap = new Map(
+      loaded.exceptions.map((entry) => [entry.path, entry.reason]),
+    );
+    const leases = loadLeases();
+    const nowMs = Date.now();
+    const allCopyPaths = [...detected.keys()];
+    const sortedDetected = [...detected.values()].sort((a, b) =>
+      compareText(a.path, b.path),
+    );
+    const assessed: {
+      readonly copy: DetectedCopy;
+      readonly classified: ClassificationResult;
+      readonly unitDir: string;
+      readonly loss: Awaited<ReturnType<typeof assessLoss>>;
+    }[] = [];
+
+    for (const copy of sortedDetected) {
+      const classified = classifyCopy({
+        copy,
+        mainCheckouts,
+        exemptSubmodules,
+        registeredWorktrees,
+        roots: allRoots,
+        exceptions: exceptionsMap,
+        nowMs,
+        findings,
+      });
+      const unitDir =
+        classified.throwawayRoot !== undefined
+          ? throwawayUnitDir(copy.path, classified.throwawayRoot)
+          : copy.path;
+      const loss = await assessLoss({
+        copyPath: copy.path,
+        kind: copy.kind,
+        throwawayRoot: classified.throwawayRoot,
+        allCopyPaths,
+        leases,
+        checkRemote: options.checkRemote,
+        git,
+      });
+      assessed.push({ copy, classified, unitDir, loss });
+    }
+
+    const finalLosses = leases.ok
+      ? propagateUnitLosses(
+          assessed.map((item) => ({
+            path: item.copy.path,
+            unitDir: item.unitDir,
+            loss: item.loss,
+          })),
+          findings,
+        )
+      : assessed.map((item) => item.loss);
+
+    const copies: CopyRecord[] = assessed.map((item, index) => ({
+      path: item.copy.path,
+      kind: item.copy.kind,
+      home: item.classified.home,
+      verdict: item.classified.verdict,
+      lastTouched: new Date(item.copy.mtimeMs).toISOString(),
+      loss: finalLosses[index] ?? item.loss,
+    }));
+
+    findings.sort(
+      (a, b) => compareText(a.kind, b.kind) || compareText(a.path, b.path),
+    );
+    const complete = !findings.some(
+      (finding) => finding.kind === "scan-incomplete",
+    );
+    return {
+      ok: true,
+      report: {
+        complete,
+        findings,
+        copies,
+        summary: buildSummary(copies),
+      },
+    };
+  } finally {
+    rmSync(emptyHooksDir, { recursive: true, force: true });
   }
-
-  const walkTargets = [
-    ...mainCheckoutsList,
-    ...registeredWorktrees.keys(),
-    ...allRoots.map((root) => root.path),
-    ...loaded.exceptions.map((entry) => entry.path),
-  ];
-
-  const detected = walkAllTargets(walkTargets, findings);
-  const exceptionsMap = new Map(
-    loaded.exceptions.map((entry) => [entry.path, entry.reason]),
-  );
-  const leases = loadLeases();
-  const nowMs = Date.now();
-  const allCopyPaths = [...detected.keys()];
-  const copies: CopyRecord[] = [];
-
-  const sortedDetected = [...detected.values()].sort((a, b) =>
-    compareText(a.path, b.path),
-  );
-  for (const copy of sortedDetected) {
-    const classified = classifyCopy({
-      copy,
-      mainCheckouts,
-      exemptSubmodules,
-      registeredWorktrees,
-      roots: allRoots,
-      exceptions: exceptionsMap,
-      nowMs,
-      findings,
-    });
-    const loss = await assessLoss({
-      copyPath: copy.path,
-      kind: copy.kind,
-      throwawayRoot: classified.throwawayRoot,
-      allCopyPaths,
-      leases,
-      checkRemote: options.checkRemote,
-      git,
-    });
-    copies.push({
-      path: copy.path,
-      kind: copy.kind,
-      home: classified.home,
-      verdict: classified.verdict,
-      lastTouched: new Date(copy.mtimeMs).toISOString(),
-      loss,
-    });
-  }
-
-  findings.sort(
-    (a, b) => compareText(a.kind, b.kind) || compareText(a.path, b.path),
-  );
-  const complete = !findings.some(
-    (finding) => finding.kind === "scan-incomplete",
-  );
-  return {
-    ok: true,
-    report: {
-      complete,
-      findings,
-      copies,
-      summary: buildSummary(copies),
-    },
-  };
 }

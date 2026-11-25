@@ -4,10 +4,12 @@ import type { GitRunner } from "./git.ts";
 import type { LeaseLoadResult } from "./leases.ts";
 import {
   type CopyKind,
+  type Finding,
   isGitCopyKind,
   isInsidePath,
   isNetworkRemoteUrl,
   type LossResult,
+  type LossVerdict,
   throwawayUnitDir,
 } from "./rules.ts";
 
@@ -141,7 +143,7 @@ async function assessGitCopy(
 ): Promise<void> {
   if (kind !== "bare") {
     const status = await git.statusPorcelain(copyPath);
-    if (!status.ok) unknown.push("git status failed");
+    if (!status.ok) unknown.push(status.reason ?? "git status failed");
     else if (status.dirty) workFound.push("uncommitted or untracked changes");
   }
 
@@ -219,4 +221,85 @@ export async function assessLoss(params: {
     return { verdict: "unknown", reasons: unknown };
   }
   return { verdict: "nothing-found", reasons: [] };
+}
+
+type CopyLossEntry = {
+  readonly path: string;
+  readonly unitDir: string;
+  readonly loss: LossResult;
+};
+
+const verdictRank: Readonly<Record<LossVerdict, number>> = {
+  "nothing-found": 0,
+  unknown: 1,
+  "work-found": 2,
+};
+
+function mergeLossVerdict(left: LossVerdict, right: LossVerdict): LossVerdict {
+  return verdictRank[right] > verdictRank[left] ? right : left;
+}
+
+function appendNestedReasons(other: CopyLossEntry, reasons: string[]): void {
+  if (other.loss.reasons.length === 0) {
+    reasons.push(`nested copy ${other.path}: ${other.loss.verdict}`);
+    return;
+  }
+  for (const reason of other.loss.reasons) {
+    reasons.push(`nested copy ${other.path}: ${reason}`);
+  }
+}
+
+function mergeNestedLosses(
+  entry: CopyLossEntry,
+  entries: readonly CopyLossEntry[],
+  reasons: string[],
+): LossVerdict {
+  let verdict: LossVerdict = entry.loss.verdict;
+  for (const other of entries) {
+    if (
+      other.path === entry.path ||
+      !isInsidePath(other.path, entry.unitDir) ||
+      other.loss.verdict === "nothing-found"
+    ) {
+      continue;
+    }
+    verdict = mergeLossVerdict(verdict, other.loss.verdict);
+    appendNestedReasons(other, reasons);
+  }
+  return verdict;
+}
+
+function mergeScanIncompleteFindings(
+  unitDir: string,
+  scanIncomplete: readonly Finding[],
+  initialVerdict: LossVerdict,
+  reasons: string[],
+): LossVerdict {
+  let verdict = initialVerdict;
+  for (const finding of scanIncomplete) {
+    if (!isInsidePath(finding.path, unitDir)) continue;
+    verdict = mergeLossVerdict(verdict, "unknown");
+    reasons.push(`unreadable path ${finding.path}: ${finding.reason}`);
+  }
+  return verdict;
+}
+
+export function propagateUnitLosses(
+  entries: readonly CopyLossEntry[],
+  findings: readonly Finding[],
+): readonly LossResult[] {
+  const scanIncomplete = findings.filter(
+    (finding) => finding.kind === "scan-incomplete",
+  );
+  return entries.map((entry) => {
+    const reasons: string[] = [...entry.loss.reasons];
+    const afterNested = mergeNestedLosses(entry, entries, reasons);
+    const verdict = mergeScanIncompleteFindings(
+      entry.unitDir,
+      scanIncomplete,
+      afterNested,
+      reasons,
+    );
+    return { verdict, reasons };
+  });
 }

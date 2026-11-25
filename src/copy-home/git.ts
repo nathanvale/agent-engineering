@@ -4,6 +4,7 @@ import type {
   ProgramsCapability,
 } from "agent-cli-kernel";
 import {
+  compareText,
   parseGitmodulesPaths,
   parseLsRemoteShas,
   parseStageGitlinks,
@@ -15,6 +16,17 @@ const localGitTimeoutMs = 10_000;
 const remoteGitTimeoutMs = 20_000;
 const outputLimitBytes = 2_097_152;
 const shutdownMs = 1_000;
+const unsafeFilterKeyPattern = /^filter\..+\.(clean|smudge|process)$/i;
+const scopedCredentialHelperPattern = /^credential\..+\.helper$/i;
+const safeGitEnvArgs = [
+  "GIT_OPTIONAL_LOCKS=0",
+  "GIT_TERMINAL_PROMPT=0",
+  "GIT_CONFIG_NOSYSTEM=1",
+  "GIT_SSH_COMMAND=ssh -o BatchMode=yes",
+  "GIT_ASKPASS=",
+  "SSH_ASKPASS=",
+  "GIT_EXTERNAL_DIFF=",
+] as const;
 
 export type GitRunner = {
   readonly worktreeList: (
@@ -25,9 +37,11 @@ export type GitRunner = {
     repoPath: string,
     filePath: string,
   ) => Promise<readonly string[]>;
-  readonly statusPorcelain: (
-    repoPath: string,
-  ) => Promise<{ readonly ok: boolean; readonly dirty: boolean }>;
+  readonly statusPorcelain: (repoPath: string) => Promise<{
+    readonly ok: boolean;
+    readonly dirty: boolean;
+    readonly reason?: string;
+  }>;
   readonly hasStash: (
     repoPath: string,
   ) => Promise<{ readonly ok: boolean; readonly present: boolean }>;
@@ -69,11 +83,103 @@ function parseLocalRefShas(stdout: string): Set<string> {
   return shas;
 }
 
+function matchBlockedRepoConfigKey(
+  key: string,
+  value: string,
+  hasValue: boolean,
+): string | undefined {
+  const lowerKey = key.toLowerCase();
+  const trimmed = value.trim();
+  if (unsafeFilterKeyPattern.test(key) && trimmed.length > 0) {
+    return key;
+  }
+  if (lowerKey === "diff.external" && trimmed.length > 0) {
+    return "diff.external";
+  }
+  if (
+    lowerKey === "core.fsmonitor" &&
+    (!hasValue || (trimmed.length > 0 && trimmed.toLowerCase() !== "false"))
+  ) {
+    return "core.fsmonitor";
+  }
+  return undefined;
+}
+
+function parseLocalConfigEntries(stdout: string): readonly {
+  readonly key: string;
+  readonly value: string;
+  readonly hasValue: boolean;
+}[] {
+  const entries: {
+    readonly key: string;
+    readonly value: string;
+    readonly hasValue: boolean;
+  }[] = [];
+  const parts = stdout.split("\0");
+  for (let index = 0; index + 1 < parts.length; index += 2) {
+    const scope = parts[index];
+    const entry = parts[index + 1];
+    if (
+      (scope !== "local" && scope !== "worktree") ||
+      entry === undefined ||
+      entry.length === 0
+    ) {
+      continue;
+    }
+    const newline = entry.indexOf("\n");
+    const key = newline === -1 ? entry : entry.slice(0, newline);
+    const value = newline === -1 ? "" : entry.slice(newline + 1);
+    entries.push({ key, value, hasValue: newline !== -1 });
+  }
+  return entries;
+}
+
+function parseBlockedRepoConfigKeys(stdout: string): readonly string[] {
+  const blocked = new Set<string>();
+  for (const { key, value, hasValue } of parseLocalConfigEntries(stdout)) {
+    const match = matchBlockedRepoConfigKey(key, value, hasValue);
+    if (match !== undefined) blocked.add(match);
+  }
+  return [...blocked].sort(compareText);
+}
+
+function hasScopedCredentialHelper(stdout: string): boolean {
+  return parseLocalConfigEntries(stdout).some(
+    ({ key, value }) =>
+      scopedCredentialHelperPattern.test(key) && value.trim().length > 0,
+  );
+}
+
 export function createGitRunner(
   programs: ProgramsCapability,
   envExecutable: ParsedPath | undefined,
+  emptyHooksDir: string,
 ): GitRunner {
   const gitExecutable = Bun.which("git");
+  const safeGitConfigArgs = [
+    "-c",
+    "core.fsmonitor=false",
+    "-c",
+    "core.untrackedCache=false",
+    "-c",
+    `core.hooksPath=${emptyHooksDir}`,
+    "-c",
+    "credential.helper=",
+    "-c",
+    "core.sshCommand=ssh -o BatchMode=yes",
+    "-c",
+    "core.askPass=",
+    "-c",
+    "diff.external=",
+    "-c",
+    "core.pager=cat",
+    "-c",
+    "maintenance.auto=false",
+    "-c",
+    "gc.auto=0",
+    "-c",
+    "protocol.ext.allow=never",
+  ] as const;
 
   async function execGit(
     repoPath: string,
@@ -85,13 +191,12 @@ export function createGitRunner(
       return await programs.inspect({
         executable: envExecutable,
         args: [
-          "GIT_OPTIONAL_LOCKS=0",
-          "GIT_TERMINAL_PROMPT=0",
-          "GIT_SSH_COMMAND=ssh -o BatchMode=yes",
+          ...safeGitEnvArgs,
           gitExecutable,
           "-C",
           repoPath,
           "--no-optional-locks",
+          ...safeGitConfigArgs,
           ...args,
         ],
         timeoutMilliseconds,
@@ -129,13 +234,34 @@ export function createGitRunner(
     },
 
     async statusPorcelain(repoPath) {
+      const configRes = await execGit(repoPath, [
+        "config",
+        "--list",
+        "--show-scope",
+        "--null",
+      ]);
+      if (configRes === undefined || configRes.exitCode !== 0) {
+        return {
+          ok: false,
+          dirty: false,
+          reason: "cannot read repository git config",
+        };
+      }
+      const blockedKeys = parseBlockedRepoConfigKeys(configRes.stdout);
+      if (blockedKeys.length > 0) {
+        return {
+          ok: false,
+          dirty: false,
+          reason: `skipped git status due to repository config: ${blockedKeys.join(", ")}`,
+        };
+      }
       const res = await execGit(repoPath, [
         "status",
         "--porcelain=v1",
         "--untracked-files=normal",
       ]);
       if (res === undefined || res.exitCode !== 0) {
-        return { ok: false, dirty: false };
+        return { ok: false, dirty: false, reason: "git status failed" };
       }
       return { ok: true, dirty: res.stdout.trim().length > 0 };
     },
@@ -189,6 +315,19 @@ export function createGitRunner(
     },
 
     async lsRemoteShas(repoPath, remote) {
+      const configRes = await execGit(repoPath, [
+        "config",
+        "--list",
+        "--show-scope",
+        "--null",
+      ]);
+      if (
+        configRes === undefined ||
+        configRes.exitCode !== 0 ||
+        hasScopedCredentialHelper(configRes.stdout)
+      ) {
+        return undefined;
+      }
       const res = await execGit(
         repoPath,
         ["ls-remote", remote],
