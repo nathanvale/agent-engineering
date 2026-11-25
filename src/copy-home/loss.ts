@@ -65,6 +65,7 @@ async function collectRemoteTips(
   git: GitRunner,
   copyPath: string,
   remoteNames: readonly string[],
+  emptyTransportDir: string | undefined,
   unknown: string[],
 ): Promise<RemoteTipSummary> {
   const presentTips = new Set<string>();
@@ -78,13 +79,16 @@ async function collectRemoteTips(
       anyProblem = true;
       continue;
     }
-    const remoteShas = await git.lsRemoteShas(copyPath, remote);
-    if (remoteShas === undefined) {
-      unknown.push(`git ls-remote failed for ${remote}`);
+    const remoteResult = await git.lsRemoteShas(
+      effectiveUrl,
+      emptyTransportDir,
+    );
+    if (!remoteResult.ok) {
+      unknown.push(`${remoteResult.reason} for ${remote}`);
       anyProblem = true;
       continue;
     }
-    for (const sha of remoteShas) {
+    for (const sha of remoteResult.shas) {
       if (await git.commitExists(copyPath, sha)) presentTips.add(sha);
       else anyTipMissing = true;
     }
@@ -100,6 +104,7 @@ async function assessGitRemotes(
   git: GitRunner,
   copyPath: string,
   localShas: readonly string[],
+  emptyTransportDir: string | undefined,
   workFound: string[],
   unknown: string[],
 ): Promise<void> {
@@ -114,7 +119,13 @@ async function assessGitRemotes(
     return;
   }
 
-  const tips = await collectRemoteTips(git, copyPath, remotes.names, unknown);
+  const tips = await collectRemoteTips(
+    git,
+    copyPath,
+    remotes.names,
+    emptyTransportDir,
+    unknown,
+  );
   const containment = await git.hasUncontainedCommits(
     copyPath,
     localShas,
@@ -138,9 +149,16 @@ async function assessGitCopy(
   copyPath: string,
   kind: CopyKind,
   checkRemote: boolean,
+  emptyTransportDir: string | undefined,
   workFound: string[],
   unknown: string[],
 ): Promise<void> {
+  const configCheck = await git.checkLocalConfig(copyPath, kind);
+  if (!configCheck.ok) {
+    unknown.push(configCheck.reason);
+    return;
+  }
+
   if (kind !== "bare") {
     const status = await git.statusPorcelain(copyPath);
     if (!status.ok) unknown.push(status.reason ?? "git status failed");
@@ -161,7 +179,14 @@ async function assessGitCopy(
     unknown.push("remote not checked");
     return;
   }
-  await assessGitRemotes(git, copyPath, local.shas, workFound, unknown);
+  await assessGitRemotes(
+    git,
+    copyPath,
+    local.shas,
+    emptyTransportDir,
+    workFound,
+    unknown,
+  );
 }
 
 export async function assessLoss(params: {
@@ -171,6 +196,7 @@ export async function assessLoss(params: {
   readonly allCopyPaths: readonly string[];
   readonly leases: LeaseLoadResult;
   readonly checkRemote: boolean;
+  readonly emptyTransportDir: string | undefined;
   readonly git: GitRunner;
 }): Promise<LossResult> {
   if (!params.leases.ok) {
@@ -202,6 +228,7 @@ export async function assessLoss(params: {
       params.copyPath,
       params.kind,
       params.checkRemote,
+      params.emptyTransportDir,
       workFound,
       unknown,
     );

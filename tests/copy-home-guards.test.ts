@@ -2,9 +2,11 @@ import { describe, expect, setDefaultTimeout, test } from "bun:test";
 import {
   chmodSync,
   existsSync,
+  lstatSync,
   mkdirSync,
   realpathSync,
   rmSync,
+  utimesSync,
   writeFileSync,
 } from "node:fs";
 import { join } from "node:path";
@@ -19,6 +21,7 @@ import {
   copyLossVerdict,
   fingerprintTree,
   listFromData,
+  plantedTriggerCases,
   runCheckJson,
 } from "./support/copy-home-test-helpers.ts";
 import { testFolder } from "./support/test-folder.ts";
@@ -26,16 +29,31 @@ import { testFolder } from "./support/test-folder.ts";
 setDefaultTimeout(60_000);
 
 describe("copy-home check guards", () => {
-  test("never runs repository-configured Git programs and reports unknown with unchanged fingerprint", () => {
+  test("never executes planted Git config triggers, leaves fixture untouched, and reports unknown", () => {
     const sandbox = realpathSync.native(testFolder("copy-home-git-safe-"));
     try {
       const reposDir = join(sandbox, "repos");
       const noCopyDir = join(sandbox, "no-copy");
       const scriptsDir = join(sandbox, "scripts");
+      const subSource = join(sandbox, "sub-source");
       mkdirSync(reposDir, { recursive: true });
       mkdirSync(noCopyDir, { recursive: true });
       mkdirSync(scriptsDir, { recursive: true });
       initFixtureRepo(join(reposDir, "anchor-repo"));
+
+      initFixtureRepo(subSource);
+      writeFileSync(
+        join(subSource, ".gitattributes"),
+        "*.txt filter=subtrap\n",
+      );
+      writeFileSync(join(subSource, "data.txt"), "hello\n");
+      runFixtureGit(subSource, ["add", "--", ".gitattributes", "data.txt"]);
+      runFixtureGit(subSource, [
+        "commit",
+        "--quiet",
+        "-m",
+        "add sub filter attr",
+      ]);
 
       const markerPath = join(sandbox, "marker-written");
       const markerScript = join(scriptsDir, "trap.sh");
@@ -45,102 +63,18 @@ describe("copy-home check guards", () => {
       );
       chmodSync(markerScript, 0o755);
 
-      const fsmonitorCopy = join(noCopyDir, "fsmonitor-copy");
-      initFixtureRepo(fsmonitorCopy);
-      runFixtureGit(fsmonitorCopy, [
-        "remote",
-        "add",
-        "origin",
-        "https://127.0.0.1:1/repo.git",
-      ]);
-      runFixtureGit(fsmonitorCopy, ["config", "core.fsmonitor", markerScript]);
-
-      const cleanFilterCopy = join(noCopyDir, "clean-filter-copy");
-      initFixtureRepo(cleanFilterCopy);
-      runFixtureGit(cleanFilterCopy, [
-        "remote",
-        "add",
-        "origin",
-        "https://127.0.0.1:1/repo.git",
-      ]);
+      const remoteHelper = join(scriptsDir, "git-remote-probe");
       writeFileSync(
-        join(cleanFilterCopy, ".gitattributes"),
-        "*.txt filter=trap\n",
+        remoteHelper,
+        `#!/bin/sh\nprintf "remote-probe\\n" >> ${JSON.stringify(markerPath)}\nexit 0\n`,
       );
-      writeFileSync(join(cleanFilterCopy, "data.txt"), "hello\n");
-      runFixtureGit(cleanFilterCopy, [
-        "add",
-        "--",
-        ".gitattributes",
-        "data.txt",
-      ]);
-      runFixtureGit(cleanFilterCopy, ["commit", "--quiet", "-m", "add filter"]);
-      runFixtureGit(cleanFilterCopy, [
-        "config",
-        "filter.trap.clean",
-        markerScript,
-      ]);
-      writeFileSync(join(cleanFilterCopy, "data.txt"), "modified\n");
+      chmodSync(remoteHelper, 0o755);
 
-      const processFilterCopy = join(noCopyDir, "process-filter-copy");
-      initFixtureRepo(processFilterCopy);
-      runFixtureGit(processFilterCopy, [
-        "remote",
-        "add",
-        "origin",
-        "https://127.0.0.1:1/repo.git",
-      ]);
-      writeFileSync(
-        join(processFilterCopy, ".gitattributes"),
-        "*.txt filter=proctrap\n",
-      );
-      writeFileSync(join(processFilterCopy, "data.txt"), "hello\n");
-      runFixtureGit(processFilterCopy, [
-        "add",
-        "--",
-        ".gitattributes",
-        "data.txt",
-      ]);
-      runFixtureGit(processFilterCopy, [
-        "commit",
-        "--quiet",
-        "-m",
-        "add process filter",
-      ]);
-      runFixtureGit(processFilterCopy, [
-        "config",
-        "filter.proctrap.process",
-        markerScript,
-      ]);
-      writeFileSync(join(processFilterCopy, "data.txt"), "modified\n");
-
-      const sshCommandCopy = join(noCopyDir, "ssh-command-copy");
-      initFixtureRepo(sshCommandCopy);
-      runFixtureGit(sshCommandCopy, [
-        "remote",
-        "add",
-        "origin",
-        "ssh://127.0.0.1:1/repo.git",
-      ]);
-      runFixtureGit(sshCommandCopy, [
-        "config",
-        "core.sshCommand",
-        markerScript,
-      ]);
-
-      const credHelperCopy = join(noCopyDir, "credential-helper-copy");
-      initFixtureRepo(credHelperCopy);
-      runFixtureGit(credHelperCopy, [
-        "remote",
-        "add",
-        "origin",
-        "https://127.0.0.1:1/repo.git",
-      ]);
-      runFixtureGit(credHelperCopy, [
-        "config",
-        "credential.helper",
-        `!${markerScript}`,
-      ]);
+      const targets = plantedTriggerCases.map((entry) => {
+        const copyDir = join(noCopyDir, entry.name);
+        entry.plant(copyDir, markerScript, subSource);
+        return { copyDir, expectedKey: entry.expectedKey };
+      });
 
       const homesFile = join(sandbox, "homes.json");
       writeFileSync(
@@ -159,7 +93,10 @@ describe("copy-home check guards", () => {
           2,
         )}\n`,
       );
-      const envMap = writeFixtureEnv(sandbox);
+      const envMap = {
+        ...writeFixtureEnv(sandbox),
+        PATH: `${scriptsDir}:${process.env.PATH ?? ""}`,
+      };
       const before = fingerprintTree(sandbox);
       const { exitCode, data } = runCheckJson(homesFile, envMap, ["--remote"]);
       const after = fingerprintTree(sandbox);
@@ -167,26 +104,68 @@ describe("copy-home check guards", () => {
       expect(exitCode).toBe(3);
       expect(after).toBe(before);
       expect(existsSync(markerPath)).toBe(false);
-      for (const target of [
-        fsmonitorCopy,
-        cleanFilterCopy,
-        processFilterCopy,
-        sshCommandCopy,
-        credHelperCopy,
-      ]) {
-        expect(copyLossVerdict(data, target)).toBe("unknown");
-      }
-      for (const target of [
-        fsmonitorCopy,
-        cleanFilterCopy,
-        processFilterCopy,
-      ]) {
+      for (const { copyDir, expectedKey } of targets) {
+        expect(copyLossVerdict(data, copyDir)).toBe("unknown");
         expect(
-          copyLossReasons(data, target).some((reason) =>
-            reason.includes("skipped git status due to repository config"),
+          copyLossReasons(data, copyDir).some((reason) =>
+            reason.toLowerCase().includes(expectedKey),
           ),
         ).toBe(true);
       }
+    } finally {
+      rmSync(sandbox, { recursive: true, force: true });
+    }
+  });
+
+  test("TMPDIR inside a 100-hour-old throwaway clone still reports expired-throwaway with unchanged mtime", () => {
+    const sandbox = realpathSync.native(testFolder("copy-home-tmpdir-mtime-"));
+    try {
+      const reposDir = join(sandbox, "repos");
+      const throwawayDir = join(sandbox, "throwaway");
+      mkdirSync(reposDir, { recursive: true });
+      mkdirSync(throwawayDir, { recursive: true });
+      initFixtureRepo(join(reposDir, "anchor-repo"));
+
+      const staleClone = join(throwawayDir, "stale-clone");
+      initFixtureRepo(staleClone);
+      const hundredHoursAgo = new Date(Date.now() - 100 * 3_600_000);
+      utimesSync(staleClone, hundredHoursAgo, hundredHoursAgo);
+      const beforeMtime = lstatSync(staleClone).mtimeMs;
+
+      const homesFile = join(sandbox, "homes.json");
+      writeFileSync(
+        homesFile,
+        `${JSON.stringify(
+          {
+            version: 1,
+            repositories: [reposDir],
+            noCopy: [],
+            throwaway: [{ root: throwawayDir, maxAgeHours: 72 }],
+            mirror: [],
+            toolOwned: [],
+            exceptions: [],
+          },
+          null,
+          2,
+        )}\n`,
+      );
+      const envMap = {
+        ...writeFixtureEnv(sandbox),
+        TMPDIR: staleClone,
+      };
+      const { exitCode, data } = runCheckJson(homesFile, envMap);
+      const afterMtime = lstatSync(staleClone).mtimeMs;
+
+      expect(exitCode).toBe(3);
+      expect(afterMtime).toBe(beforeMtime);
+      const findings = listFromData(data, "findings").map((item) => ({
+        kind: String(Reflect.get(Object(item), "kind")),
+        path: String(Reflect.get(Object(item), "path")),
+      }));
+      expect(findings).toContainEqual({
+        kind: "expired-throwaway",
+        path: staleClone,
+      });
     } finally {
       rmSync(sandbox, { recursive: true, force: true });
     }

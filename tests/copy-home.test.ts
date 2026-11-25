@@ -50,6 +50,14 @@ function runWithFixture(
   };
 }
 
+function killQuietly(pid: number): void {
+  try {
+    process.kill(pid, "SIGKILL");
+  } catch {
+    return;
+  }
+}
+
 function processAlive(pid: number): boolean {
   try {
     process.kill(pid, 0);
@@ -356,36 +364,44 @@ describe("copy-home check", () => {
         stdout: "ignore",
         stderr: "ignore",
         detached: false,
+        timeout: 25_000,
+        killSignal: "SIGKILL",
       },
     );
 
-    const ready = await waitUntil(
-      () => existsSync(readyFile) && existsSync(join(folder, "daemon.pid")),
-      10_000,
-    );
-    expect(ready).toBe(true);
+    try {
+      const ready = await waitUntil(
+        () => existsSync(readyFile) && existsSync(join(folder, "daemon.pid")),
+        10_000,
+      );
+      expect(ready).toBe(true);
 
-    const remotesDir = join(folder, "remotes");
-    const daemonPid = Number(
-      readFileSync(join(folder, "daemon.pid"), "utf8").trim(),
-    );
-    expect(processAlive(daemonPid)).toBe(true);
-    expect(hasDaemonForRemotes(remotesDir)).toBe(true);
+      const remotesDir = join(folder, "remotes");
+      const daemonPid = Number(
+        readFileSync(join(folder, "daemon.pid"), "utf8").trim(),
+      );
+      expect(processAlive(daemonPid)).toBe(true);
+      expect(hasDaemonForRemotes(remotesDir)).toBe(true);
 
-    process.kill(child.pid, "SIGKILL");
-    await child.exited;
+      process.kill(child.pid, "SIGKILL");
+      await child.exited;
 
-    const cleaned = await waitUntil(
-      () =>
-        !processAlive(daemonPid) &&
-        !hasDaemonForRemotes(remotesDir) &&
-        !existsSync(folder),
-      5_000,
-    );
-    expect(cleaned).toBe(true);
-    expect(processAlive(daemonPid)).toBe(false);
-    expect(hasDaemonForRemotes(remotesDir)).toBe(false);
-    expect(existsSync(folder)).toBe(false);
+      const cleaned = await waitUntil(
+        () =>
+          !processAlive(daemonPid) &&
+          !hasDaemonForRemotes(remotesDir) &&
+          !existsSync(folder),
+        5_000,
+      );
+      expect(cleaned).toBe(true);
+      expect(processAlive(daemonPid)).toBe(false);
+      expect(hasDaemonForRemotes(remotesDir)).toBe(false);
+      expect(existsSync(folder)).toBe(false);
+    } finally {
+      killQuietly(child.pid);
+      await child.exited;
+      rmSync(folder, { recursive: true, force: true });
+    }
   });
 
   test("refuses relative --homes path and reports scan-incomplete when no homes file exists", () => {
