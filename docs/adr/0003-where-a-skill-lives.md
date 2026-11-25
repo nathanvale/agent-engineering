@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: accepted
 ---
 
 # Where a skill lives
@@ -41,6 +41,8 @@ Every skill is placed by the first rule that matches:
 5. Every other skill lives in the maintainer's public skills plugin (`nathanvale-skills`) or the maintainer's private skills plugin, chosen by privacy.
 
 The maintainer keeps the map from these private plugin roles to concrete plugin names privately.
+
+**One named exception.** The connectors plugin remains its own skill home because it ships its own command-line tool and release pin, and its skills call that tool, for the same reason as rule 2. The maintainer, 25 November 2026 at 14:32 AEDT: "Yes, the exception".
 
 ### Cross-harness plugin contract
 
@@ -96,7 +98,7 @@ The maintainer keeps the map from these private plugin roles to concrete plugin 
 An automated guard enforces seven rules and exits non-zero on any failure. Guard placement stays open. The current proposal runs drift and manifest rules in each plugin repository's check (later the starter kit's skills layer) and runs the home-folder rule as a read-only doctor command.
 
 - `floating-skill`: catches a `SKILL.md` in any harness's user skills folder (Claude Code, the shared agents folder, Codex, or Antigravity).
-- `outside-home`: catches a plugin skill that is not in one of the plugin homes.
+- `outside-home`: catches a plugin skill that is not in one of the plugin homes or the connectors plugin (the one named exception).
 - `missing-manifest`: catches a plugin home that lacks either `.claude-plugin/plugin.json` or `plugin.json`.
 - `name-clash`: catches a repository skill that shares a name with a plugin skill.
 - `typed-drift`: catches a declared typed-only skill that misses either `disable-model-invocation: true` or `agents/openai.yaml` with `policy.allow_implicit_invocation: false`.
