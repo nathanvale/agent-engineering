@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: accepted
 ---
 
 # Where a skill lives
