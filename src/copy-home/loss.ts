@@ -70,7 +70,6 @@ type RemoteTipsResult = {
 async function collectRemoteTips(
   git: GitRunner,
   config: Extract<ParsedCopyGitConfig, { readonly ok: true }>,
-  emptyTransportDir: string | undefined,
   unknown: string[],
 ): Promise<RemoteTipsResult> {
   const tips = new Set<string>();
@@ -88,10 +87,7 @@ async function collectRemoteTips(
       anyProblem = true;
       continue;
     }
-    const remoteResult = await git.lsRemoteShas(
-      effectiveUrl,
-      emptyTransportDir,
-    );
+    const remoteResult = await git.lsRemoteShas(effectiveUrl);
     if (!remoteResult.ok) {
       unknown.push(`${remoteResult.reason} for ${remote.name}`);
       anyProblem = true;
@@ -107,7 +103,6 @@ async function collectRemoteTips(
 async function checkLocalRefContained(params: {
   readonly git: GitRunner;
   readonly gitDir: string;
-  readonly emptyTransportDir: string | undefined;
   readonly localSha: string;
   readonly remoteTips: ReadonlySet<string>;
   readonly hasPartialClone: boolean;
@@ -120,7 +115,6 @@ async function checkLocalRefContained(params: {
   for (const tip of params.remoteTips) {
     const verdict = await params.git.isAncestor(
       params.gitDir,
-      params.emptyTransportDir,
       params.localSha,
       tip,
     );
@@ -133,7 +127,6 @@ async function checkLocalRefContained(params: {
 async function checkAllLocalRefs(params: {
   readonly git: GitRunner;
   readonly gitDir: string;
-  readonly emptyTransportDir: string | undefined;
   readonly localShas: readonly string[];
   readonly remoteTips: ReadonlySet<string>;
   readonly hasPartialClone: boolean;
@@ -145,7 +138,6 @@ async function checkAllLocalRefs(params: {
     const status = await checkLocalRefContained({
       git: params.git,
       gitDir: params.gitDir,
-      emptyTransportDir: params.emptyTransportDir,
       localSha,
       remoteTips: params.remoteTips,
       hasPartialClone: params.hasPartialClone,
@@ -165,19 +157,10 @@ async function assessGitRemotes(params: {
   readonly gitDir: string;
   readonly config: Extract<ParsedCopyGitConfig, { readonly ok: true }>;
   readonly localShas: readonly string[];
-  readonly emptyTransportDir: string | undefined;
   readonly workFound: string[];
   readonly unknown: string[];
 }): Promise<void> {
-  const {
-    git,
-    gitDir,
-    config,
-    localShas,
-    emptyTransportDir,
-    workFound,
-    unknown,
-  } = params;
+  const { git, gitDir, config, localShas, workFound, unknown } = params;
   if (localShas.length === 0) return;
   if (config.hasInclude) {
     unknown.push("repository git config uses includes");
@@ -188,16 +171,10 @@ async function assessGitRemotes(params: {
     return;
   }
 
-  const { tips, anyProblem } = await collectRemoteTips(
-    git,
-    config,
-    emptyTransportDir,
-    unknown,
-  );
+  const { tips, anyProblem } = await collectRemoteTips(git, config, unknown);
   const { anyUnpushed, anyUndecided } = await checkAllLocalRefs({
     git,
     gitDir,
-    emptyTransportDir,
     localShas,
     remoteTips: tips,
     hasPartialClone: config.hasPartialClone,
@@ -220,7 +197,6 @@ async function assessGitCopy(
   copyPath: string,
   kind: CopyKind,
   checkRemote: boolean,
-  emptyTransportDir: string | undefined,
   workFound: string[],
   unknown: string[],
 ): Promise<void> {
@@ -263,7 +239,6 @@ async function assessGitCopy(
     gitDir: dirs.gitDir,
     config,
     localShas: refs.shas,
-    emptyTransportDir,
     workFound,
     unknown,
   });
@@ -276,7 +251,6 @@ export async function assessLoss(params: {
   readonly allCopyPaths: readonly string[];
   readonly leases: LeaseLoadResult;
   readonly checkRemote: boolean;
-  readonly emptyTransportDir: string | undefined;
   readonly git: GitRunner;
 }): Promise<LossResult> {
   if (!params.leases.ok) {
@@ -308,7 +282,6 @@ export async function assessLoss(params: {
       params.copyPath,
       params.kind,
       params.checkRemote,
-      params.emptyTransportDir,
       workFound,
       unknown,
     );

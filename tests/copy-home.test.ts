@@ -2,6 +2,7 @@ import { describe, expect, setDefaultTimeout, test } from "bun:test";
 import {
   existsSync,
   mkdirSync,
+  readdirSync,
   readFileSync,
   rmSync,
   writeFileSync,
@@ -327,6 +328,23 @@ describe("copy-home check", () => {
       expect(
         Reflect.get(Object(Reflect.get(Object(entry), "loss")), "verdict"),
       ).toBe("unknown");
+    }
+  });
+
+  test("refuses a non-empty fixture root and leaves it untouched", () => {
+    const folder = testFolder("copy-home-nonempty-");
+    const sentinel = join(folder, "keep.txt");
+    writeFileSync(sentinel, "keep\n");
+    try {
+      const cmd = [process.execPath, fixtureScriptPath, folder, "--", "true"];
+      const child = Bun.spawnSync(cmd, { stdout: "pipe", stderr: "pipe" });
+      expect(child.exitCode).not.toBe(0);
+      expect(child.stderr.toString()).toContain("empty");
+      expect(existsSync(folder)).toBe(true);
+      expect(readdirSync(folder)).toEqual(["keep.txt"]);
+      expect(readFileSync(sentinel, "utf8")).toBe("keep\n");
+    } finally {
+      rmSync(folder, { recursive: true, force: true });
     }
   });
 

@@ -1,12 +1,9 @@
-import { lstatSync, readdirSync, realpathSync } from "node:fs";
-import { dirname, join, parse } from "node:path";
 import type {
   ParsedPath,
   ProgramResult,
   ProgramsCapability,
 } from "agent-cli-kernel";
 import {
-  isInsidePath,
   parseGitmodulesPaths,
   parseLsRemoteShas,
   parseStageGitlinks,
@@ -18,16 +15,7 @@ const localGitTimeoutMs = 10_000;
 const remoteGitTimeoutMs = 20_000;
 const outputLimitBytes = 2_097_152;
 const shutdownMs = 1_000;
-
-function systemEmptyDirCandidates(): readonly string[] {
-  const rootDir = parse(process.execPath).root;
-  return [
-    join(rootDir, "var", "empty"),
-    join(rootDir, "run", "empty"),
-    join(rootDir, "usr", "share", "empty"),
-    join(rootDir, "usr", "share", "skel"),
-  ];
-}
+const filesystemRoot = "/";
 
 const isolatedGitEnvArgs = [
   "-u",
@@ -51,6 +39,11 @@ const isolatedGitEnvArgs = [
   "SSH_ASKPASS=",
   "GIT_EXTERNAL_DIFF=",
   "GIT_NO_LAZY_FETCH=1",
+] as const;
+
+const noRepoGitEnvArgs = [
+  ...isolatedGitEnvArgs,
+  `GIT_CEILING_DIRECTORIES=${filesystemRoot}`,
 ] as const;
 
 const safeGitConfigArgs = [
@@ -95,56 +88,13 @@ export type GitRunner = {
     repoPath: string,
     filePath: string,
   ) => Promise<readonly string[]>;
-  readonly lsRemoteShas: (
-    effectiveUrl: string,
-    emptyTransportDir: string | undefined,
-  ) => Promise<LsRemoteResult>;
+  readonly lsRemoteShas: (effectiveUrl: string) => Promise<LsRemoteResult>;
   readonly isAncestor: (
     gitDir: string,
-    emptyTransportDir: string | undefined,
     localSha: string,
     remoteTip: string,
   ) => Promise<AncestryResult>;
 };
-
-function hasGitAncestor(dir: string): boolean {
-  let current = dir;
-  for (;;) {
-    try {
-      lstatSync(join(current, ".git"));
-      return true;
-    } catch {
-      const parent = dirname(current);
-      if (parent === current) return false;
-      current = parent;
-    }
-  }
-}
-
-export function findEmptyTransportDir(
-  scannedRoots: readonly string[],
-): string | undefined {
-  for (const candidate of systemEmptyDirCandidates()) {
-    let real: string;
-    try {
-      real = realpathSync.native(candidate);
-      if (!lstatSync(real).isDirectory()) continue;
-      if (readdirSync(real).length !== 0) continue;
-    } catch {
-      continue;
-    }
-    if (
-      scannedRoots.some(
-        (root) => isInsidePath(real, root) || isInsidePath(root, real),
-      )
-    ) {
-      continue;
-    }
-    if (hasGitAncestor(real)) continue;
-    return real;
-  }
-  return undefined;
-}
 
 export function createGitRunner(
   programs: ProgramsCapability,
@@ -211,18 +161,12 @@ export function createGitRunner(
       return parseGitmodulesPaths(res.stdout);
     },
 
-    async lsRemoteShas(effectiveUrl, emptyTransportDir) {
-      if (emptyTransportDir === undefined) {
-        return {
-          ok: false,
-          reason: "no empty working directory available for git ls-remote",
-        };
-      }
+    async lsRemoteShas(effectiveUrl) {
       const res = await execEnvGit(
-        isolatedGitEnvArgs,
+        noRepoGitEnvArgs,
         [
           "-C",
-          emptyTransportDir,
+          filesystemRoot,
           ...safeGitConfigArgs,
           "ls-remote",
           "--",
@@ -236,13 +180,12 @@ export function createGitRunner(
       return { ok: true, shas: parseLsRemoteShas(res.stdout) };
     },
 
-    async isAncestor(gitDir, emptyTransportDir, localSha, remoteTip) {
-      if (emptyTransportDir === undefined) return "unknown";
+    async isAncestor(gitDir, localSha, remoteTip) {
       const res = await execEnvGit(
-        [...isolatedGitEnvArgs, `GIT_DIR=${gitDir}`],
+        [...noRepoGitEnvArgs, `GIT_DIR=${gitDir}`],
         [
           "-C",
-          emptyTransportDir,
+          filesystemRoot,
           ...safeGitConfigArgs,
           "merge-base",
           "--is-ancestor",

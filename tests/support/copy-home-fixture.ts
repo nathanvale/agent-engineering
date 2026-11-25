@@ -341,6 +341,24 @@ async function runWatchdog(fixtureDir: string): Promise<void> {
   cleanupFixture(fixtureDir);
 }
 
+function requireEmptyFixtureRoot(targetDir: string): string {
+  let root: string;
+  try {
+    root = realpathSync.native(targetDir);
+  } catch {
+    throw new Error(
+      `Fixture root must already exist and be an empty directory: ${targetDir}`,
+    );
+  }
+  if (!lstatSync(root).isDirectory()) {
+    throw new Error(`Fixture root must be an empty directory: ${root}`);
+  }
+  if (readdirSync(root).length > 0) {
+    throw new Error(`Fixture root must be empty: ${root}`);
+  }
+  return root;
+}
+
 async function main(): Promise<void> {
   const args = process.argv.slice(2);
   const watchdogTarget = args[1];
@@ -367,8 +385,7 @@ async function main(): Promise<void> {
     throw new Error("Expected -- <command...> after fixture folder.");
   }
 
-  mkdirSync(targetDir, { recursive: true });
-  const root = realpathSync.native(targetDir);
+  const root = requireEmptyFixtureRoot(targetDir);
 
   const watchdog = Bun.spawn(
     [process.execPath, import.meta.filename, "--watchdog", root],

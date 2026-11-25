@@ -2,11 +2,7 @@ import { readdirSync, realpathSync } from "node:fs";
 import { homedir } from "node:os";
 import { isAbsolute, join } from "node:path";
 import type { ParsedPath, ProgramsCapability } from "agent-cli-kernel";
-import {
-  createGitRunner,
-  findEmptyTransportDir,
-  type GitRunner,
-} from "./git.ts";
+import { createGitRunner, type GitRunner } from "./git.ts";
 import { type LoadedHomes, loadHomes } from "./homes.ts";
 import { loadLeases } from "./leases.ts";
 import { assessLoss, propagateUnitLosses } from "./loss.ts";
@@ -334,7 +330,6 @@ export async function runCopyHomeCheck(options: {
     ...loaded.exceptions.map((entry) => entry.path),
   ];
 
-  const emptyTransportDir = findEmptyTransportDir(walkTargets);
   const detected = walkAllTargets(walkTargets, findings);
   const exceptionsMap = new Map(
     loaded.exceptions.map((entry) => [entry.path, entry.reason]),
@@ -374,7 +369,6 @@ export async function runCopyHomeCheck(options: {
       allCopyPaths,
       leases,
       checkRemote: options.checkRemote,
-      emptyTransportDir,
       git,
     });
     assessed.push({ copy, classified, unitDir, loss });
