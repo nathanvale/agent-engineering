@@ -87,3 +87,11 @@ _Avoid_: orphan repo, leftover clone, rogue checkout
 **Loss check**:
 A read-only assessment of a copy folder (or an entire throwaway `mktemp -d` folder) that advises the maintainer whether deleting it would lose work, reporting `nothing-found`, `work-found`, or `unknown` with reasons, without deleting anything.
 _Avoid_: delete check, safe-to-delete flag, cleanup verdict
+
+**DOMAIN_COPY_HOME_FINDINGS**:
+The refused, unchanged domain result returned by `copy-home check` with exit code 3 when a scan reports any finding (such as a stray copy, expired throwaway, dangling registration, or incomplete scan), while still carrying the full findings report as data.
+_Avoid_: findings error, check failure, non-zero clean exit
+
+**DOMAIN_COPY_HOME_INVALID_HOMES**:
+The refused, unchanged domain result returned by `copy-home check` with exit code 3 and no data when the `--homes` path is relative or the homes file cannot be read or validated as a version 1 copy homes JSON file.
+_Avoid_: config error, bad homes file, invalid input (unqualified)
