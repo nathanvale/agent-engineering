@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: accepted
 ---
 
 # Coordinator leases and retention
