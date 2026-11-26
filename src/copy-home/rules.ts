@@ -257,6 +257,78 @@ export function parseLsRemoteShas(stdout: string): readonly string[] {
   return [...shas];
 }
 
+export type CatFileBatchCheckParsed =
+  | {
+      readonly ok: true;
+      readonly present: readonly string[];
+      readonly anyMissing: boolean;
+    }
+  | { readonly ok: false };
+
+export function parseCatFileBatchCheck(
+  stdout: string,
+  expectedCount: number,
+): CatFileBatchCheckParsed {
+  const trimmedEnd = stdout.endsWith("\n") ? stdout.slice(0, -1) : stdout;
+  const lines = trimmedEnd.length === 0 ? [] : trimmedEnd.split("\n");
+  if (lines.length !== expectedCount) return { ok: false };
+  const present: string[] = [];
+  let anyMissing = false;
+  for (const rawLine of lines) {
+    const parts = rawLine.trim().split(/\s+/);
+    const sha = parts[0];
+    const kind = parts[1];
+    if (sha === undefined || !shaPattern.test(sha)) return { ok: false };
+    if (kind === "commit" || kind === "tag") {
+      present.push(sha);
+    } else if (kind === "missing" || kind === "tree" || kind === "blob") {
+      anyMissing = true;
+    } else {
+      return { ok: false };
+    }
+  }
+  return { ok: true, present, anyMissing };
+}
+
+export type PeelCommitsParsed =
+  | {
+      readonly ok: true;
+      readonly peeled: ReadonlyMap<string, string>;
+    }
+  | { readonly ok: false };
+
+export function parsePeelCommits(
+  stdout: string,
+  shas: readonly string[],
+): PeelCommitsParsed {
+  const trimmedEnd = stdout.endsWith("\n") ? stdout.slice(0, -1) : stdout;
+  const lines = trimmedEnd.length === 0 ? [] : trimmedEnd.split("\n");
+  if (lines.length !== shas.length) return { ok: false };
+  const peeled = new Map<string, string>();
+  for (let index = 0; index < shas.length; index++) {
+    const sha = shas[index];
+    const line = lines[index]?.trim();
+    if (sha === undefined || line === undefined) return { ok: false };
+    if (shaPattern.test(line)) {
+      peeled.set(sha, line);
+    } else if (line !== `${sha}^{commit} missing`) {
+      return { ok: false };
+    }
+  }
+  return { ok: true, peeled };
+}
+
+export function parseRevListShas(stdout: string): ReadonlySet<string> {
+  const shas = new Set<string>();
+  for (const rawLine of stdout.split("\n")) {
+    const trimmed = rawLine.trim();
+    if (shaPattern.test(trimmed)) {
+      shas.add(trimmed);
+    }
+  }
+  return shas;
+}
+
 export function throwawayUnitDir(
   copyPath: string,
   throwawayRoot: string,

@@ -8,6 +8,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { join } from "node:path";
+import type { LocalShaStatus } from "../../src/copy-home/ancestry.ts";
 import { initFixtureRepo, runFixtureGit } from "./copy-home-loss-fixture.ts";
 
 export type NoExecutionCase = {
@@ -259,4 +260,29 @@ export function copyLossReasons(
     "reasons",
   );
   return Array.isArray(reasons) ? reasons.map((item) => String(item)) : [];
+}
+
+export function oracleIsAncestor(
+  gitDir: string,
+  localSha: string,
+  remoteTips: ReadonlySet<string>,
+): LocalShaStatus {
+  if (remoteTips.has(localSha)) return "contained";
+  if (remoteTips.size === 0) return "unpushed";
+  let anyUndecided = false;
+  for (const tip of remoteTips) {
+    const args = [
+      "git",
+      "--git-dir",
+      gitDir,
+      "merge-base",
+      "--is-ancestor",
+      localSha,
+      tip,
+    ];
+    const proc = Bun.spawnSync(args, { stdout: "pipe", stderr: "pipe" });
+    if (proc.exitCode === 0) return "contained";
+    if (proc.exitCode !== 1) anyUndecided = true;
+  }
+  return anyUndecided ? "undecided" : "unpushed";
 }

@@ -1,5 +1,11 @@
 import { lstatSync, readdirSync } from "node:fs";
 import { join } from "node:path";
+import {
+  checkLocalShasAncestry,
+  fetchRemoteShasCached,
+  type LossRunCache,
+  type LossStepDeadlines,
+} from "./ancestry.ts";
 import type { GitRunner } from "./git.ts";
 import {
   applyInsteadOf,
@@ -70,6 +76,8 @@ type RemoteTipsResult = {
 async function collectRemoteTips(
   git: GitRunner,
   config: Extract<ParsedCopyGitConfig, { readonly ok: true }>,
+  cache: LossRunCache,
+  deadlines: LossStepDeadlines,
   unknown: string[],
 ): Promise<RemoteTipsResult> {
   const tips = new Set<string>();
@@ -87,7 +95,12 @@ async function collectRemoteTips(
       anyProblem = true;
       continue;
     }
-    const remoteResult = await git.lsRemoteShas(effectiveUrl);
+    const remoteResult = await fetchRemoteShasCached(
+      git,
+      effectiveUrl,
+      cache,
+      deadlines,
+    );
     if (!remoteResult.ok) {
       unknown.push(`${remoteResult.reason} for ${remote.name}`);
       anyProblem = true;
@@ -100,50 +113,15 @@ async function collectRemoteTips(
   return { tips, anyProblem };
 }
 
-async function checkLocalRefContained(params: {
-  readonly git: GitRunner;
-  readonly gitDir: string;
-  readonly localSha: string;
-  readonly remoteTips: ReadonlySet<string>;
-  readonly hasPartialClone: boolean;
-}): Promise<"contained" | "unpushed" | "undecided"> {
-  if (params.remoteTips.has(params.localSha)) return "contained";
-  if (params.remoteTips.size === 0) return "unpushed";
-  if (params.hasPartialClone) return "undecided";
-
-  let anyUndecided = false;
-  for (const tip of params.remoteTips) {
-    const verdict = await params.git.isAncestor(
-      params.gitDir,
-      params.localSha,
-      tip,
-    );
-    if (verdict === "ancestor") return "contained";
-    if (verdict === "unknown") anyUndecided = true;
-  }
-  return anyUndecided ? "undecided" : "unpushed";
-}
-
-async function checkAllLocalRefs(params: {
-  readonly git: GitRunner;
-  readonly gitDir: string;
-  readonly localShas: readonly string[];
-  readonly remoteTips: ReadonlySet<string>;
-  readonly hasPartialClone: boolean;
-  readonly anyProblem: boolean;
-}): Promise<{ readonly anyUnpushed: boolean; readonly anyUndecided: boolean }> {
+function summarizeLocalRefVerdicts(
+  verdicts: ReadonlyMap<string, "contained" | "unpushed" | "undecided">,
+  anyProblem: boolean,
+): { readonly anyUnpushed: boolean; readonly anyUndecided: boolean } {
   let anyUnpushed = false;
   let anyUndecided = false;
-  for (const localSha of params.localShas) {
-    const status = await checkLocalRefContained({
-      git: params.git,
-      gitDir: params.gitDir,
-      localSha,
-      remoteTips: params.remoteTips,
-      hasPartialClone: params.hasPartialClone,
-    });
+  for (const status of verdicts.values()) {
     if (status === "unpushed") {
-      if (params.anyProblem) anyUndecided = true;
+      if (anyProblem) anyUndecided = true;
       else anyUnpushed = true;
     } else if (status === "undecided") {
       anyUndecided = true;
@@ -152,15 +130,53 @@ async function checkAllLocalRefs(params: {
   return { anyUnpushed, anyUndecided };
 }
 
+function recordAncestryOutcome(params: {
+  readonly anyUnpushed: boolean;
+  readonly anyUndecided: boolean;
+  readonly anyProblem: boolean;
+  readonly hasPartialClone: boolean;
+  readonly failureReason: string | undefined;
+  readonly workFound: string[];
+  readonly unknown: string[];
+}): void {
+  if (params.anyUnpushed) {
+    params.workFound.push("local ref not contained in any live remote tip");
+    return;
+  }
+  if (!params.anyUndecided) return;
+  if (params.failureReason !== undefined) {
+    params.unknown.push(params.failureReason);
+    return;
+  }
+  if (!params.anyProblem) {
+    params.unknown.push(
+      params.hasPartialClone
+        ? "partial clone ancestry not checked"
+        : "remote ancestry could not be decided",
+    );
+  }
+}
+
 async function assessGitRemotes(params: {
   readonly git: GitRunner;
-  readonly gitDir: string;
+  readonly commonDir: string;
   readonly config: Extract<ParsedCopyGitConfig, { readonly ok: true }>;
   readonly localShas: readonly string[];
+  readonly cache: LossRunCache;
+  readonly deadlines: LossStepDeadlines;
   readonly workFound: string[];
   readonly unknown: string[];
 }): Promise<void> {
-  const { git, gitDir, config, localShas, workFound, unknown } = params;
+  const {
+    git,
+    commonDir,
+    config,
+    localShas,
+    cache,
+    deadlines,
+    workFound,
+    unknown,
+  } = params;
   if (localShas.length === 0) return;
   if (config.hasInclude) {
     unknown.push("repository git config uses includes");
@@ -171,35 +187,57 @@ async function assessGitRemotes(params: {
     return;
   }
 
-  const { tips, anyProblem } = await collectRemoteTips(git, config, unknown);
-  const { anyUnpushed, anyUndecided } = await checkAllLocalRefs({
+  const { tips, anyProblem } = await collectRemoteTips(
     git,
-    gitDir,
+    config,
+    cache,
+    deadlines,
+    unknown,
+  );
+  const { verdicts, failureReason } = await checkLocalShasAncestry({
+    git,
+    commonDir,
     localShas,
     remoteTips: tips,
     hasPartialClone: config.hasPartialClone,
-    anyProblem,
+    cache,
+    deadlines,
   });
-
-  if (anyUnpushed) {
-    workFound.push("local ref not contained in any live remote tip");
-  } else if (anyUndecided && !anyProblem) {
-    unknown.push(
-      config.hasPartialClone
-        ? "partial clone ancestry not checked"
-        : "remote ancestry could not be decided",
-    );
-  }
+  const { anyUnpushed, anyUndecided } = summarizeLocalRefVerdicts(
+    verdicts,
+    anyProblem,
+  );
+  recordAncestryOutcome({
+    anyUnpushed,
+    anyUndecided,
+    anyProblem,
+    hasPartialClone: config.hasPartialClone,
+    failureReason,
+    workFound,
+    unknown,
+  });
 }
 
-async function assessGitCopy(
-  git: GitRunner,
-  copyPath: string,
-  kind: CopyKind,
-  checkRemote: boolean,
-  workFound: string[],
-  unknown: string[],
-): Promise<void> {
+async function assessGitCopy(params: {
+  readonly git: GitRunner;
+  readonly copyPath: string;
+  readonly kind: CopyKind;
+  readonly checkRemote: boolean;
+  readonly cache: LossRunCache;
+  readonly deadlines: LossStepDeadlines;
+  readonly workFound: string[];
+  readonly unknown: string[];
+}): Promise<void> {
+  const {
+    git,
+    copyPath,
+    kind,
+    checkRemote,
+    cache,
+    deadlines,
+    workFound,
+    unknown,
+  } = params;
   if (kind !== "bare") {
     unknown.push("working tree not inspected");
   }
@@ -236,9 +274,11 @@ async function assessGitCopy(
 
   await assessGitRemotes({
     git,
-    gitDir: dirs.gitDir,
+    commonDir: dirs.commonDir,
     config,
     localShas: refs.shas,
+    cache,
+    deadlines,
     workFound,
     unknown,
   });
@@ -252,6 +292,8 @@ export async function assessLoss(params: {
   readonly leases: LeaseLoadResult;
   readonly checkRemote: boolean;
   readonly git: GitRunner;
+  readonly cache: LossRunCache;
+  readonly deadlines: LossStepDeadlines;
 }): Promise<LossResult> {
   if (!params.leases.ok) {
     return { verdict: "unknown", reasons: [params.leases.reason] };
@@ -277,14 +319,16 @@ export async function assessLoss(params: {
   if (params.kind === "project-tree") {
     unknown.push("project tree without Git");
   } else if (isGitCopyKind(params.kind)) {
-    await assessGitCopy(
-      params.git,
-      params.copyPath,
-      params.kind,
-      params.checkRemote,
+    await assessGitCopy({
+      git: params.git,
+      copyPath: params.copyPath,
+      kind: params.kind,
+      checkRemote: params.checkRemote,
+      cache: params.cache,
+      deadlines: params.deadlines,
       workFound,
       unknown,
-    );
+    });
   }
 
   if (unitDir !== params.copyPath) {
