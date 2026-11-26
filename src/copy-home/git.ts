@@ -4,8 +4,10 @@ import type {
   ProgramsCapability,
 } from "agent-cli-kernel";
 import {
+  parseCatFileBatchCheck,
   parseGitmodulesPaths,
   parseLsRemoteShas,
+  parseRevListShas,
   parseStageGitlinks,
   parseWorktreePorcelain,
   type WorktreeEntry,
@@ -77,7 +79,17 @@ export type LsRemoteResult =
   | { readonly ok: true; readonly shas: readonly string[] }
   | { readonly ok: false; readonly reason: string };
 
-export type AncestryResult = "ancestor" | "not-ancestor" | "unknown";
+export type ExistingObjectsResult =
+  | {
+      readonly ok: true;
+      readonly present: readonly string[];
+      readonly anyMissing: boolean;
+    }
+  | { readonly ok: false; readonly reason: string };
+
+export type UncontainedShasResult =
+  | { readonly ok: true; readonly uncontained: ReadonlySet<string> }
+  | { readonly ok: false; readonly reason: string };
 
 export type GitRunner = {
   readonly worktreeList: (
@@ -89,12 +101,18 @@ export type GitRunner = {
     filePath: string,
   ) => Promise<readonly string[]>;
   readonly lsRemoteShas: (effectiveUrl: string) => Promise<LsRemoteResult>;
-  readonly isAncestor: (
+  readonly existingObjects: (
     gitDir: string,
-    localSha: string,
-    remoteTip: string,
-  ) => Promise<AncestryResult>;
+    shas: readonly string[],
+  ) => Promise<ExistingObjectsResult>;
+  readonly uncontainedShas: (
+    gitDir: string,
+    localShas: readonly string[],
+    excludeTips: readonly string[],
+  ) => Promise<UncontainedShasResult>;
 };
+
+const utf8Encoder = new TextEncoder();
 
 export function createGitRunner(
   programs: ProgramsCapability,
@@ -106,12 +124,14 @@ export function createGitRunner(
     envArgs: readonly string[],
     gitArgs: readonly string[],
     timeoutMilliseconds = localGitTimeoutMs,
+    input?: Uint8Array,
   ): Promise<ProgramResult | undefined> {
     if (envExecutable === undefined || gitExecutable === null) return undefined;
     try {
       return await programs.inspect({
         executable: envExecutable,
         args: [...envArgs, gitExecutable, "--no-optional-locks", ...gitArgs],
+        ...(input !== undefined ? { input } : {}),
         timeoutMilliseconds,
         outputLimitBytes,
         shutdownMilliseconds: shutdownMs,
@@ -180,24 +200,53 @@ export function createGitRunner(
       return { ok: true, shas: parseLsRemoteShas(res.stdout) };
     },
 
-    async isAncestor(gitDir, localSha, remoteTip) {
+    async existingObjects(gitDir, shas) {
+      if (shas.length === 0) {
+        return { ok: true, present: [], anyMissing: false };
+      }
+      const input = utf8Encoder.encode(`${shas.join("\n")}\n`);
       const res = await execEnvGit(
         [...noRepoGitEnvArgs, `GIT_DIR=${gitDir}`],
         [
           "-C",
           filesystemRoot,
           ...safeGitConfigArgs,
-          "merge-base",
-          "--is-ancestor",
-          localSha,
-          remoteTip,
+          "cat-file",
+          "--batch-check",
         ],
         localGitTimeoutMs,
+        input,
       );
-      if (res === undefined) return "unknown";
-      if (res.exitCode === 0) return "ancestor";
-      if (res.exitCode === 1) return "not-ancestor";
-      return "unknown";
+      if (res === undefined || res.exitCode !== 0 || res.outputTruncated) {
+        return { ok: false, reason: "git cat-file failed" };
+      }
+      const parsed = parseCatFileBatchCheck(res.stdout, shas.length);
+      if (!parsed.ok) {
+        return { ok: false, reason: "git cat-file output invalid" };
+      }
+      return {
+        ok: true,
+        present: parsed.present,
+        anyMissing: parsed.anyMissing,
+      };
+    },
+
+    async uncontainedShas(gitDir, localShas, excludeTips) {
+      if (localShas.length === 0) {
+        return { ok: true, uncontained: new Set() };
+      }
+      const lines = [...localShas, ...excludeTips.map((tip) => `^${tip}`)];
+      const input = utf8Encoder.encode(`${lines.join("\n")}\n`);
+      const res = await execEnvGit(
+        [...noRepoGitEnvArgs, `GIT_DIR=${gitDir}`],
+        ["-C", filesystemRoot, ...safeGitConfigArgs, "rev-list", "--stdin"],
+        localGitTimeoutMs,
+        input,
+      );
+      if (res === undefined || res.exitCode !== 0 || res.outputTruncated) {
+        return { ok: false, reason: "git rev-list failed" };
+      }
+      return { ok: true, uncontained: parseRevListShas(res.stdout) };
     },
   };
 }

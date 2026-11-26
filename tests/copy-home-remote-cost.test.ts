@@ -9,27 +9,43 @@ import type {
   RunAddon,
 } from "agent-cli-kernel";
 import { contractFor, runInProcess } from "agent-cli-kernel";
+import {
+  checkLocalShasAncestry,
+  createLossRunCache,
+  defaultLossDeadlines,
+  type LocalShaStatus,
+} from "../src/copy-home/ancestry.ts";
 import { copyHomeCauses, createCopyHomeCheck } from "../src/copy-home/check.ts";
+import { createGitRunner } from "../src/copy-home/git.ts";
 import { runCopyHomeCheck } from "../src/copy-home/scan.ts";
 import {
   initFixtureRepo,
   runFixtureGit,
   writeFixtureEnv,
 } from "./support/copy-home-loss-fixture.ts";
+import {
+  copyLossReasons,
+  copyLossVerdict,
+} from "./support/copy-home-test-helpers.ts";
 import { testFolder } from "./support/test-folder.ts";
 
 setDefaultTimeout(30_000);
 
+const shortDeadlines = { remoteMs: 100, localMs: 100 } as const;
+
 const testContract = contractFor({
   cli: "agent-engineering",
-  commands: [createCopyHomeCheck(() => envExecutable)],
+  commands: [createCopyHomeCheck(() => envExecutable, shortDeadlines)],
   causes: copyHomeCauses,
   installedAddons: ["programs"],
 });
 
-const envExecutable: ParsedPath = testContract.boundary.path(
-  Bun.which("env") ?? "/usr/bin/env",
-);
+const resolvedEnv = Bun.which("env");
+if (resolvedEnv === null) {
+  throw new Error("env executable not found on PATH");
+}
+
+const envExecutable: ParsedPath = testContract.boundary.path(resolvedEnv);
 
 function gitSubcommand(args: readonly string[]): string | undefined {
   for (const candidate of [
@@ -63,16 +79,22 @@ function runRealProgram(request: ProgramRequest): ProgramResult {
   };
 }
 
-function makeProgramsAddon(
+function makeProgramsCapability(
   inspect: (request: ProgramRequest) => Promise<ProgramResult>,
-): RunAddon<ProgramsCapability> {
-  const capability: ProgramsCapability = Object.freeze({
+): ProgramsCapability {
+  return Object.freeze({
     inspect,
     supplied: inspect,
     domain() {
       throw new Error("domain capability not used in copy-home check");
     },
   });
+}
+
+function makeProgramsAddon(
+  inspect: (request: ProgramRequest) => Promise<ProgramResult>,
+): RunAddon<ProgramsCapability> {
+  const capability = makeProgramsCapability(inspect);
   return {
     attach: () => ({
       capability,
@@ -83,7 +105,7 @@ function makeProgramsAddon(
 }
 
 function makeFakeSha(index: number): string {
-  return index.toString(16).padStart(40, "a");
+  return `1${index.toString(16).padStart(39, "0")}`;
 }
 
 function writeHomesJson(
@@ -111,7 +133,146 @@ function writeHomesJson(
   return homesFile;
 }
 
+function oracleIsAncestor(
+  gitDir: string,
+  localSha: string,
+  remoteTips: ReadonlySet<string>,
+): LocalShaStatus {
+  if (remoteTips.has(localSha)) return "contained";
+  if (remoteTips.size === 0) return "unpushed";
+  let anyUndecided = false;
+  for (const tip of remoteTips) {
+    const proc = Bun.spawnSync(
+      [
+        "git",
+        "--git-dir",
+        gitDir,
+        "merge-base",
+        "--is-ancestor",
+        localSha,
+        tip,
+      ],
+      { stdout: "pipe", stderr: "pipe" },
+    );
+    if (proc.exitCode === 0) return "contained";
+    if (proc.exitCode !== 1) anyUndecided = true;
+  }
+  return anyUndecided ? "undecided" : "unpushed";
+}
+
+function commitFile(
+  repo: string,
+  fileName: string,
+  content: string,
+  message: string,
+): string {
+  writeFileSync(join(repo, fileName), content);
+  runFixtureGit(repo, ["add", "--", fileName]);
+  runFixtureGit(repo, ["commit", "--quiet", "-m", message]);
+  return runFixtureGit(repo, ["rev-parse", "HEAD"]);
+}
+
 describe("copy-home check --remote cost and bounds", () => {
+  test("equivalence: batched ancestry verdict matches per-pair git merge-base --is-ancestor oracle", async () => {
+    const sandbox = realpathSync.native(testFolder("copy-home-equiv-"));
+    try {
+      const repo = join(sandbox, "repo");
+      initFixtureRepo(repo, "root");
+      const rootSha = runFixtureGit(repo, ["rev-parse", "HEAD"]);
+
+      runFixtureGit(repo, ["checkout", "--quiet", "-b", "older"]);
+      const olderCommitSha = commitFile(
+        repo,
+        "older.txt",
+        "older\n",
+        "older-1",
+      );
+      const olderTipSha = commitFile(repo, "older.txt", "older-2\n", "older-2");
+
+      runFixtureGit(repo, ["checkout", "--quiet", "main"]);
+      runFixtureGit(repo, ["checkout", "--quiet", "-b", "side"]);
+      const sideCommitSha = commitFile(repo, "side.txt", "side\n", "side-1");
+
+      runFixtureGit(repo, ["checkout", "--quiet", "main"]);
+      const mainMidSha = commitFile(repo, "main.txt", "main\n", "main-1");
+      runFixtureGit(repo, [
+        "merge",
+        "--quiet",
+        "--no-ff",
+        "side",
+        "-m",
+        "merge-side",
+      ]);
+      const mergeTipSha = runFixtureGit(repo, ["rev-parse", "HEAD"]);
+
+      runFixtureGit(repo, ["checkout", "--quiet", "-b", "unpushed"]);
+      const unpushedSha = commitFile(
+        repo,
+        "unpushed.txt",
+        "unpushed\n",
+        "unpushed-1",
+      );
+
+      const gitDir = join(repo, ".git");
+      const localShas = [
+        rootSha,
+        olderCommitSha,
+        olderTipSha,
+        sideCommitSha,
+        mainMidSha,
+        mergeTipSha,
+        unpushedSha,
+      ];
+      const realPrograms = makeProgramsCapability((request) =>
+        Promise.resolve(runRealProgram(request)),
+      );
+      const git = createGitRunner(realPrograms, envExecutable);
+
+      const presentTips = new Set([mergeTipSha, olderTipSha]);
+      const presentResult = await checkLocalShasAncestry({
+        git,
+        commonDir: gitDir,
+        localShas,
+        remoteTips: presentTips,
+        hasPartialClone: false,
+        cache: createLossRunCache(),
+        deadlines: defaultLossDeadlines,
+      });
+
+      for (const sha of localShas) {
+        expect(presentResult.verdicts.get(sha)).toBe(
+          oracleIsAncestor(gitDir, sha, presentTips),
+        );
+      }
+      expect(presentResult.verdicts.get(olderCommitSha)).toBe("contained");
+      expect(presentResult.verdicts.get(sideCommitSha)).toBe("contained");
+      expect(presentResult.verdicts.get(unpushedSha)).toBe("unpushed");
+
+      const missingTip = makeFakeSha(999_999);
+      const tipsWithMissing = new Set([mergeTipSha, olderTipSha, missingTip]);
+      const missingResult = await checkLocalShasAncestry({
+        git,
+        commonDir: gitDir,
+        localShas,
+        remoteTips: tipsWithMissing,
+        hasPartialClone: false,
+        cache: createLossRunCache(),
+        deadlines: defaultLossDeadlines,
+      });
+
+      for (const sha of localShas) {
+        expect(missingResult.verdicts.get(sha)).toBe(
+          oracleIsAncestor(gitDir, sha, tipsWithMissing),
+        );
+      }
+      expect(missingResult.verdicts.get(olderCommitSha)).toBe("contained");
+      expect(missingResult.verdicts.get(sideCommitSha)).toBe("contained");
+      expect(missingResult.verdicts.get(unpushedSha)).toBe("undecided");
+    } finally {
+      rmSync(sandbox, { recursive: true, force: true });
+    }
+  });
+
   test("cost bound: shared common git dir with 200 local SHAs and 200 remote tips bounds git calls", async () => {
     const sandbox = realpathSync.native(testFolder("copy-home-cost-"));
     const prevState = process.env.XDG_STATE_HOME;
@@ -127,6 +288,7 @@ describe("copy-home check --remote cost and bounds", () => {
 
       const mainRepo = join(reposDir, "many-refs");
       initFixtureRepo(mainRepo, "base");
+      const baseSha = runFixtureGit(mainRepo, ["rev-parse", "HEAD"]);
       const remoteUrl = "https://forge.example.invalid/org/many-refs.git";
       runFixtureGit(mainRepo, ["remote", "add", "origin", remoteUrl]);
 
@@ -158,10 +320,15 @@ describe("copy-home check --remote cost and bounds", () => {
         ]);
       }
 
-      const tipLines = Array.from(
-        { length: 200 },
-        (_, i) => `${makeFakeSha(i + 1)}\trefs/heads/r-${String(i)}`,
-      ).join("\n");
+      const tipShas = [
+        baseSha,
+        ...Array.from({ length: 199 }, (_, i) => makeFakeSha(i + 1)),
+      ];
+      expect(new Set(tipShas).size).toBe(200);
+      expect(new Set(localShas).size).toBe(200);
+      const tipLines = tipShas
+        .map((sha, i) => `${sha}\trefs/heads/r-${String(i)}`)
+        .join("\n");
 
       const counts = {
         lsRemote: 0,
@@ -170,44 +337,38 @@ describe("copy-home check --remote cost and bounds", () => {
         revList: 0,
       };
 
-      const programs: ProgramsCapability = {
-        inspect: (request) => {
-          const sub = gitSubcommand(request.args);
-          if (sub === "ls-remote") {
-            counts.lsRemote += 1;
-            return Promise.resolve({
-              stdout: `${tipLines}\n`,
-              stderr: "",
-              exitCode: 0,
-              terminationConfirmed: true,
-              outputTruncated: false,
-            });
-          }
-          if (sub === "merge-base") {
-            counts.mergeBase += 1;
-            return Promise.resolve({
-              stdout: "",
-              stderr: "",
-              exitCode: 1,
-              terminationConfirmed: true,
-              outputTruncated: false,
-            });
-          }
-          if (sub === "cat-file") {
-            counts.catFile += 1;
-            return Promise.resolve(runRealProgram(request));
-          }
-          if (sub === "rev-list") {
-            counts.revList += 1;
-            return Promise.resolve(runRealProgram(request));
-          }
+      const programs = makeProgramsCapability((request) => {
+        const sub = gitSubcommand(request.args);
+        if (sub === "ls-remote") {
+          counts.lsRemote += 1;
+          return Promise.resolve({
+            stdout: `${tipLines}\n`,
+            stderr: "",
+            exitCode: 0,
+            terminationConfirmed: true,
+            outputTruncated: false,
+          });
+        }
+        if (sub === "merge-base") {
+          counts.mergeBase += 1;
+          return Promise.resolve({
+            stdout: "",
+            stderr: "",
+            exitCode: 1,
+            terminationConfirmed: true,
+            outputTruncated: false,
+          });
+        }
+        if (sub === "cat-file") {
+          counts.catFile += 1;
           return Promise.resolve(runRealProgram(request));
-        },
-        supplied: () => Promise.reject(new Error("unused")),
-        domain: () => {
-          throw new Error("unused");
-        },
-      };
+        }
+        if (sub === "rev-list") {
+          counts.revList += 1;
+          return Promise.resolve(runRealProgram(request));
+        }
+        return Promise.resolve(runRealProgram(request));
+      });
 
       const homesFile = writeHomesJson(sandbox, reposDir);
       const outcome = await runCopyHomeCheck({
@@ -218,11 +379,13 @@ describe("copy-home check --remote cost and bounds", () => {
       });
 
       expect(outcome.ok).toBe(true);
-      expect(localShas.length).toBe(200);
+      if (outcome.ok) {
+        expect(outcome.report.copies.length).toBe(5);
+      }
       expect(counts.mergeBase).toBe(0);
       expect(counts.lsRemote).toBe(1);
-      expect(counts.catFile).toBeLessThanOrEqual(1);
-      expect(counts.revList).toBeLessThanOrEqual(1);
+      expect(counts.catFile).toBe(1);
+      expect(counts.revList).toBe(1);
     } finally {
       if (prevState === undefined) delete process.env.XDG_STATE_HOME;
       else process.env.XDG_STATE_HOME = prevState;
@@ -275,33 +438,32 @@ describe("copy-home check --remote cost and bounds", () => {
             outputTruncated: false,
           });
         }
-        if (sub === "merge-base" || sub === "rev-list") {
+        if (sub === "rev-list") {
           return new Promise<ProgramResult>(() => undefined);
         }
         return Promise.resolve(runRealProgram(request));
       });
 
       const homesFile = writeHomesJson(sandbox, reposDir);
-      let sentinelTimer: ReturnType<typeof setTimeout> | undefined;
-      const runPromise = runInProcess(testContract, {
+      const runResult = await runInProcess(testContract, {
         addons: { programs: addon },
-      })([
-        "copy-home",
-        "check",
-        "--homes",
-        homesFile,
-        "--remote",
-        "--json",
-      ]);
-      const sentinelPromise = new Promise<"hung">((resolve) => {
-        sentinelTimer = setTimeout(() => {
-          resolve("hung");
-        }, 500);
-      });
-      const raced = await Promise.race([runPromise, sentinelPromise]);
-      if (sentinelTimer !== undefined) clearTimeout(sentinelTimer);
+      })(["copy-home", "check", "--homes", homesFile, "--remote", "--json"]);
 
-      expect(raced).not.toBe("hung");
+      expect(runResult.kind).toBe("envelope");
+      if (runResult.kind !== "envelope") {
+        throw new Error(`Expected envelope result, got ${runResult.kind}`);
+      }
+      expect(runResult.exitCode).toBe(0);
+      const serialized = JSON.stringify(runResult.envelope);
+      const envelope: unknown = JSON.parse(serialized);
+      const data: unknown = Reflect.get(
+        Object(Reflect.get(Object(envelope), "result")),
+        "data",
+      );
+      expect(copyLossVerdict(data, mainRepo)).toBe("unknown");
+      expect(copyLossReasons(data, mainRepo)).toContain(
+        "git rev-list timed out",
+      );
     } finally {
       if (prevState === undefined) delete process.env.XDG_STATE_HOME;
       else process.env.XDG_STATE_HOME = prevState;

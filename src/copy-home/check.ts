@@ -1,5 +1,6 @@
 import type { CauseTable, ParsedPath } from "agent-cli-kernel";
 import { command, commonCauses, station } from "agent-cli-kernel";
+import type { LossStepDeadlines } from "./ancestry.ts";
 import { runCopyHomeCheck } from "./scan.ts";
 
 export const copyHomeCauses = {
@@ -40,6 +41,7 @@ const identity = "agent-engineering.copy-home-check" as const;
 
 export function createCopyHomeCheck(
   getEnvExecutable: () => ParsedPath | undefined,
+  lossDeadlines?: LossStepDeadlines,
 ) {
   return command({
     identity,
@@ -130,6 +132,7 @@ export function createCopyHomeCheck(
         checkRemote: input["--remote"] === true,
         programs: context.programs,
         envExecutable: getEnvExecutable(),
+        lossDeadlines,
       });
       if (!outcome.ok) {
         return context.result(

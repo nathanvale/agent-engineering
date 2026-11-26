@@ -2,6 +2,11 @@ import { readdirSync, realpathSync } from "node:fs";
 import { homedir } from "node:os";
 import { isAbsolute, join } from "node:path";
 import type { ParsedPath, ProgramsCapability } from "agent-cli-kernel";
+import {
+  createLossRunCache,
+  defaultLossDeadlines,
+  type LossStepDeadlines,
+} from "./ancestry.ts";
 import { createGitRunner, type GitRunner } from "./git.ts";
 import { type LoadedHomes, loadHomes } from "./homes.ts";
 import { loadLeases } from "./leases.ts";
@@ -276,6 +281,7 @@ export async function runCopyHomeCheck(options: {
   readonly checkRemote: boolean;
   readonly programs: ProgramsCapability;
   readonly envExecutable: ParsedPath | undefined;
+  readonly lossDeadlines?: LossStepDeadlines | undefined;
 }): Promise<
   | { readonly ok: true; readonly report: CheckReport }
   | { readonly ok: false; readonly message: string }
@@ -284,6 +290,8 @@ export async function runCopyHomeCheck(options: {
   if (!loaded.ok) return loaded;
 
   const git = createGitRunner(options.programs, options.envExecutable);
+  const lossCache = createLossRunCache();
+  const lossDeadlines = options.lossDeadlines ?? defaultLossDeadlines;
   const findings: Finding[] = [...loaded.initialFindings];
   const mainCheckoutsList = discoverMainCheckouts(loaded.repositories);
   const mainCheckouts = new Set(mainCheckoutsList);
@@ -370,6 +378,8 @@ export async function runCopyHomeCheck(options: {
       leases,
       checkRemote: options.checkRemote,
       git,
+      cache: lossCache,
+      deadlines: lossDeadlines,
     });
     assessed.push({ copy, classified, unitDir, loss });
   }
