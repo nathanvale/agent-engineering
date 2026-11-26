@@ -7,6 +7,7 @@ import {
   parseCatFileBatchCheck,
   parseGitmodulesPaths,
   parseLsRemoteShas,
+  parsePeelCommits,
   parseRevListShas,
   parseStageGitlinks,
   parseWorktreePorcelain,
@@ -87,6 +88,10 @@ export type ExistingObjectsResult =
     }
   | { readonly ok: false; readonly reason: string };
 
+export type PeelCommitsResult =
+  | { readonly ok: true; readonly peeled: ReadonlyMap<string, string> }
+  | { readonly ok: false; readonly reason: string };
+
 export type UncontainedShasResult =
   | { readonly ok: true; readonly uncontained: ReadonlySet<string> }
   | { readonly ok: false; readonly reason: string };
@@ -105,6 +110,10 @@ export type GitRunner = {
     gitDir: string,
     shas: readonly string[],
   ) => Promise<ExistingObjectsResult>;
+  readonly peelCommits: (
+    gitDir: string,
+    shas: readonly string[],
+  ) => Promise<PeelCommitsResult>;
   readonly uncontainedShas: (
     gitDir: string,
     localShas: readonly string[],
@@ -229,6 +238,35 @@ export function createGitRunner(
         present: parsed.present,
         anyMissing: parsed.anyMissing,
       };
+    },
+
+    async peelCommits(gitDir, shas) {
+      if (shas.length === 0) {
+        return { ok: true, peeled: new Map() };
+      }
+      const input = utf8Encoder.encode(
+        `${shas.map((sha) => `${sha}^{commit}`).join("\n")}\n`,
+      );
+      const res = await execEnvGit(
+        [...noRepoGitEnvArgs, `GIT_DIR=${gitDir}`],
+        [
+          "-C",
+          filesystemRoot,
+          ...safeGitConfigArgs,
+          "cat-file",
+          "--batch-check=%(objectname)",
+        ],
+        localGitTimeoutMs,
+        input,
+      );
+      if (res === undefined || res.exitCode !== 0 || res.outputTruncated) {
+        return { ok: false, reason: "git cat-file failed" };
+      }
+      const parsed = parsePeelCommits(res.stdout, shas);
+      if (!parsed.ok) {
+        return { ok: false, reason: "git cat-file output invalid" };
+      }
+      return { ok: true, peeled: parsed.peeled };
     },
 
     async uncontainedShas(gitDir, localShas, excludeTips) {

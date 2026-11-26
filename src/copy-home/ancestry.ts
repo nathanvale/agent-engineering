@@ -1,4 +1,9 @@
-import type { GitRunner, LsRemoteResult } from "./git.ts";
+import type {
+  GitRunner,
+  LsRemoteResult,
+  PeelCommitsResult,
+  UncontainedShasResult,
+} from "./git.ts";
 import { compareText } from "./rules.ts";
 
 export type LossStepDeadlines = {
@@ -126,6 +131,77 @@ function markUndecided(
   }
 }
 
+async function peelLocalCommits(
+  git: GitRunner,
+  commonDir: string,
+  shas: readonly string[],
+  deadlines: LossStepDeadlines,
+): Promise<PeelCommitsResult> {
+  const outcome = await awaitWithDeadline(
+    git.peelCommits(commonDir, shas),
+    deadlines.localMs,
+  );
+  if (outcome.status === "ok") return outcome.value;
+  if (outcome.status === "timed-out") {
+    return { ok: false, reason: "git cat-file timed out" };
+  }
+  return { ok: false, reason: "git cat-file failed" };
+}
+
+async function runUncontainedCheck(
+  git: GitRunner,
+  commonDir: string,
+  peeledCommits: readonly string[],
+  presentTips: readonly string[],
+  deadlines: LossStepDeadlines,
+): Promise<UncontainedShasResult> {
+  const outcome = await awaitWithDeadline(
+    git.uncontainedShas(commonDir, peeledCommits, presentTips),
+    deadlines.localMs,
+  );
+  if (outcome.status === "ok") return outcome.value;
+  if (outcome.status === "timed-out") {
+    return { ok: false, reason: "git rev-list timed out" };
+  }
+  return { ok: false, reason: "git rev-list failed" };
+}
+
+function collectPeeledCommits(
+  unchecked: readonly string[],
+  peeled: ReadonlyMap<string, string>,
+  entry: AncestryCacheEntry,
+): readonly string[] {
+  const peeledCommits: string[] = [];
+  const seenCommits = new Set<string>();
+  for (const sha of unchecked) {
+    const commitSha = peeled.get(sha);
+    if (commitSha === undefined) {
+      entry.verdicts.set(sha, "undecided");
+    } else if (!seenCommits.has(commitSha)) {
+      seenCommits.add(commitSha);
+      peeledCommits.push(commitSha);
+    }
+  }
+  return peeledCommits;
+}
+
+function recordPeeledVerdicts(
+  unchecked: readonly string[],
+  peeled: ReadonlyMap<string, string>,
+  uncontained: ReadonlySet<string>,
+  fallbackStatus: LocalShaStatus,
+  entry: AncestryCacheEntry,
+): void {
+  for (const sha of unchecked) {
+    const commitSha = peeled.get(sha);
+    if (commitSha === undefined) continue;
+    entry.verdicts.set(
+      sha,
+      uncontained.has(commitSha) ? fallbackStatus : "contained",
+    );
+  }
+}
+
 async function populateUncheckedVerdicts(params: {
   readonly git: GitRunner;
   readonly commonDir: string;
@@ -149,35 +225,43 @@ async function populateUncheckedVerdicts(params: {
     markUndecided(params.entry, params.unchecked);
     return;
   }
-  const outcome = await awaitWithDeadline(
-    params.git.uncontainedShas(
-      params.commonDir,
-      params.unchecked,
-      presence.present,
-    ),
-    params.deadlines.localMs,
+  const peelResult = await peelLocalCommits(
+    params.git,
+    params.commonDir,
+    params.unchecked,
+    params.deadlines,
   );
-  if (outcome.status === "timed-out") {
-    markUndecided(params.entry, params.unchecked, "git rev-list timed out");
+  if (!peelResult.ok) {
+    markUndecided(params.entry, params.unchecked, peelResult.reason);
     return;
   }
-  if (outcome.status === "failed") {
-    markUndecided(params.entry, params.unchecked, "git rev-list failed");
-    return;
-  }
-  if (!outcome.value.ok) {
-    markUndecided(params.entry, params.unchecked, outcome.value.reason);
+  const peeledCommits = collectPeeledCommits(
+    params.unchecked,
+    peelResult.peeled,
+    params.entry,
+  );
+  if (peeledCommits.length === 0) return;
+  const uncontainedResult = await runUncontainedCheck(
+    params.git,
+    params.commonDir,
+    peeledCommits,
+    presence.present,
+    params.deadlines,
+  );
+  if (!uncontainedResult.ok) {
+    markUndecided(params.entry, params.unchecked, uncontainedResult.reason);
     return;
   }
   const fallbackStatus: LocalShaStatus = presence.anyMissing
     ? "undecided"
     : "unpushed";
-  for (const sha of params.unchecked) {
-    params.entry.verdicts.set(
-      sha,
-      outcome.value.uncontained.has(sha) ? fallbackStatus : "contained",
-    );
-  }
+  recordPeeledVerdicts(
+    params.unchecked,
+    peelResult.peeled,
+    uncontainedResult.uncontained,
+    fallbackStatus,
+    params.entry,
+  );
 }
 
 export async function checkLocalShasAncestry(params: {

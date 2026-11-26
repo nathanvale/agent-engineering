@@ -26,6 +26,7 @@ import {
 import {
   copyLossReasons,
   copyLossVerdict,
+  oracleIsAncestor,
 } from "./support/copy-home-test-helpers.ts";
 import { testFolder } from "./support/test-folder.ts";
 
@@ -47,19 +48,18 @@ if (resolvedEnv === null) {
 
 const envExecutable: ParsedPath = testContract.boundary.path(resolvedEnv);
 
+const trackedGitSubcommands = [
+  "worktree",
+  "ls-files",
+  "config",
+  "ls-remote",
+  "merge-base",
+  "cat-file",
+  "rev-list",
+] as const;
+
 function gitSubcommand(args: readonly string[]): string | undefined {
-  for (const candidate of [
-    "worktree",
-    "ls-files",
-    "config",
-    "ls-remote",
-    "merge-base",
-    "cat-file",
-    "rev-list",
-  ]) {
-    if (args.includes(candidate)) return candidate;
-  }
-  return undefined;
+  return trackedGitSubcommands.find((candidate) => args.includes(candidate));
 }
 
 function runRealProgram(request: ProgramRequest): ProgramResult {
@@ -114,50 +114,17 @@ function writeHomesJson(
   noCopyDirs: readonly string[] = [],
 ): string {
   const homesFile = join(sandbox, "homes.json");
-  writeFileSync(
-    homesFile,
-    `${JSON.stringify(
-      {
-        version: 1,
-        repositories: [reposDir],
-        noCopy: noCopyDirs,
-        throwaway: [],
-        mirror: [],
-        toolOwned: [],
-        exceptions: [],
-      },
-      null,
-      2,
-    )}\n`,
-  );
+  const config = {
+    version: 1,
+    repositories: [reposDir],
+    noCopy: noCopyDirs,
+    throwaway: [],
+    mirror: [],
+    toolOwned: [],
+    exceptions: [],
+  };
+  writeFileSync(homesFile, `${JSON.stringify(config, null, 2)}\n`);
   return homesFile;
-}
-
-function oracleIsAncestor(
-  gitDir: string,
-  localSha: string,
-  remoteTips: ReadonlySet<string>,
-): LocalShaStatus {
-  if (remoteTips.has(localSha)) return "contained";
-  if (remoteTips.size === 0) return "unpushed";
-  let anyUndecided = false;
-  for (const tip of remoteTips) {
-    const proc = Bun.spawnSync(
-      [
-        "git",
-        "--git-dir",
-        gitDir,
-        "merge-base",
-        "--is-ancestor",
-        localSha,
-        tip,
-      ],
-      { stdout: "pipe", stderr: "pipe" },
-    );
-    if (proc.exitCode === 0) return "contained";
-    if (proc.exitCode !== 1) anyUndecided = true;
-  }
-  return anyUndecided ? "undecided" : "unpushed";
 }
 
 function commitFile(
@@ -170,6 +137,32 @@ function commitFile(
   runFixtureGit(repo, ["add", "--", fileName]);
   runFixtureGit(repo, ["commit", "--quiet", "-m", message]);
   return runFixtureGit(repo, ["rev-parse", "HEAD"]);
+}
+
+async function verifyAncestryAgainstOracle(
+  git: ReturnType<typeof createGitRunner>,
+  gitDir: string,
+  localShas: readonly string[],
+  remoteTips: ReadonlySet<string>,
+  expected: readonly (readonly [string, LocalShaStatus])[],
+): Promise<void> {
+  const result = await checkLocalShasAncestry({
+    git,
+    commonDir: gitDir,
+    localShas,
+    remoteTips,
+    hasPartialClone: false,
+    cache: createLossRunCache(),
+    deadlines: defaultLossDeadlines,
+  });
+  for (const sha of localShas) {
+    expect(result.verdicts.get(sha)).toBe(
+      oracleIsAncestor(gitDir, sha, remoteTips),
+    );
+  }
+  for (const [sha, status] of expected) {
+    expect(result.verdicts.get(sha)).toBe(status);
+  }
 }
 
 describe("copy-home check --remote cost and bounds", () => {
@@ -212,6 +205,17 @@ describe("copy-home check --remote cost and bounds", () => {
         "unpushed\n",
         "unpushed-1",
       );
+      const tag = (name: string, target: string): string => {
+        runFixtureGit(repo, ["tag", "-a", "-m", name, name, target]);
+        return runFixtureGit(repo, ["rev-parse", name]);
+      };
+      const unpushedTagSha = tag("unpushed-tag", unpushedSha);
+      const pushedTagSha = tag("pushed-tag", sideCommitSha);
+      const rootTreeSha = runFixtureGit(repo, [
+        "rev-parse",
+        `${rootSha}^{tree}`,
+      ]);
+      const treeTagSha = tag("tree-tag", rootTreeSha);
 
       const gitDir = join(repo, ".git");
       const localShas = [
@@ -222,52 +226,43 @@ describe("copy-home check --remote cost and bounds", () => {
         mainMidSha,
         mergeTipSha,
         unpushedSha,
+        unpushedTagSha,
+        pushedTagSha,
+        treeTagSha,
       ];
       const realPrograms = makeProgramsCapability((request) =>
         Promise.resolve(runRealProgram(request)),
       );
       const git = createGitRunner(realPrograms, envExecutable);
 
-      const presentTips = new Set([mergeTipSha, olderTipSha]);
-      const presentResult = await checkLocalShasAncestry({
+      await verifyAncestryAgainstOracle(
         git,
-        commonDir: gitDir,
+        gitDir,
         localShas,
-        remoteTips: presentTips,
-        hasPartialClone: false,
-        cache: createLossRunCache(),
-        deadlines: defaultLossDeadlines,
-      });
-
-      for (const sha of localShas) {
-        expect(presentResult.verdicts.get(sha)).toBe(
-          oracleIsAncestor(gitDir, sha, presentTips),
-        );
-      }
-      expect(presentResult.verdicts.get(olderCommitSha)).toBe("contained");
-      expect(presentResult.verdicts.get(sideCommitSha)).toBe("contained");
-      expect(presentResult.verdicts.get(unpushedSha)).toBe("unpushed");
-
-      const missingTip = makeFakeSha(999_999);
-      const tipsWithMissing = new Set([mergeTipSha, olderTipSha, missingTip]);
-      const missingResult = await checkLocalShasAncestry({
+        new Set([mergeTipSha, olderTipSha]),
+        [
+          [olderCommitSha, "contained"],
+          [sideCommitSha, "contained"],
+          [unpushedSha, "unpushed"],
+          [unpushedTagSha, "unpushed"],
+          [pushedTagSha, "contained"],
+          [treeTagSha, "undecided"],
+        ],
+      );
+      await verifyAncestryAgainstOracle(
         git,
-        commonDir: gitDir,
+        gitDir,
         localShas,
-        remoteTips: tipsWithMissing,
-        hasPartialClone: false,
-        cache: createLossRunCache(),
-        deadlines: defaultLossDeadlines,
-      });
-
-      for (const sha of localShas) {
-        expect(missingResult.verdicts.get(sha)).toBe(
-          oracleIsAncestor(gitDir, sha, tipsWithMissing),
-        );
-      }
-      expect(missingResult.verdicts.get(olderCommitSha)).toBe("contained");
-      expect(missingResult.verdicts.get(sideCommitSha)).toBe("contained");
-      expect(missingResult.verdicts.get(unpushedSha)).toBe("undecided");
+        new Set([mergeTipSha, olderTipSha, makeFakeSha(999_999)]),
+        [
+          [olderCommitSha, "contained"],
+          [sideCommitSha, "contained"],
+          [unpushedSha, "undecided"],
+          [unpushedTagSha, "undecided"],
+          [pushedTagSha, "contained"],
+          [treeTagSha, "undecided"],
+        ],
+      );
     } finally {
       rmSync(sandbox, { recursive: true, force: true });
     }
@@ -384,7 +379,7 @@ describe("copy-home check --remote cost and bounds", () => {
       }
       expect(counts.mergeBase).toBe(0);
       expect(counts.lsRemote).toBe(1);
-      expect(counts.catFile).toBe(1);
+      expect(counts.catFile).toBe(2);
       expect(counts.revList).toBe(1);
     } finally {
       if (prevState === undefined) delete process.env.XDG_STATE_HOME;
@@ -420,6 +415,7 @@ describe("copy-home check --remote cost and bounds", () => {
         "-m",
         "local-ahead",
       ]);
+      const localAheadSha = runFixtureGit(mainRepo, ["rev-parse", "HEAD"]);
       runFixtureGit(mainRepo, [
         "remote",
         "add",
@@ -439,8 +435,9 @@ describe("copy-home check --remote cost and bounds", () => {
           });
         }
         if (sub === "cat-file") {
+          const isPeel = request.args.includes("--batch-check=%(objectname)");
           return Promise.resolve({
-            stdout: `${baseSha} commit 100\n`,
+            stdout: isPeel ? `${localAheadSha}\n` : `${baseSha} commit 100\n`,
             stderr: "",
             exitCode: 0,
             terminationConfirmed: true,

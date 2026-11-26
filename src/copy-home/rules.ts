@@ -290,6 +290,34 @@ export function parseCatFileBatchCheck(
   return { ok: true, present, anyMissing };
 }
 
+export type PeelCommitsParsed =
+  | {
+      readonly ok: true;
+      readonly peeled: ReadonlyMap<string, string>;
+    }
+  | { readonly ok: false };
+
+export function parsePeelCommits(
+  stdout: string,
+  shas: readonly string[],
+): PeelCommitsParsed {
+  const trimmedEnd = stdout.endsWith("\n") ? stdout.slice(0, -1) : stdout;
+  const lines = trimmedEnd.length === 0 ? [] : trimmedEnd.split("\n");
+  if (lines.length !== shas.length) return { ok: false };
+  const peeled = new Map<string, string>();
+  for (let index = 0; index < shas.length; index++) {
+    const sha = shas[index];
+    const line = lines[index]?.trim();
+    if (sha === undefined || line === undefined) return { ok: false };
+    if (shaPattern.test(line)) {
+      peeled.set(sha, line);
+    } else if (line !== `${sha}^{commit} missing`) {
+      return { ok: false };
+    }
+  }
+  return { ok: true, peeled };
+}
+
 export function parseRevListShas(stdout: string): ReadonlySet<string> {
   const shas = new Set<string>();
   for (const rawLine of stdout.split("\n")) {
