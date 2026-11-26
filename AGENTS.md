@@ -11,7 +11,7 @@ Keep domain implementation in separate files and preserve one public application
 Check command: bun run check
 Smoke: bun run start --help
 Source packet: https://github.com/nathanvale/agent-engineering
-Template source: c300ddfa58311700af355d2829f8854924d4e626
+Template source: 7b6bcffb3acde0953c7fb5cde8561edd7846a27c
 
 ## Comments
 
