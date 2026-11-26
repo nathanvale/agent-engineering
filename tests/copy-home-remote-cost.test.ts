@@ -438,6 +438,15 @@ describe("copy-home check --remote cost and bounds", () => {
             outputTruncated: false,
           });
         }
+        if (sub === "cat-file") {
+          return Promise.resolve({
+            stdout: `${baseSha} commit 100\n`,
+            stderr: "",
+            exitCode: 0,
+            terminationConfirmed: true,
+            outputTruncated: false,
+          });
+        }
         if (sub === "rev-list") {
           return new Promise<ProgramResult>(() => undefined);
         }
