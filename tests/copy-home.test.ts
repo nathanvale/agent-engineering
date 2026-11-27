@@ -9,9 +9,12 @@ import {
 } from "node:fs";
 import { join } from "node:path";
 import { fixtureScriptPath } from "./support/copy-home-fixture.ts";
+import { shouldSkipLoopback } from "./support/loopback-connect-probe.ts";
 import { testFolder } from "./support/test-folder.ts";
 
 setDefaultTimeout(30_000);
+
+const skipLoopback = await shouldSkipLoopback();
 
 const cli = join(import.meta.dir, "../src/cli.ts");
 
@@ -194,6 +197,113 @@ describe("copy-home check", () => {
     }
   });
 
+  test("refuses a non-empty fixture root and leaves it untouched", () => {
+    const folder = testFolder("copy-home-nonempty-");
+    const sentinel = join(folder, "keep.txt");
+    writeFileSync(sentinel, "keep\n");
+    try {
+      const cmd = [process.execPath, fixtureScriptPath, folder, "--", "true"];
+      const child = Bun.spawnSync(cmd, { stdout: "pipe", stderr: "pipe" });
+      expect(child.exitCode).not.toBe(0);
+      expect(child.stderr.toString()).toContain("empty");
+      expect(existsSync(folder)).toBe(true);
+      expect(readdirSync(folder)).toEqual(["keep.txt"]);
+      expect(readFileSync(sentinel, "utf8")).toBe("keep\n");
+    } finally {
+      rmSync(folder, { recursive: true, force: true });
+    }
+  });
+
+  test("refuses relative --homes path and reports scan-incomplete when no homes file exists", () => {
+    const sandbox = testFolder("copy-home-edge-");
+    try {
+      const relRun = Bun.spawnSync(
+        [
+          process.execPath,
+          "run",
+          cli,
+          "copy-home",
+          "check",
+          "--homes",
+          "relative/homes.json",
+          "--json",
+        ],
+        {
+          cwd: sandbox,
+          stdout: "pipe",
+          stderr: "pipe",
+          timeout: 15_000,
+          killSignal: "SIGKILL",
+        },
+      );
+      expect(relRun.exitCode).toBe(3);
+      expect(parseJson(relRun.stdout.toString())).toMatchObject({
+        result: {
+          causeCode: "DOMAIN_COPY_HOME_INVALID_HOMES",
+        },
+      });
+
+      const emptyConfig = join(sandbox, "config");
+      const emptyState = join(sandbox, "state");
+      const emptyCache = join(sandbox, "cache");
+      const emptyData = join(sandbox, "data");
+      const emptyTmp = join(sandbox, "tmp");
+      for (const dir of [
+        emptyConfig,
+        emptyState,
+        emptyCache,
+        emptyData,
+        emptyTmp,
+      ]) {
+        mkdirSync(dir, { recursive: true });
+      }
+      const noHomesRun = Bun.spawnSync(
+        [process.execPath, "run", cli, "copy-home", "check", "--json"],
+        {
+          cwd: sandbox,
+          env: {
+            ...process.env,
+            XDG_CONFIG_HOME: emptyConfig,
+            XDG_STATE_HOME: emptyState,
+            XDG_CACHE_HOME: emptyCache,
+            XDG_DATA_HOME: emptyData,
+            CODEX_HOME: join(sandbox, "codex"),
+            TMPDIR: emptyTmp,
+          },
+          stdout: "pipe",
+          stderr: "pipe",
+          timeout: 15_000,
+          killSignal: "SIGKILL",
+        },
+      );
+      expect(noHomesRun.exitCode).toBe(3);
+      const envelope = parseJson(noHomesRun.stdout.toString());
+      expect(envelope).toMatchObject({
+        result: {
+          causeCode: "DOMAIN_COPY_HOME_FINDINGS",
+          data: {
+            complete: false,
+          },
+        },
+      });
+      const data: unknown = Reflect.get(
+        Object(Reflect.get(Object(envelope), "result")),
+        "data",
+      );
+      const findings: unknown = Reflect.get(Object(data), "findings");
+      expect(
+        (Array.isArray(findings) ? findings : []).some(
+          (f) => Reflect.get(Object(f), "kind") === "scan-incomplete",
+        ),
+      ).toBe(true);
+      writeFileSync(join(sandbox, "done.txt"), "ok\n");
+    } finally {
+      rmSync(sandbox, { recursive: true, force: true });
+    }
+  });
+});
+
+describe.skipIf(skipLoopback)("needs-loopback: copy-home check", () => {
   test("AC-06: loss check verdicts for cases 01 to 09 with --remote and read-only check", async () => {
     const ran = runWithFixture(
       ["--loss"],
@@ -331,23 +441,6 @@ describe("copy-home check", () => {
     }
   });
 
-  test("refuses a non-empty fixture root and leaves it untouched", () => {
-    const folder = testFolder("copy-home-nonempty-");
-    const sentinel = join(folder, "keep.txt");
-    writeFileSync(sentinel, "keep\n");
-    try {
-      const cmd = [process.execPath, fixtureScriptPath, folder, "--", "true"];
-      const child = Bun.spawnSync(cmd, { stdout: "pipe", stderr: "pipe" });
-      expect(child.exitCode).not.toBe(0);
-      expect(child.stderr.toString()).toContain("empty");
-      expect(existsSync(folder)).toBe(true);
-      expect(readdirSync(folder)).toEqual(["keep.txt"]);
-      expect(readFileSync(sentinel, "utf8")).toBe("keep\n");
-    } finally {
-      rmSync(folder, { recursive: true, force: true });
-    }
-  });
-
   test("a killed fixture builder leaves no daemon and no folder", async () => {
     const folder = testFolder("copy-home-kill-");
     const readyFile = join(folder, "ready");
@@ -398,94 +491,6 @@ describe("copy-home check", () => {
       killQuietly(child.pid);
       await child.exited;
       rmSync(folder, { recursive: true, force: true });
-    }
-  });
-
-  test("refuses relative --homes path and reports scan-incomplete when no homes file exists", () => {
-    const sandbox = testFolder("copy-home-edge-");
-    try {
-      const relRun = Bun.spawnSync(
-        [
-          process.execPath,
-          "run",
-          cli,
-          "copy-home",
-          "check",
-          "--homes",
-          "relative/homes.json",
-          "--json",
-        ],
-        {
-          cwd: sandbox,
-          stdout: "pipe",
-          stderr: "pipe",
-          timeout: 15_000,
-          killSignal: "SIGKILL",
-        },
-      );
-      expect(relRun.exitCode).toBe(3);
-      expect(parseJson(relRun.stdout.toString())).toMatchObject({
-        result: {
-          causeCode: "DOMAIN_COPY_HOME_INVALID_HOMES",
-        },
-      });
-
-      const emptyConfig = join(sandbox, "config");
-      const emptyState = join(sandbox, "state");
-      const emptyCache = join(sandbox, "cache");
-      const emptyData = join(sandbox, "data");
-      const emptyTmp = join(sandbox, "tmp");
-      for (const dir of [
-        emptyConfig,
-        emptyState,
-        emptyCache,
-        emptyData,
-        emptyTmp,
-      ]) {
-        mkdirSync(dir, { recursive: true });
-      }
-      const noHomesRun = Bun.spawnSync(
-        [process.execPath, "run", cli, "copy-home", "check", "--json"],
-        {
-          cwd: sandbox,
-          env: {
-            ...process.env,
-            XDG_CONFIG_HOME: emptyConfig,
-            XDG_STATE_HOME: emptyState,
-            XDG_CACHE_HOME: emptyCache,
-            XDG_DATA_HOME: emptyData,
-            CODEX_HOME: join(sandbox, "codex"),
-            TMPDIR: emptyTmp,
-          },
-          stdout: "pipe",
-          stderr: "pipe",
-          timeout: 15_000,
-          killSignal: "SIGKILL",
-        },
-      );
-      expect(noHomesRun.exitCode).toBe(3);
-      const envelope = parseJson(noHomesRun.stdout.toString());
-      expect(envelope).toMatchObject({
-        result: {
-          causeCode: "DOMAIN_COPY_HOME_FINDINGS",
-          data: {
-            complete: false,
-          },
-        },
-      });
-      const data: unknown = Reflect.get(
-        Object(Reflect.get(Object(envelope), "result")),
-        "data",
-      );
-      const findings: unknown = Reflect.get(Object(data), "findings");
-      expect(
-        (Array.isArray(findings) ? findings : []).some(
-          (f) => Reflect.get(Object(f), "kind") === "scan-incomplete",
-        ),
-      ).toBe(true);
-      writeFileSync(join(sandbox, "done.txt"), "ok\n");
-    } finally {
-      rmSync(sandbox, { recursive: true, force: true });
     }
   });
 });
