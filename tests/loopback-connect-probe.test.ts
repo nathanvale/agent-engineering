@@ -1,39 +1,28 @@
 import { expect, test } from "bun:test";
-import { resolveLoopbackTest } from "./support/loopback-connect-probe.ts";
+import { shouldSkipLoopback } from "./support/loopback-connect-probe.ts";
 
-test("skips with reason when loopback connect is refused without CI, fails loudly under CI=true, and runs when allowed", async () => {
-  const recorded: Array<{
-    readonly mode: "run" | "skip";
-    readonly name: string;
-  }> = [];
-  const registrar = {
-    run(name: string, _fn: () => void | Promise<void>) {
-      recorded.push({ mode: "run", name });
-    },
-    skip(name: string, _fn: () => void | Promise<void>) {
-      recorded.push({ mode: "skip", name });
-    },
+test("skips and prints reason when loopback connect is refused without CI, fails loudly under CI=true, and runs when allowed", async () => {
+  const notices: string[] = [];
+  const report = (line: string) => {
+    notices.push(line);
   };
 
-  const skippedTest = await resolveLoopbackTest({
+  const skipped = await shouldSkipLoopback({
     probe: () => Promise.resolve(false),
     env: {},
-    register: registrar,
+    report,
   });
-  skippedTest("daemon loss check", () => undefined);
-  expect(recorded).toEqual([
-    {
-      mode: "skip",
-      name: "daemon loss check (loopback connect refused by sandbox)",
-    },
+  expect(skipped).toBe(true);
+  expect(notices).toEqual([
+    "needs-loopback: skipped, loopback connect refused by sandbox",
   ]);
 
   let ciError: unknown;
   try {
-    await resolveLoopbackTest({
+    await shouldSkipLoopback({
       probe: () => Promise.resolve(false),
       env: { CI: "true" },
-      register: registrar,
+      report,
     });
   } catch (error) {
     ciError = error;
@@ -42,21 +31,13 @@ test("skips with reason when loopback connect is refused without CI, fails loudl
   expect(ciError instanceof Error ? ciError.message : "").toMatch(
     /loopback-connect-probe.*loopback connect refused by sandbox/,
   );
+  expect(notices).toHaveLength(1);
 
-  const liveTest = await resolveLoopbackTest({
+  const skippedWhenAllowed = await shouldSkipLoopback({
     probe: () => Promise.resolve(true),
     env: { CI: "true" },
-    register: registrar,
+    report,
   });
-  liveTest("daemon loss check", () => undefined);
-  expect(recorded).toEqual([
-    {
-      mode: "skip",
-      name: "daemon loss check (loopback connect refused by sandbox)",
-    },
-    {
-      mode: "run",
-      name: "daemon loss check",
-    },
-  ]);
+  expect(skippedWhenAllowed).toBe(false);
+  expect(notices).toHaveLength(1);
 });
