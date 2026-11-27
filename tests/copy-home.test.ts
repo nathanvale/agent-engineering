@@ -9,9 +9,12 @@ import {
 } from "node:fs";
 import { join } from "node:path";
 import { fixtureScriptPath } from "./support/copy-home-fixture.ts";
+import { resolveLoopbackTest } from "./support/loopback-connect-probe.ts";
 import { testFolder } from "./support/test-folder.ts";
 
 setDefaultTimeout(30_000);
+
+const it = await resolveLoopbackTest();
 
 const cli = join(import.meta.dir, "../src/cli.ts");
 
@@ -194,7 +197,7 @@ describe("copy-home check", () => {
     }
   });
 
-  test("AC-06: loss check verdicts for cases 01 to 09 with --remote and read-only check", async () => {
+  it("AC-06: loss check verdicts for cases 01 to 09 with --remote and read-only check", async () => {
     const ran = runWithFixture(
       ["--loss"],
       [
@@ -253,7 +256,7 @@ describe("copy-home check", () => {
     expect(lossEntries[1]?.reasons).toContain("working tree not inspected");
   });
 
-  test("loss without --remote is unknown", async () => {
+  it("loss without --remote is unknown", async () => {
     const ran = runWithFixture(
       ["--loss"],
       [
@@ -296,7 +299,7 @@ describe("copy-home check", () => {
     ).toBe(true);
   });
 
-  test("malformed lease makes every loss check unknown", async () => {
+  it("malformed lease makes every loss check unknown", async () => {
     const ran = runWithFixture(
       ["--loss"],
       [
@@ -348,7 +351,7 @@ describe("copy-home check", () => {
     }
   });
 
-  test("a killed fixture builder leaves no daemon and no folder", async () => {
+  it("a killed fixture builder leaves no daemon and no folder", async () => {
     const folder = testFolder("copy-home-kill-");
     const readyFile = join(folder, "ready");
     const child = Bun.spawn(

@@ -25,12 +25,15 @@ import {
   noExecutionCases,
   runCheckJson,
 } from "./support/copy-home-test-helpers.ts";
+import { resolveLoopbackTest } from "./support/loopback-connect-probe.ts";
 import { testFolder } from "./support/test-folder.ts";
 
 setDefaultTimeout(60_000);
 
+const it = await resolveLoopbackTest();
+
 describe("copy-home check guards", () => {
-  test("never executes planted Git triggers or fetches packs with --remote and leaves fixture untouched", async () => {
+  it("never executes planted Git triggers or fetches packs with --remote and leaves fixture untouched", async () => {
     const sandbox = realpathSync.native(testFolder("copy-home-git-safe-"));
     let stopDaemon: (() => void) | undefined;
     try {
@@ -290,7 +293,7 @@ describe("copy-home check guards", () => {
     }
   });
 
-  test("propagates nested copy work-found and unreadable nested folder unknown to the outer copy", async () => {
+  it("propagates nested copy work-found and unreadable nested folder unknown to the outer copy", async () => {
     const sandbox = realpathSync.native(testFolder("copy-home-nested-loss-"));
     const unreadable = join(
       sandbox,
